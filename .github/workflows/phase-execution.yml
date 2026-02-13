@@ -71,6 +71,27 @@ jobs:
       - name: Create phase branch
         run: |
           git checkout -b ${{ steps.phase_info.outputs.branch }}
+          
+          # Create initial TODO file for the phase
+          mkdir -p .phase-work
+          cat > .phase-work/TODO.md << EOF
+          # Phase ${{ github.event.inputs.phase }} - TODO
+          
+          This file tracks the implementation progress for this phase.
+          See \`.github/copilot-workspace/${{ steps.phase_info.outputs.config }}\` for details.
+          
+          ## Status
+          - [ ] Implementation started
+          - [ ] All deliverables completed
+          - [ ] Tests passing
+          - [ ] Documentation updated
+          
+          ## Notes
+          This branch was created automatically by the NEST Phase Pipeline.
+          EOF
+          
+          git add .phase-work/TODO.md
+          git commit -m "chore: Initialize Phase ${{ github.event.inputs.phase }} branch"
           git push -u origin ${{ steps.phase_info.outputs.branch }}
 
       - name: Create Pull Request
