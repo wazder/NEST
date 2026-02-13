@@ -1,2 +1,26 @@
-# NEST
-Official research repository for NEST: A Neural EEG Sequence Transducer framework for decoding EEG signals into English and Turkish text.
+# NEST: Neural EEG Sequence Transducer
+
+## Abstract
+The NEST framework aims to develop a novel deep learning architecture capable of decoding non-invasive Electroencephalography (EEG) signals directly into natural language text. By bridging the gap between Neuroscience and Natural Language Processing (NLP), this research focuses on translating neural activity into coherent sentences in both **English** and **Turkish**.
+
+Unlike traditional BCI systems restricted to limited commands, NEST utilizes advanced sequence-to-sequence architectures (Transformers / Transducer-based models) to achieve open-vocabulary speech decoding for Silent Speech Interfaces (SSI).
+
+## Research Objectives
+1. **End-to-End Transduction:** Implementation of a pipeline that maps raw EEG waves directly to text tokens without intermediate classification steps.
+2. **Cross-Lingual Generalization:** Investigation of the model's performance on Turkish language syntax (agglutinative morphology) alongside English.
+3. **Reproducibility:** Development of standardized preprocessing scripts for public EEG datasets (e.g., ZuCo).
+
+## Methodology
+The proposed NEST architecture consists of three main stages:
+- **Signal Preprocessing:** Band-pass filtering and artifact removal strategies.
+- **Neural Encoder:** A hybrid CNN-LSTM or Transformer-based encoder to extract spatial-temporal features.
+- **Sequence Transducer:** An attention-based decoder aimed at generating contextually accurate text sequences from neural embeddings.
+
+## Roadmap
+- Literature review regarding Sequence Transducers in BCI
+- Preprocessing pipeline development for the ZuCo dataset
+- Implementation of the NEST Encoder-Decoder architecture
+- Integration of Turkish linguistic constraints
+- Submission of the research paper to relevant BCI/AI conferences
+
+> See [roadmap.md](ROADMAP.md) for detailed project milestones.
