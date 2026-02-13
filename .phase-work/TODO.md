@@ -1,7 +1,7 @@
-# Phase 2 - TODO
+# Phase 3 - TODO
 
 This file tracks the implementation progress for this phase.
-See `.github/copilot-workspace/phase-2-data-preprocessing.md` for details.
+See `.github/copilot-workspace/phase-3-model-architecture.md` for details.
 
 ## Status
 - [ ] Implementation started
