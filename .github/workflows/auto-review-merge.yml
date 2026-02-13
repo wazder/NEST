@@ -2,7 +2,7 @@ name: Auto Review and Merge
 
 on:
   pull_request:
-    types: [opened, synchronize, ready_for_review]
+    types: [opened, synchronize, ready_for_review, closed]
     branches:
       - main
 
