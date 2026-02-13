@@ -17,10 +17,18 @@ The proposed NEST architecture consists of three main stages:
 - **Sequence Transducer:** An attention-based decoder aimed at generating contextually accurate text sequences from neural embeddings.
 
 ## Roadmap
-- Literature review regarding Sequence Transducers in BCI
+- ✓ Literature review regarding Sequence Transducers in BCI ([Phase 1 Complete](docs/literature-review/))
 - Preprocessing pipeline development for the ZuCo dataset
 - Implementation of the NEST Encoder-Decoder architecture
 - Integration of Turkish linguistic constraints
 - Submission of the research paper to relevant BCI/AI conferences
 
-> See [roadmap.md](ROADMAP.md) for detailed project milestones.
+> See [ROADMAP.md](ROADMAP.md) for detailed project milestones.
+
+## Documentation
+- **[Literature Review](docs/literature-review/)**: Comprehensive Phase 1 foundation covering:
+  - Sequence Transducers (RNN-T, Neural Transducers) in BCI applications
+  - EEG-to-text decoding approaches and their limitations
+  - Attention mechanisms for neural signal processing
+  - Silent Speech Interface (SSI) methodologies
+  - State-of-the-art benchmarks and evaluation metrics

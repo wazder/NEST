@@ -1,11 +1,14 @@
 # NEST Project Roadmap
 
-## Phase 1: Literature Review & Foundation
-- [ ] Comprehensive survey of Sequence Transducers (RNN-T, Neural Transducers) in BCI applications
-- [ ] Analysis of existing EEG-to-text decoding approaches and their limitations
-- [ ] Review of attention mechanisms for neural signal processing
-- [ ] Study of Silent Speech Interface (SSI) methodologies
-- [ ] Documentation of state-of-the-art benchmarks and evaluation metrics
+## Phase 1: Literature Review & Foundation ✓
+- [x] Comprehensive survey of Sequence Transducers (RNN-T, Neural Transducers) in BCI applications
+- [x] Analysis of existing EEG-to-text decoding approaches and their limitations
+- [x] Review of attention mechanisms for neural signal processing
+- [x] Study of Silent Speech Interface (SSI) methodologies
+- [x] Documentation of state-of-the-art benchmarks and evaluation metrics
+
+**Status:** Completed February 2026  
+**Documentation:** See [docs/literature-review/](docs/literature-review/) for comprehensive review covering all five areas.
 
 ## Phase 2: Data Acquisition & Preprocessing
 - [ ] ZuCo dataset acquisition and exploratory data analysis
