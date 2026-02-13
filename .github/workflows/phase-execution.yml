@@ -1,0 +1,158 @@
+name: Phase Execution
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: 'Phase number to execute'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  execute-phase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Determine phase details
+        id: phase_info
+        run: |
+          case "${{ github.event.inputs.phase }}" in
+            "1")
+              echo "branch=phase-1-literature-review" >> $GITHUB_OUTPUT
+              echo "title=Phase 1: Literature Review & Foundation" >> $GITHUB_OUTPUT
+              echo "config=phase-1-literature-review.md" >> $GITHUB_OUTPUT
+              ;;
+            "2")
+              echo "branch=phase-2-data-preprocessing" >> $GITHUB_OUTPUT
+              echo "title=Phase 2: Data Acquisition & Preprocessing" >> $GITHUB_OUTPUT
+              echo "config=phase-2-data-preprocessing.md" >> $GITHUB_OUTPUT
+              ;;
+            "3")
+              echo "branch=phase-3-model-architecture" >> $GITHUB_OUTPUT
+              echo "title=Phase 3: Model Architecture Development" >> $GITHUB_OUTPUT
+              echo "config=phase-3-model-architecture.md" >> $GITHUB_OUTPUT
+              ;;
+            "4")
+              echo "branch=phase-4-advanced-features" >> $GITHUB_OUTPUT
+              echo "title=Phase 4: Advanced Model Features & Robustness" >> $GITHUB_OUTPUT
+              echo "config=phase-4-cross-lingual.md" >> $GITHUB_OUTPUT
+              ;;
+            "5")
+              echo "branch=phase-5-evaluation-optimization" >> $GITHUB_OUTPUT
+              echo "title=Phase 5: Evaluation & Optimization" >> $GITHUB_OUTPUT
+              echo "config=phase-5-evaluation-optimization.md" >> $GITHUB_OUTPUT
+              ;;
+            "6")
+              echo "branch=phase-6-documentation-dissemination" >> $GITHUB_OUTPUT
+              echo "title=Phase 6: Documentation & Dissemination" >> $GITHUB_OUTPUT
+              echo "config=phase-6-documentation-dissemination.md" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      - name: Create phase branch
+        run: |
+          git checkout -b ${{ steps.phase_info.outputs.branch }}
+          git push -u origin ${{ steps.phase_info.outputs.branch }}
+
+      - name: Create Pull Request
+        id: create_pr
+        run: |
+          # Read the phase configuration for PR body
+          PHASE_CONFIG=".github/copilot-workspace/${{ steps.phase_info.outputs.config }}"
+          
+          # Create PR body
+          cat > pr_body.md << 'EOF'
+          ## 🤖 Automated Phase Execution
+          
+          This PR implements **${{ steps.phase_info.outputs.title }}** as part of the NEST project roadmap.
+          
+          ### 📋 Phase Configuration
+          This phase follows the specifications in `.github/copilot-workspace/${{ steps.phase_info.outputs.config }}`
+          
+          ### 🎯 Objectives
+          EOF
+          
+          # Append objectives from config file
+          cat "$PHASE_CONFIG" >> pr_body.md
+          
+          cat >> pr_body.md << 'EOF'
+          
+          ### ✅ Automated Workflow
+          - [x] Branch created automatically
+          - [ ] Implementation by GitHub Copilot Workspace
+          - [ ] Auto-review by Copilot
+          - [ ] Auto-merge after approval
+          - [ ] Next phase triggers automatically
+          
+          ### 🔍 Review Process
+          This PR will be automatically reviewed by GitHub Copilot. Manual review is also welcome!
+          
+          ---
+          *This is an automated PR created by the NEST Phase Pipeline*
+          EOF
+          
+          # Create the PR
+          PR_URL=$(gh pr create \
+            --title "${{ steps.phase_info.outputs.title }}" \
+            --body-file pr_body.md \
+            --base main \
+            --head ${{ steps.phase_info.outputs.branch }} \
+            --label "automated,phase-${{ github.event.inputs.phase }}")
+          
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+          
+          # Extract PR number
+          PR_NUMBER=$(echo $PR_URL | grep -o '[0-9]\+$')
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Add Copilot Workspace label
+        run: |
+          gh pr edit ${{ steps.create_pr.outputs.pr_number }} --add-label "copilot-workspace"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Comment with Copilot instructions
+        run: |
+          gh pr comment ${{ steps.create_pr.outputs.pr_number }} --body \
+          "@github-copilot-ai Please implement this phase according to the specifications in \`.github/copilot-workspace/${{ steps.phase_info.outputs.config }}\`. Follow all tasks, deliverables, and success criteria outlined in the configuration file."
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Enable auto-merge
+        run: |
+          # Wait a bit for PR to be fully created
+          sleep 5
+          gh pr merge ${{ steps.create_pr.outputs.pr_number }} --auto --squash
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Summary
+        run: |
+          echo "## ✅ Phase ${{ github.event.inputs.phase }} Initiated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ steps.phase_info.outputs.branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR:** ${{ steps.create_pr.outputs.pr_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Configuration:** .github/copilot-workspace/${{ steps.phase_info.outputs.config }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Copilot will now work on implementing this phase." >> $GITHUB_STEP_SUMMARY
