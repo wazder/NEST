@@ -1,0 +1,117 @@
+name: Auto Review and Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  copilot-review:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'automated')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR files
+        id: pr_files
+        run: |
+          gh pr diff ${{ github.event.pull_request.number }} > pr_diff.txt
+          echo "Files changed in this PR"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Copilot Review Comment
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body \
+          "@github-copilot-ai Please review this PR for:
+          
+          1. **Code Quality**: Check for clean, well-documented code
+          2. **Test Coverage**: Verify all new code has appropriate tests
+          3. **Documentation**: Ensure documentation is updated
+          4. **Phase Requirements**: Confirm all deliverables from the phase config are met
+          5. **Best Practices**: Verify adherence to project guidelines
+          
+          Please provide a comprehensive review and approve if all criteria are met."
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Wait for Copilot response
+        run: |
+          echo "Waiting for Copilot review..."
+          sleep 30
+
+  auto-approve:
+    needs: copilot-review
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'automated')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check PR status
+        id: pr_status
+        run: |
+          # Check if all checks have passed
+          gh pr checks ${{ github.event.pull_request.number }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Auto-approve PR
+        run: |
+          gh pr review ${{ github.event.pull_request.number }} --approve --body \
+          "✅ Automated approval: All checks passed and Copilot review completed.
+          
+          This PR meets the requirements for ${{ github.event.pull_request.title }}.
+          
+          Proceeding with auto-merge."
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  trigger-next-phase:
+    needs: auto-approve
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'automated')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine next phase
+        id: next_phase
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          
+          if [[ "$TITLE" == *"Phase 1"* ]]; then
+            echo "phase=2" >> $GITHUB_OUTPUT
+          elif [[ "$TITLE" == *"Phase 2"* ]]; then
+            echo "phase=3" >> $GITHUB_OUTPUT
+          elif [[ "$TITLE" == *"Phase 3"* ]]; then
+            echo "phase=4" >> $GITHUB_OUTPUT
+          elif [[ "$TITLE" == *"Phase 4"* ]]; then
+            echo "phase=5" >> $GITHUB_OUTPUT
+          elif [[ "$TITLE" == *"Phase 5"* ]]; then
+            echo "phase=6" >> $GITHUB_OUTPUT
+          else
+            echo "phase=none" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger next phase workflow
+        if: steps.next_phase.outputs.phase != 'none'
+        run: |
+          echo "Triggering Phase ${{ steps.next_phase.outputs.phase }}"
+          gh workflow run phase-execution.yml -f phase=${{ steps.next_phase.outputs.phase }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Final phase completed
+        if: steps.next_phase.outputs.phase == 'none'
+        run: |
+          echo "🎉 All phases completed! NEST project pipeline finished successfully."

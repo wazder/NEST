@@ -1,14 +1,14 @@
 # NEST Project Roadmap
 
-## Phase 1: Literature Review & Foundation ✓
-- [x] Comprehensive survey of Sequence Transducers (RNN-T, Neural Transducers) in BCI applications
-- [x] Analysis of existing EEG-to-text decoding approaches and their limitations
-- [x] Review of attention mechanisms for neural signal processing
-- [x] Study of Silent Speech Interface (SSI) methodologies
-- [x] Documentation of state-of-the-art benchmarks and evaluation metrics
+## Phase 1: Literature Review & Foundation
+- [ ] Comprehensive survey of Sequence Transducers (RNN-T, Neural Transducers) in BCI applications
+- [ ] Analysis of existing EEG-to-text decoding approaches and their limitations
+- [ ] Review of attention mechanisms for neural signal processing
+- [ ] Study of Silent Speech Interface (SSI) methodologies
+- [ ] Documentation of state-of-the-art benchmarks and evaluation metrics
 
-**Status:** Completed February 2026  
-**Documentation:** See [docs/literature-review/](docs/literature-review/) for comprehensive review covering all five areas.
+**Status:** To be re-implemented with automated pipeline  
+**Documentation Target:** [docs/literature-review/](docs/literature-review/)
 
 ## Phase 2: Data Acquisition & Preprocessing
 - [ ] ZuCo dataset acquisition and exploratory data analysis
@@ -26,11 +26,12 @@
 - [ ] Experimentation with RNN-Transducer vs. Transformer-Transducer architectures
 - [ ] Hyperparameter optimization and ablation studies
 
-## Phase 4: Cross-Lingual Generalization
-- [ ] Integration of Turkish morphological analyzer for agglutinative tokenization
-- [ ] Development of language-specific subword vocabularies (BPE/SentencePiece)
-- [ ] Implementation of multilingual decoder with shared encoder representations
-- [ ] Evaluation of zero-shot and few-shot transfer between English and Turkish
+## Phase 4: Advanced Model Features & Robustness
+- [ ] Implementation of advanced attention mechanisms (multi-head, self-attention variants)
+- [ ] Development of robust subword vocabularies using BPE/SentencePiece
+- [ ] Subject-independent generalization and cross-subject transfer learning
+- [ ] Handling of noisy EEG signals and artifact robustness
+- [ ] Integration of pre-trained language models for improved decoding
 
 ## Phase 5: Evaluation & Optimization
 - [ ] Benchmark evaluation using Word Error Rate (WER) and BLEU scores

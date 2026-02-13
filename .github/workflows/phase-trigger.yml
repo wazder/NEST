@@ -1,0 +1,80 @@
+name: Automated Phase Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: 'Phase to execute (1-6)'
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+          - '5'
+          - '6'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/phase-trigger.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  check-and-trigger:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check last merged PR
+        id: check_pr
+        run: |
+          # Get the last merged PR
+          LAST_PR=$(gh pr list --state merged --limit 1 --json title,headRefName --jq '.[0]')
+          echo "Last PR: $LAST_PR"
+          
+          # Extract phase number from PR title or branch name
+          if echo "$LAST_PR" | grep -q "Phase 1"; then
+            echo "next_phase=2" >> $GITHUB_OUTPUT
+          elif echo "$LAST_PR" | grep -q "Phase 2"; then
+            echo "next_phase=3" >> $GITHUB_OUTPUT
+          elif echo "$LAST_PR" | grep -q "Phase 3"; then
+            echo "next_phase=4" >> $GITHUB_OUTPUT
+          elif echo "$LAST_PR" | grep -q "Phase 4"; then
+            echo "next_phase=5" >> $GITHUB_OUTPUT
+          elif echo "$LAST_PR" | grep -q "Phase 5"; then
+            echo "next_phase=6" >> $GITHUB_OUTPUT
+          else
+            echo "next_phase=none" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Trigger next phase
+        if: steps.check_pr.outputs.next_phase != 'none'
+        run: |
+          gh workflow run phase-execution.yml -f phase=${{ steps.check_pr.outputs.next_phase }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  manual-trigger:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Trigger phase execution
+        uses: actions/checkout@v4
+
+      - name: Start phase workflow
+        run: |
+          gh workflow run phase-execution.yml -f phase=${{ github.event.inputs.phase }}
+        env:
+          GH_TOKEN: ${{ github.token }}
