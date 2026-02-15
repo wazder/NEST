@@ -1,0 +1,92 @@
+# Preprocessing Configuration for NEST
+
+# Dataset Configuration
+dataset:
+  name: zuco  # Dataset name (zuco, custom)
+  data_dir: data/raw/zuco  # Directory containing raw data
+  tasks:  # ZuCo tasks to process
+    - task1_SR  # Sentence Reading
+    # - task2_NR  # Normal Reading
+    # - task3_TSR  # Task-specific Reading
+
+# Signal Filtering Configuration
+filtering:
+  l_freq: 0.5  # High-pass filter cutoff (Hz)
+  h_freq: 50.0  # Low-pass filter cutoff (Hz)
+  notch_freq: 50.0  # Notch filter frequency for powerline noise (Hz)
+  sfreq: 500.0  # Sampling frequency (Hz)
+  method: fir  # Filter method (fir, iir)
+  apply_car: false  # Apply Common Average Reference
+
+# ICA Artifact Removal Configuration
+ica:
+  enabled: true  # Enable/disable ICA
+  n_components: 20  # Number of ICA components (null = use all channels)
+  method: fastica  # ICA algorithm (fastica, infomax, picard)
+  threshold: 3.0  # Z-score threshold for artifact detection
+  random_state: 42  # Random seed
+  max_iter: 200  # Maximum iterations
+
+# Electrode Selection Configuration
+electrode_selection:
+  enabled: true  # Enable/disable electrode selection
+  method: variance  # Selection method (variance, region, names, correlation, mutual_info)
+  n_channels: 32  # Number of channels to select
+  
+  # For 'region' method:
+  # region: frontal  # Options: frontal, central, temporal, parietal, occipital
+  
+  # For 'names' method:
+  # channel_names:
+  #   - Fp1
+  #   - Fp2
+  #   - F3
+  #   - ...
+
+# Data Augmentation Configuration
+augmentation:
+  enabled: true  # Enable/disable data augmentation
+  n_augmentations: 3  # Number of augmented samples per original
+  augmentation_prob: 0.5  # Probability of applying each augmentation
+  
+  # Gaussian noise
+  noise_level: 0.05  # Noise std as fraction of signal std
+  
+  # Amplitude scaling
+  scale_range: [0.9, 1.1]  # Range of scaling factors
+  
+  # Time shift
+  shift_range: [-50, 50]  # Range of shifts in samples
+  
+  # Time warping
+  warp_range: [0.95, 1.05]  # Range of warping factors
+
+# Data Splitting Configuration
+splitting:
+  method: subject_independent  # Split method (subject_independent, random, temporal)
+  train_ratio: 0.7  # Proportion for training
+  val_ratio: 0.15  # Proportion for validation
+  test_ratio: 0.15  # Proportion for testing
+  
+  # For random split:
+  # stratify: true  # Maintain class distribution
+  
+  # For cross-validation:
+  # use_cv: false
+  # n_folds: 5
+  # cv_method: kfold  # kfold, subject_kfold, loso
+
+# Output Configuration
+output:
+  processed_dir: data/processed  # Directory for processed data
+  save_intermediate: false  # Save intermediate processing steps
+  save_format: npy  # Format for saving (npy, hdf5)
+  
+# Logging Configuration
+logging:
+  level: INFO  # Logging level (DEBUG, INFO, WARNING, ERROR)
+  save_logs: true  # Save logs to file
+  log_dir: logs  # Directory for log files
+
+# Reproducibility
+random_state: 42  # Global random seed

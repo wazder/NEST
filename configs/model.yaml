@@ -1,0 +1,232 @@
+# NEST Model Configurations
+# Different variants of NEST architecture
+
+# RNN-Transducer Architecture
+nest_rnn_t:
+  model_name: "NEST_RNN_T"
+  
+  # Spatial CNN (EEG feature extraction)
+  spatial_cnn:
+    type: "EEGNet"  # Options: SpatialCNN, EEGNet, DeepConvNet
+    in_channels: 104  # Number of EEG electrodes (ZuCo)
+    out_channels: 128
+    kernel_size: 3
+    dropout: 0.5
+    
+  # Temporal Encoder (sequence encoding)
+  temporal_encoder:
+    type: "LSTM"  # Options: LSTM, GRU
+    input_size: 128  # Must match spatial_cnn.out_channels
+    hidden_size: 512
+    num_layers: 3
+    dropout: 0.3
+    bidirectional: true
+    
+  # Transducer Decoder (text generation)
+  decoder:
+    vocab_size: 1000  # Will be set from vocabulary
+    embedding_dim: 256
+    hidden_size: 512
+    num_layers: 2
+    dropout: 0.3
+    
+  # Joint Network (combines encoder and decoder)
+  joint:
+    encoder_dim: 1024  # hidden_size * 2 (bidirectional)
+    decoder_dim: 512
+    hidden_dim: 512
+    vocab_size: 1000
+    
+  # Training Configuration
+  training:
+    batch_size: 16
+    learning_rate: 0.0001
+    weight_decay: 0.00001
+    clip_grad_norm: 1.0
+    optimizer: "adamw"
+    scheduler: "cosine"
+    scheduler_params:
+      T_max: 100
+      eta_min: 0.000001
+    epochs: 100
+    early_stopping_patience: 10
+
+
+# Transformer-Transducer Architecture
+nest_transformer_t:
+  model_name: "NEST_Transformer_T"
+  
+  spatial_cnn:
+    type: "DeepConvNet"
+    in_channels: 104
+    out_channels: 128
+    num_filters: 64
+    kernel_size: 3
+    dropout: 0.5
+    
+  temporal_encoder:
+    type: "Transformer"
+    input_size: 128
+    d_model: 512
+    nhead: 8
+    num_layers: 6
+    dim_feedforward: 2048
+    dropout: 0.1
+    
+  decoder:
+    vocab_size: 1000
+    embedding_dim: 256
+    hidden_size: 512
+    num_layers: 2
+    dropout: 0.3
+    
+  joint:
+    encoder_dim: 512
+    decoder_dim: 512
+    hidden_dim: 512
+    vocab_size: 1000
+    
+  training:
+    batch_size: 12
+    learning_rate: 0.0001
+    weight_decay: 0.00001
+    clip_grad_norm: 1.0
+    optimizer: "adamw"
+    scheduler: "cosine"
+    scheduler_params:
+      T_max: 100
+      eta_min: 0.000001
+    epochs: 100
+    early_stopping_patience: 10
+
+
+# Attention-based Seq2Seq Architecture
+nest_attention:
+  model_name: "NEST_Attention"
+  
+  spatial_cnn:
+    type: "EEGNet"
+    in_channels: 104
+    out_channels: 128
+    kernel_size: 3
+    dropout: 0.5
+    
+  temporal_encoder:
+    type: "GRU"
+    input_size: 128
+    hidden_size: 512
+    num_layers: 3
+    dropout: 0.3
+    bidirectional: true
+    
+  attention:
+    type: "CrossAttention"  # Options: CrossAttention, AdditiveAttention, LocationAwareAttention
+    encoder_dim: 1024  # hidden_size * 2
+    decoder_dim: 512
+    hidden_dim: 512
+    
+  decoder:
+    vocab_size: 1000
+    embedding_dim: 256
+    hidden_size: 512
+    encoder_dim: 1024
+    dropout: 0.3
+    
+  training:
+    batch_size: 16
+    learning_rate: 0.0001
+    weight_decay: 0.00001
+    clip_grad_norm: 1.0
+    optimizer: "adamw"
+    scheduler: "step"
+    scheduler_params:
+      step_size: 20
+      gamma: 0.5
+    epochs: 100
+    early_stopping_patience: 10
+
+
+# CTC-based Architecture (simplest)
+nest_ctc:
+  model_name: "NEST_CTC"
+  
+  spatial_cnn:
+    type: "EEGNet"
+    in_channels: 104
+    out_channels: 128
+    kernel_size: 3
+    dropout: 0.5
+    
+  temporal_encoder:
+    type: "LSTM"
+    input_size: 128
+    hidden_size: 512
+    num_layers: 3
+    dropout: 0.3
+    bidirectional: true
+    
+  decoder:
+    input_size: 1024  # hidden_size * 2
+    vocab_size: 1000
+    
+  training:
+    batch_size: 20
+    learning_rate: 0.0003
+    weight_decay: 0.00001
+    clip_grad_norm: 1.0
+    optimizer: "adam"
+    scheduler: "plateau"
+    scheduler_params:
+      factor: 0.5
+      patience: 5
+    epochs: 100
+    early_stopping_patience: 15
+
+
+# Conformer-based Architecture (advanced)
+nest_conformer:
+  model_name: "NEST_Conformer"
+  
+  spatial_cnn:
+    type: "DeepConvNet"
+    in_channels: 104
+    out_channels: 128
+    num_filters: 64
+    kernel_size: 3
+    dropout: 0.5
+    
+  temporal_encoder:
+    type: "Conformer"
+    input_size: 128
+    d_model: 512
+    nhead: 8
+    num_layers: 6
+    dim_feedforward: 2048
+    conv_kernel_size: 31
+    dropout: 0.1
+    
+  decoder:
+    vocab_size: 1000
+    embedding_dim: 256
+    hidden_size: 512
+    num_layers: 2
+    dropout: 0.3
+    
+  joint:
+    encoder_dim: 512
+    decoder_dim: 512
+    hidden_dim: 512
+    vocab_size: 1000
+    
+  training:
+    batch_size: 8
+    learning_rate: 0.00005
+    weight_decay: 0.00001
+    clip_grad_norm: 1.0
+    optimizer: "adamw"
+    scheduler: "cosine"
+    scheduler_params:
+      T_max: 100
+      eta_min: 0.000001
+    epochs: 150
+    early_stopping_patience: 15
