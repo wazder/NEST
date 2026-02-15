@@ -23,13 +23,24 @@ seaborn>=0.11.0
 tqdm>=4.62.0
 pyyaml>=6.0
 omegaconf>=2.3.0
+python-Levenshtein>=0.21.0
+sentencepiece>=0.1.99
 
-# Development
+# Development & Testing
 pytest>=7.0.0
-pytest-cov>=3.0.0
+pytest-cov>=4.0.0
+pytest-xdist>=3.0.0
+pytest-timeout>=2.1.0
+pytest-benchmark>=4.0.0
 black>=22.0.0
 flake8>=4.0.0
 isort>=5.10.0
+mypy>=1.0.0
+radon>=5.1.0
+pylint>=2.17.0
+safety>=2.3.0
+bandit>=1.7.0
+coverage>=7.0.0
 
 # Experiment Tracking
 tensorboard>=2.13.0

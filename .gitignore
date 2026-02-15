@@ -205,3 +205,73 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# NEST Project Specific
+
+# Virtual environments
+.venv-1/
+.venv-*/
+
+# Data directories (large datasets)
+data/raw/
+data/processed/
+ZuCo_Dataset/
+*.mat
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Model files and checkpoints
+*.pth
+*.pt
+*.ckpt
+checkpoints/
+outputs/
+runs/
+wandb/
+results/
+
+# Logs
+logs/
+*.log
+
+# Project tracking
+.phase-work/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Large compressed files
+*.zip
+*.tar.gz
+*.tar
+*.bz2
+*.gz
+
+# Generated documentation
+docs/_build/
+site/
+
+# IDE
+.vscode/settings.json
+.vscode/.ropeproject
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook outputs (keep structure, ignore outputs)
+*.ipynb_checkpoints/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
