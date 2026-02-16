@@ -72,8 +72,8 @@ class ZuCoRealDataset(Dataset):
         self.quick_test = quick_test
         
         # For quick test, use only first file with minimal samples
-        files_to_load = mat_files[:1] if quick_test else mat_files[:3]
-        max_per_file = 50 if quick_test else 500
+        files_to_load = mat_files[:1] if quick_test else mat_files  # Use ALL files
+        max_per_file = 50 if quick_test else None  # No limit for full training
         
         print(f"Loading data from {len(files_to_load)} files...")
         
@@ -231,16 +231,23 @@ def create_simple_model(input_channels=105, hidden_size=256, num_classes=28):
     return SimpleLSTMDecoder(input_channels, hidden_size, num_classes)
 
 
-def train_model(model, train_loader, device, epochs=10, model_name="model"):
-    """Train a model."""
+def train_model(model, train_loader, device, epochs=10, model_name="model", accumulation_steps=2):
+    """Train a model with gradient accumulation for better GPU utilization."""
     
     model = model.to(device)
     criterion = nn.CTCLoss(blank=0, zero_infinity=True)
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.01)
     
+    # Disable mixed precision for now (CTC on CPU causes issues with MPS)
+    use_amp = False  # str(device) == 'mps'
+    scaler = torch.amp.GradScaler('cpu') if use_amp else None  # MPS uses CPU scaler for now
+    
     print(f"\n{'='*80}")
     print(f"Training: {model_name}")
     print(f"{'='*80}")
+    print(f"🚀 M2 GPU optimization enabled")
+    print(f"📊 Effective batch size: {len(train_loader.dataset) // len(train_loader)} × {accumulation_steps} = {(len(train_loader.dataset) // len(train_loader)) * accumulation_steps}")
+    print()
     
     losses = []
     
@@ -250,46 +257,64 @@ def train_model(model, train_loader, device, epochs=10, model_name="model"):
         
         pbar = tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}")
         
-        for batch in pbar:
+        optimizer.zero_grad()  # Initialize gradients
+        
+        for batch_idx, batch in enumerate(pbar):
             eeg = batch['eeg'].to(device)
             target = batch['target'].to(device)
             target_lengths = batch['target_length'].to(device)
             
             # Forward pass
-            optimizer.zero_grad()
             output = model(eeg)  # (batch, time, num_classes)
             
             # CTC loss expects (time, batch, num_classes)
             output = output.permute(1, 0, 2)
             output = torch.log_softmax(output, dim=2)
             
-            # Input lengths (after pooling: time/4)
+            # Input lengths (after pooling: time/4) - keep on CPU for CTC
             input_lengths = torch.full((output.size(1),), output.size(0), dtype=torch.long)
             
-            # Filter out empty targets
-            valid_indices = target_lengths > 0
+            # Filter out empty targets - move to CPU for indexing
+            valid_indices = (target_lengths > 0).cpu()
             if valid_indices.sum() == 0:
                 continue
                 
             output = output[:, valid_indices, :]
             target = target[valid_indices]
-            target_lengths = target_lengths[valid_indices]
+            target_lengths = target_lengths[valid_indices].cpu()  # CTC expects CPU tensors
             input_lengths = input_lengths[valid_indices]
             
-            # Compute loss
+            # Compute loss (CTC works on CPU tensors for indices)
+            # Compute loss (CTC works on CPU tensors for indices)
             try:
-                loss = criterion(output, target, input_lengths, target_lengths)
+                loss = criterion(output.cpu(), target.cpu(), input_lengths, target_lengths)
                 
                 if torch.isnan(loss) or torch.isinf(loss):
                     continue
+                
+                # Move loss back to device for backward
+                loss = loss.to(device)
                     
             except Exception:
                 continue
             
-            # Backward pass
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            optimizer.step()
+            # Backward pass with gradient accumulation
+            if scaler:
+                scaler.scale(loss).backward()
+            else:
+                loss.backward()
+            
+            # Only update weights every accumulation_steps
+            if (batch_idx + 1) % accumulation_steps == 0:
+                if scaler:
+                    scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                if scaler:
+                    scaler.step(optimizer)
+                    scaler.update()
+                else:
+                    optimizer.step()
+                optimizer.zero_grad()
             
             epoch_loss += loss.item()
             pbar.set_postfix({'loss': f'{loss.item():.4f}'})
@@ -308,9 +333,11 @@ def main():
                        choices=['all', 'conformer', 'transformer', 'rnn_t', 'ctc'],
                        help='Which model to train')
     parser.add_argument('--epochs', type=int, default=100, help='Number of epochs')
-    parser.add_argument('--batch-size', type=int, default=16, help='Batch size')
+    parser.add_argument('--batch-size', type=int, default=32, help='Batch size (32 for M2 Air)')
     parser.add_argument('--quick-test', action='store_true', 
                        help='Quick test with minimal data and epochs')
+    parser.add_argument('--accumulation-steps', type=int, default=2,
+                       help='Gradient accumulation (effective batch = batch × accumulation)')
     args = parser.parse_args()
     
     # Quick test settings
@@ -323,9 +350,17 @@ def main():
         args.epochs = 10
         args.model = 'simple'
     
-    # Setup device
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"Using device: {device}")
+    # Setup device - M2 Air optimization
+    if torch.backends.mps.is_available():
+        device = torch.device('mps')  # M2 GPU acceleration
+        print("🚀 Using M2 GPU (MPS) - Training will be MUCH faster!")
+    elif torch.cuda.is_available():
+        device = torch.device('cuda')
+        print("Using CUDA GPU")
+    else:
+        device = torch.device('cpu')
+        print("⚠️  Using CPU - Training will be slow")
+    print(f"Device: {device}")
     print()
     
     # Create output directory
@@ -346,12 +381,13 @@ def main():
         quick_test=args.quick_test
     )
     
-    # Create data loader
+    # Create data loader - optimized for M2 Air
     train_loader = DataLoader(
         dataset,
         batch_size=args.batch_size,
         shuffle=True,
-        num_workers=0,  # Use 0 for macOS compatibility
+        num_workers=0,  # macOS: 0 is more stable (multiprocessing issues)
+        pin_memory=False,  # MPS doesn't support pin_memory yet
         collate_fn=dataset.collate_fn
     )
     
@@ -369,7 +405,8 @@ def main():
         train_loader, 
         device, 
         epochs=args.epochs,
-        model_name="NEST-LSTM"
+        model_name="NEST-LSTM",
+        accumulation_steps=args.accumulation_steps
     )
     elapsed = time.time() - start_time
     
