@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NEST Documentation - Installation, Quick Start, API Reference">
+  <title>Documentation - NEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">NEST</a>
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+        <a href="docs.html" class="nav-link active">Docs</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="research.html" class="nav-link">Research</a>
+        <a href="download.html" class="nav-link">Download</a>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 10px 16px; border-radius: 8px; width: 240px;">
+        <span style="color: #6B6B80;">🔍</span>
+        <input type="text" placeholder="Search docs..." style="background: transparent; border: none; color: white; outline: none; width: 100%; font-size: 14px;">
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <!-- Sidebar -->
+    <aside class="docs-sidebar">
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Getting Started</div>
+        <ul class="docs-sidebar-links">
+          <li><a href="#introduction" class="active">Introduction</a></li>
+          <li><a href="#installation">Installation</a></li>
+          <li><a href="#quickstart">Quick Start</a></li>
+          <li><a href="#configuration">Configuration</a></li>
+        </ul>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">API Reference</div>
+        <ul class="docs-sidebar-links">
+          <li><a href="#models">Models</a></li>
+          <li><a href="#data-processing">Data Processing</a></li>
+          <li><a href="#training">Training</a></li>
+          <li><a href="#evaluation">Evaluation</a></li>
+        </ul>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Guides</div>
+        <ul class="docs-sidebar-links">
+          <li><a href="#training-guide">Training Guide</a></li>
+          <li><a href="#fine-tuning">Fine-tuning</a></li>
+          <li><a href="#deployment">Deployment</a></li>
+        </ul>
+      </div>
+      <div class="docs-sidebar-section">
+        <div class="docs-sidebar-title">Examples</div>
+        <ul class="docs-sidebar-links">
+          <li><a href="#basic-usage">Basic Usage</a></li>
+          <li><a href="#custom-dataset">Custom Dataset</a></li>
+          <li><a href="#realtime-demo">Real-time Demo</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="docs-content">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B6B80; margin-bottom: 16px;">
+        <a href="docs.html" style="color: #6B6B80;">Docs</a>
+        <span>›</span>
+        <a href="#" style="color: #8B5CF6;">Introduction</a>
+      </div>
+
+      <h1 id="introduction">Introduction</h1>
+      
+      <p>Welcome to NEST - the Neural EEG Sequence Transducer framework for decoding brain signals into natural language.</p>
+
+      <h2 id="what-is-nest">What is NEST?</h2>
+      
+      <p>NEST (Neural EEG Sequence Transducer) is an open-source deep learning framework designed to decode EEG brain signals encoding eye-related brain activity (EEG) into natural language text. Built on PyTorch, NEST provides researchers and developers with powerful tools to train, evaluate, and deploy EEG-to-text models.</p>
+
+      <h2>Key Features</h2>
+      
+      <ul>
+        <li>State-of-the-art transformer architecture optimized for EEG signals</li>
+        <li>Pre-trained models on ZuCo dataset with 73.9% accuracy</li>
+        <li>Real-time inference capability with GPU acceleration</li>
+        <li>Extensive documentation and example notebooks</li>
+      </ul>
+
+      <h2 id="quickstart">Quick Start</h2>
+      
+      <p>Install NEST using pip:</p>
+      
+      <pre><code>pip install nest-eeg</code></pre>
+      
+      <p>Basic usage example:</p>
+      
+      <pre><code><span style="color: #6B6B80;"># python</span>
+from nest import NESTModel, load_pretrained
+
+<span style="color: #6B6B80;"># Load pre-trained model</span>
+model = NESTModel.from_pretrained("nest-base")
+
+<span style="color: #6B6B80;"># Decode EEG signals</span>
+eeg = NEST.decode(eeg_signals)
+predictions = model.predict("The brain thinks in ...")
+</code></pre>
+
+      <h2 id="installation">Installation</h2>
+      
+      <p>NEST can be installed via pip or from source:</p>
+      
+      <pre><code><span style="color: #6B6B80;"># Install via pip</span>
+pip install nest-eeg
+
+<span style="color: #6B6B80;"># Or install from source</span>
+git clone https://github.com/wazder/NEST.git
+cd NEST
+pip install -e .</code></pre>
+
+      <h3>Requirements</h3>
+      
+      <ul>
+        <li>Python 3.8+</li>
+        <li>PyTorch 2.0+</li>
+        <li>CUDA 11.8+ (for GPU acceleration)</li>
+        <li>8GB+ GPU memory recommended</li>
+      </ul>
+
+      <h2 id="configuration">Configuration</h2>
+      
+      <p>NEST uses YAML configuration files for model and training settings:</p>
+      
+      <pre><code><span style="color: #6B6B80;"># configs/model.yaml</span>
+model:
+  type: nest
+  encoder:
+    hidden_size: 512
+    num_layers: 6
+    num_heads: 8
+  decoder:
+    hidden_size: 512
+    num_layers: 6
+    vocab_size: 50000
+
+training:
+  batch_size: 32
+  learning_rate: 1e-4
+  epochs: 100</code></pre>
+
+      <h2 id="models">Models API</h2>
+      
+      <p>The core model classes:</p>
+      
+      <pre><code>from nest.models import NESTModel, NESTEncoder, NESTDecoder
+
+<span style="color: #6B6B80;"># Create model from config</span>
+model = NESTModel.from_config("configs/model.yaml")
+
+<span style="color: #6B6B80;"># Or load pre-trained</span>
+model = NESTModel.from_pretrained("nest-base")</code></pre>
+
+      <h2 id="training">Training</h2>
+      
+      <p>Train your own model:</p>
+      
+      <pre><code>from nest import Trainer, DataModule
+
+<span style="color: #6B6B80;"># Setup data</span>
+data = DataModule("path/to/zuco")
+
+<span style="color: #6B6B80;"># Create trainer</span>
+trainer = Trainer(
+    model=model,
+    data=data,
+    config="configs/training.yaml"
+)
+
+<span style="color: #6B6B80;"># Start training</span>
+trainer.fit()</code></pre>
+
+      <!-- Navigation -->
+      <div class="docs-nav-buttons">
+        <a href="#" class="docs-nav-btn">
+          <span class="docs-nav-btn-label">← Previous</span>
+          <span class="docs-nav-btn-title">Introduction</span>
+        </a>
+        <a href="#installation" class="docs-nav-btn" style="text-align: right;">
+          <span class="docs-nav-btn-label">Next →</span>
+          <span class="docs-nav-btn-title">Installation</span>
+        </a>
+      </div>
+
+      <!-- Footer -->
+      <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+        <p style="font-size: 14px; color: #6B6B80;">© 2026 NEST Project • MIT License</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

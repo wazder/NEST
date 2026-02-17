@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About NEST - How brain-to-text decoding works">
+  <title>About - NEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">NEST</a>
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="about.html" class="nav-link active">About</a>
+        <a href="research.html" class="nav-link">Research</a>
+        <a href="download.html" class="nav-link">Download</a>
+      </nav>
+      <a href="docs.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="section" style="padding-top: 140px;">
+      <div class="text-center">
+        <div style="display: inline-block; background: rgba(139, 92, 246, 0.1); padding: 6px 16px; border-radius: 16px; margin-bottom: 24px;">
+          <span style="color: #8B5CF6; font-size: 14px; font-weight: 500;">BRAIN-COMPUTER INTERFACE</span>
+        </div>
+        <h1 style="font-size: 56px; margin-bottom: 24px;">From Brain to Text</h1>
+        <p class="hero-subtitle" style="margin: 0 auto;">
+          NEST uses a transformer-based architecture to decode EEG signals<br>
+          into natural language. Here's an end-to-end overview of our pipeline.
+        </p>
+      </div>
+    </section>
+
+    <!-- Architecture Overview -->
+    <section class="section section-alt">
+      <div class="text-center" style="margin-bottom: 48px;">
+        <h2>Architecture Overview</h2>
+        <p style="color: #A0A0B0; margin-top: 16px;">The complete NEST pipeline in 4 steps</p>
+      </div>
+      
+      <div class="steps-container" style="max-width: 1200px; margin: 0 auto;">
+        <div class="step-card" style="width: 240px;">
+          <div class="step-icon">📡</div>
+          <h5 class="step-title">EEG Input</h5>
+          <p class="step-desc">105-channel EEG signals captured during reading tasks</p>
+        </div>
+        <span class="step-arrow">→</span>
+        <div class="step-card" style="width: 240px;">
+          <div class="step-icon">🔧</div>
+          <h5 class="step-title">Preprocessing</h5>
+          <p class="step-desc">Filtering, normalization, and feature extraction</p>
+        </div>
+        <span class="step-arrow">→</span>
+        <div class="step-card" style="width: 240px;">
+          <div class="step-icon">🧠</div>
+          <h5 class="step-title">Transformer</h5>
+          <p class="step-desc">Encoder-decoder attention for sequence modeling</p>
+        </div>
+        <span class="step-arrow">→</span>
+        <div class="step-card" style="width: 240px;">
+          <div class="step-icon">📝</div>
+          <h5 class="step-title">Text Output</h5>
+          <p class="step-desc">Natural language text decoded from brain signals</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Model Architecture -->
+    <section class="section">
+      <div class="text-center" style="margin-bottom: 48px;">
+        <h2>Model Architecture</h2>
+      </div>
+      
+      <div class="features-grid" style="max-width: 1000px;">
+        <div class="feature-card">
+          <div class="feature-icon">🔷</div>
+          <h5 class="feature-title">EEG Encoder</h5>
+          <p class="feature-desc">
+            <strong>6 Transformer Layers</strong><br>
+            512 hidden dimensions, 8 attention heads. Processes raw EEG signals into latent representations.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔶</div>
+          <h5 class="feature-title">Cross-Attention</h5>
+          <p class="feature-desc">
+            <strong>8 Attention Heads</strong><br>
+            Learns alignment between EEG features and text tokens for accurate decoding.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🟢</div>
+          <h5 class="feature-title">Text Decoder</h5>
+          <p class="feature-desc">
+            <strong>6 Transformer Layers</strong><br>
+            50K vocabulary, autoregressive generation of natural language output.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Training Details -->
+    <section class="section section-alt">
+      <div class="text-center" style="margin-bottom: 48px;">
+        <h2>Training Details</h2>
+      </div>
+      
+      <div class="features-grid" style="max-width: 800px; grid-template-columns: repeat(2, 1fr);">
+        <div class="feature-card" style="text-align: center;">
+          <div style="font-size: 36px; font-family: var(--font-mono); color: #8B5CF6; margin-bottom: 8px;">12,071</div>
+          <div style="font-size: 14px; color: #A0A0B0;">Training Samples</div>
+        </div>
+        <div class="feature-card" style="text-align: center;">
+          <div style="font-size: 36px; font-family: var(--font-mono); color: #6366F1; margin-bottom: 8px;">100</div>
+          <div style="font-size: 14px; color: #A0A0B0;">Epochs</div>
+        </div>
+        <div class="feature-card" style="text-align: center;">
+          <div style="font-size: 36px; font-family: var(--font-mono); color: #A855F7; margin-bottom: 8px;">5.4h</div>
+          <div style="font-size: 14px; color: #A0A0B0;">Training Time</div>
+        </div>
+        <div class="feature-card" style="text-align: center;">
+          <div style="font-size: 36px; font-family: var(--font-mono); color: #10B981; margin-bottom: 8px;">32</div>
+          <div style="font-size: 14px; color: #A0A0B0;">Batch Size</div>
+        </div>
+      </div>
+      
+      <div style="max-width: 600px; margin: 48px auto 0; background: rgba(139, 92, 246, 0.1); border-radius: 16px; padding: 24px 32px; display: flex; align-items: center; gap: 16px;">
+        <div style="font-size: 32px;">📊</div>
+        <div>
+          <div style="font-weight: 600; color: white; margin-bottom: 4px;">ZuCo Dataset</div>
+          <div style="font-size: 14px; color: #A0A0B0;">12 subjects reading natural text with simultaneous EEG recording</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section text-center">
+      <h2>Ready to explore?</h2>
+      <div class="hero-buttons" style="margin-top: 32px;">
+        <a href="demo.html" class="btn btn-primary btn-lg">Try Demo</a>
+        <a href="research.html" class="btn btn-secondary btn-lg">Read Paper</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <p class="footer-copyright">© 2026 NEST Project • MIT License</p>
+        <div class="footer-social">
+          <a href="https://github.com/wazder/NEST" target="_blank" aria-label="GitHub">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
