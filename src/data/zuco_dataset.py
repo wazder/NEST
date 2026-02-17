@@ -222,3 +222,118 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+import torch
+from torch.utils.data import Dataset
+
+class ZuCoTorchDataset(Dataset):
+    """
+    PyTorch Dataset for ZuCo data.
+    
+    Implements lazy loading and proper preprocessing integration.
+    """
+    
+    def __init__(
+        self, 
+        root_dir: str, 
+        task: str = "task1_SR", 
+        transform: Optional[Callable] = None,
+        max_samples: Optional[int] = None
+    ):
+        """
+        Initialize dataset.
+        
+        Args:
+            root_dir: Root directory containing task folders
+            task: Task name (e.g., 'task1_SR')
+            transform: Optional transform to apply to samples
+            max_samples: Limit number of samples (for testing)
+        """
+        self.root_dir = Path(root_dir)
+        self.task = task
+        self.transform = transform
+        
+        # Get list of files
+        self.files = list((self.root_dir / task / "Matlab_files").glob("*.mat"))
+        
+        if not self.files:
+            # Try alternative path structure
+            self.files = list((self.root_dir / task).glob("*.mat"))
+            
+        if not self.files:
+            logger.warning(f"No .mat files found in {self.root_dir}/{task}")
+            
+        if max_samples:
+            self.files = self.files[:max_samples]
+            
+        # Build index of (file_idx, sentence_idx) to allow random access
+        # minimal loading to get counts
+        self.indices = []
+        self._build_index()
+        
+    def _build_index(self):
+        """Build index of all samples without loading full data."""
+        logger.info(f"Indexing {len(self.files)} files...")
+        for file_idx, fpath in enumerate(self.files):
+            try:
+                # Load only headers/structure if possible, 
+                # but scipy.io.loadmat loads everything. 
+                # For optimization, we might cache this index.
+                # For now, we load and count.
+                mat = scipy.io.loadmat(str(fpath), variable_names=['sentenceData'], simplify_cells=True)
+                if 'sentenceData' in mat:
+                    data = mat['sentenceData']
+                    count = len(data) if isinstance(data, (list, np.ndarray)) else 1
+                    for i in range(count):
+                        self.indices.append((file_idx, i))
+            except Exception as e:
+                logger.warning(f"Failed to index {fpath.name}: {e}")
+                
+        logger.info(f"Indexed {len(self.indices)} total samples")
+
+    def __len__(self):
+        return len(self.indices)
+        
+    def __getitem__(self, idx):
+        file_idx, sample_idx = self.indices[idx]
+        fpath = self.files[file_idx]
+        
+        # Load specific file
+        try:
+            mat = scipy.io.loadmat(str(fpath), simplify_cells=True)
+            sent_data = mat['sentenceData']
+            
+            # Handle different structures
+            if isinstance(sent_data, dict):
+                 sample = sent_data
+            else:
+                 sample = sent_data[sample_idx]
+                 
+            # Extract content
+            eeg = sample['rawData']
+            text = sample['content']
+            
+            # Basic validation
+            if eeg is None or not isinstance(eeg, np.ndarray):
+                raise ValueError("Invalid EEG data")
+                
+            # Convert to float32
+            eeg = eeg.astype(np.float32)
+            
+            data_dict = {
+                'eeg': eeg, 
+                'text': text,
+                'file': fpath.name
+            }
+            
+            if self.transform:
+                data_dict = self.transform(data_dict)
+                
+            return data_dict
+            
+        except Exception as e:
+            # Return None or handle error
+            logger.error(f"Error loading sample {idx}: {e}")
+            raise e
+
