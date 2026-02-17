@@ -12,7 +12,7 @@ References:
 import os
 import logging
 from pathlib import Path
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Any
 from urllib.request import urlretrieve
 import zipfile
 import scipy.io
@@ -171,7 +171,7 @@ class ZuCoDataset:
         df = pd.DataFrame(exploration_data)
         return df
         
-    def get_dataset_info(self) -> Dict[str, any]:
+    def get_dataset_info(self) -> Dict[str, Any]:
         """
         Get information about downloaded datasets.
         

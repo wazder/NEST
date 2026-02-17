@@ -12,7 +12,7 @@ if not data_dir.exists():
     data_dir = Path("ZuCo_Dataset/ZuCo")
 
 mat_files = []
-for task in ["task1-SR", "task2-NR", "task3-TSR"]:
+for task in ["task1_SR", "task2_NR", "task3_TSR"]:
     task_dir = data_dir / task / "Matlab_files"
     if task_dir.exists():
         mat_files.extend(list(task_dir.glob("*.mat")))
