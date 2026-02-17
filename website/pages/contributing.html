@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contributing to NEST Project">
+  <title>Contributing - NEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">NEST</a>
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="research.html" class="nav-link">Research</a>
+        <a href="download.html" class="nav-link">Download</a>
+      </nav>
+      <a href="docs.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="section" style="padding-top: 140px;">
+      <div class="text-center">
+        <div style="display: inline-block; background: rgba(139, 92, 246, 0.1); padding: 6px 16px; border-radius: 16px; margin-bottom: 24px;">
+          <span style="color: #8B5CF6; font-size: 14px; font-weight: 500;">OPEN SOURCE</span>
+        </div>
+        <h1 style="font-size: 56px; margin-bottom: 24px;">Contributing to NEST</h1>
+        <p class="hero-subtitle" style="margin: 0 auto;">
+          Join our community and help advance brain-computer interfaces
+        </p>
+      </div>
+    </section>
+
+    <!-- Ways to Contribute -->
+    <section class="section section-alt">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h2>Ways to Contribute</h2>
+      </div>
+      
+      <div class="features-grid" style="max-width: 1000px;">
+        <div class="feature-card">
+          <div class="feature-icon">🐛</div>
+          <h5 class="feature-title">Bug Reports</h5>
+          <p class="feature-desc">Found a bug? Report it on GitHub Issues with reproduction steps and environment details.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✨</div>
+          <h5 class="feature-title">Feature Requests</h5>
+          <p class="feature-desc">Have an idea? Open a discussion to propose new features or improvements.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💻</div>
+          <h5 class="feature-title">Code Contributions</h5>
+          <p class="feature-desc">Submit pull requests for bug fixes, features, or documentation improvements.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📖</div>
+          <h5 class="feature-title">Documentation</h5>
+          <p class="feature-desc">Improve docs, write tutorials, or translate documentation to other languages.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧪</div>
+          <h5 class="feature-title">Testing</h5>
+          <p class="feature-desc">Help test new releases and provide feedback on experimental features.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎓</div>
+          <h5 class="feature-title">Research</h5>
+          <p class="feature-desc">Collaborate on research, share datasets, or propose new model architectures.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Development Setup -->
+    <section class="section">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h2>Development Setup</h2>
+      </div>
+      
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div class="download-code" style="background: var(--bg-card); border-radius: 12px; padding: 24px;">
+          <pre style="color: #A0A0B0; font-family: var(--font-mono); font-size: 14px; line-height: 1.8; margin: 0; overflow-x: auto;"><span style="color: #6B6B80;"># 1. Fork and clone the repository</span>
+<span style="color: #22C55E;">git clone</span> https://github.com/YOUR_USERNAME/NEST.git
+<span style="color: #22C55E;">cd</span> NEST
+
+<span style="color: #6B6B80;"># 2. Create virtual environment</span>
+<span style="color: #22C55E;">python -m venv</span> venv
+<span style="color: #22C55E;">source</span> venv/bin/activate
+
+<span style="color: #6B6B80;"># 3. Install development dependencies</span>
+<span style="color: #22C55E;">pip install</span> -r requirements-dev.txt
+<span style="color: #22C55E;">pip install</span> -e .
+
+<span style="color: #6B6B80;"># 4. Run tests</span>
+<span style="color: #22C55E;">pytest</span> tests/
+
+<span style="color: #6B6B80;"># 5. Create a branch for your changes</span>
+<span style="color: #22C55E;">git checkout</span> -b feature/your-feature-name</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Code Style -->
+    <section class="section section-alt">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h2>Code Style Guidelines</h2>
+      </div>
+      
+      <div style="max-width: 800px; margin: 0 auto; display: grid; gap: 16px;">
+        <div style="display: flex; align-items: flex-start; gap: 16px; background: var(--bg-card); padding: 20px; border-radius: 12px;">
+          <span style="font-size: 24px;">📝</span>
+          <div>
+            <h5 style="color: white; margin-bottom: 8px;">Follow PEP 8</h5>
+            <p style="color: #A0A0B0; font-size: 14px;">Use Black formatter and flake8 linter. Run <code style="background: var(--bg-primary); padding: 2px 6px; border-radius: 4px;">make format</code> before committing.</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 16px; background: var(--bg-card); padding: 20px; border-radius: 12px;">
+          <span style="font-size: 24px;">🏷️</span>
+          <div>
+            <h5 style="color: white; margin-bottom: 8px;">Type Hints</h5>
+            <p style="color: #A0A0B0; font-size: 14px;">Add type hints to all function signatures. Use mypy for type checking.</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 16px; background: var(--bg-card); padding: 20px; border-radius: 12px;">
+          <span style="font-size: 24px;">📚</span>
+          <div>
+            <h5 style="color: white; margin-bottom: 8px;">Docstrings</h5>
+            <p style="color: #A0A0B0; font-size: 14px;">Use Google-style docstrings for all public functions and classes.</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 16px; background: var(--bg-card); padding: 20px; border-radius: 12px;">
+          <span style="font-size: 24px;">✅</span>
+          <div>
+            <h5 style="color: white; margin-bottom: 8px;">Tests Required</h5>
+            <p style="color: #A0A0B0; font-size: 14px;">All new features must include unit tests. Maintain >80% test coverage.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pull Request Process -->
+    <section class="section">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h2>Pull Request Process</h2>
+      </div>
+      
+      <div class="steps" style="max-width: 800px; margin: 0 auto;">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Create an Issue</h3>
+            <p class="step-desc">Discuss the change you want to make before starting work.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Make Your Changes</h3>
+            <p class="step-desc">Implement your feature or fix with tests and documentation.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Submit PR</h3>
+            <p class="step-desc">Open a pull request with a clear description of changes.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number" style="background: #22C55E;">4</div>
+          <div class="step-content">
+            <h3 class="step-title">Review & Merge</h3>
+            <p class="step-desc">Address feedback, pass CI checks, and get merged!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community -->
+    <section class="section section-alt">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h2>Join the Community</h2>
+        <p style="color: #A0A0B0; margin-top: 16px;">Connect with other contributors and researchers</p>
+      </div>
+      
+      <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+        <a href="https://github.com/wazder/NEST/discussions" target="_blank" class="btn btn-secondary btn-lg" style="gap: 8px;">
+          <span>💬</span> GitHub Discussions
+        </a>
+        <a href="https://github.com/wazder/NEST/issues" target="_blank" class="btn btn-secondary btn-lg" style="gap: 8px;">
+          <span>🐛</span> Issue Tracker
+        </a>
+      </div>
+    </section>
+
+    <!-- Code of Conduct -->
+    <section class="section text-center">
+      <div style="max-width: 600px; margin: 0 auto; background: var(--bg-card); padding: 32px; border-radius: 16px;">
+        <h3 style="margin-bottom: 16px;">Code of Conduct</h3>
+        <p style="color: #A0A0B0; font-size: 14px; line-height: 1.7;">
+          We are committed to providing a welcoming and inclusive environment for all contributors. 
+          Please read our <a href="https://github.com/wazder/NEST/blob/main/CODE_OF_CONDUCT.md" style="color: #8B5CF6;">Code of Conduct</a> 
+          before participating.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <p class="footer-copyright">© 2026 NEST Project • MIT License</p>
+        <div class="footer-social">
+          <a href="https://github.com/wazder/NEST" target="_blank" aria-label="GitHub">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

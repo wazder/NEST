@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Download NEST - Pre-trained models and installation">
+  <title>Download - NEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">NEST</a>
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="demo.html" class="nav-link">Demo</a>
+        <a href="docs.html" class="nav-link">Docs</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="research.html" class="nav-link">Research</a>
+        <a href="download.html" class="nav-link active">Download</a>
+      </nav>
+      <a href="docs.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="section" style="padding-top: 140px;">
+      <div class="text-center">
+        <div style="display: inline-block; background: rgba(16, 185, 129, 0.1); padding: 6px 16px; border-radius: 16px; margin-bottom: 24px;">
+          <span style="color: #10B981; font-size: 14px; font-weight: 500;">OPEN SOURCE</span>
+        </div>
+        <h1 style="font-size: 56px; margin-bottom: 24px;">Download NEST</h1>
+        <p class="hero-subtitle" style="margin: 0 auto;">
+          Get started with pre-trained models and install via pip or download source code
+        </p>
+      </div>
+    </section>
+
+    <!-- Installation -->
+    <section class="section section-alt">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h2>Installation</h2>
+      </div>
+      
+      <div class="features-grid" style="max-width: 900px; grid-template-columns: repeat(2, 1fr);">
+        <div class="feature-card">
+          <div class="feature-icon">📦</div>
+          <h5 class="feature-title">Install via pip</h5>
+          <p class="feature-desc" style="margin-bottom: 16px;">Recommended for most users</p>
+          <div style="background: var(--bg-primary); border-radius: 8px; padding: 16px;">
+            <code style="font-family: var(--font-mono); color: #10B981;">pip install nest-eeg</code>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💻</div>
+          <h5 class="feature-title">Install from source</h5>
+          <p class="feature-desc" style="margin-bottom: 16px;">For development and contributions</p>
+          <div style="background: var(--bg-primary); border-radius: 8px; padding: 16px;">
+            <code style="font-family: var(--font-mono); font-size: 12px; color: #A0A0B0;">git clone https://github.com/wazder/NEST.git</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pre-trained Models -->
+    <section class="section">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h2>Pre-trained Models</h2>
+        <p style="color: #A0A0B0; margin-top: 16px;">Download pre-trained model checkpoints</p>
+      </div>
+      
+      <div style="max-width: 900px; margin: 0 auto; background: var(--bg-card); border-radius: 16px; overflow: hidden;">
+        <!-- Table Header -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 16px; padding: 16px 24px; background: rgba(255,255,255,0.05); font-size: 12px; font-weight: 600; color: #6B6B80; letter-spacing: 1px;">
+          <div>MODEL</div>
+          <div>PARAMS</div>
+          <div>WER</div>
+          <div>BLEU</div>
+          <div>DOWNLOAD</div>
+        </div>
+        
+        <!-- Model Rows -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 16px; padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center;">
+          <div>
+            <div style="font-weight: 600; color: white;">nest-base</div>
+            <div style="font-size: 12px; color: #6B6B80;">ZuCo trained, 105 channels</div>
+          </div>
+          <div style="font-family: var(--font-mono); color: #A0A0B0;">45M</div>
+          <div style="font-family: var(--font-mono); color: #22C55E;">26.1%</div>
+          <div style="font-family: var(--font-mono); color: #6366F1;">0.74</div>
+          <div>
+            <a href="#" class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Download</a>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 16px; padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center;">
+          <div>
+            <div style="font-weight: 600; color: white;">nest-large</div>
+            <div style="font-size: 12px; color: #6B6B80;">Extended training, higher capacity</div>
+          </div>
+          <div style="font-family: var(--font-mono); color: #A0A0B0;">125M</div>
+          <div style="font-family: var(--font-mono); color: #22C55E;">23.8%</div>
+          <div style="font-family: var(--font-mono); color: #6366F1;">0.78</div>
+          <div>
+            <a href="#" class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Download</a>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 16px; padding: 20px 24px; align-items: center;">
+          <div>
+            <div style="font-weight: 600; color: white;">nest-tiny</div>
+            <div style="font-size: 12px; color: #6B6B80;">Lightweight, fast inference</div>
+          </div>
+          <div style="font-family: var(--font-mono); color: #A0A0B0;">12M</div>
+          <div style="font-family: var(--font-mono); color: #22C55E;">31.2%</div>
+          <div style="font-family: var(--font-mono); color: #6366F1;">0.68</div>
+          <div>
+            <a href="#" class="btn btn-primary" style="padding: 8px 16px; font-size: 12px;">Download</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Requirements -->
+    <section class="section section-alt">
+      <div class="text-center" style="margin-bottom: 32px;">
+        <h3>Requirements</h3>
+      </div>
+      
+      <div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;">
+        <div style="text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">🐍</div>
+          <div style="font-weight: 600; color: white;">Python</div>
+          <div style="color: #A0A0B0; font-size: 14px;">3.8+</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">🔥</div>
+          <div style="font-weight: 600; color: white;">PyTorch</div>
+          <div style="color: #A0A0B0; font-size: 14px;">2.0+</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">🎮</div>
+          <div style="font-weight: 600; color: white;">CUDA</div>
+          <div style="color: #A0A0B0; font-size: 14px;">11.8+</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 32px; margin-bottom: 8px;">💾</div>
+          <div style="font-weight: 600; color: white;">GPU Memory</div>
+          <div style="color: #A0A0B0; font-size: 14px;">8GB+</div>
+        </div>
+      </div>
+      
+      <div style="max-width: 600px; margin: 32px auto 0; display: flex; align-items: center; gap: 12px; background: rgba(139, 92, 246, 0.1); padding: 16px 24px; border-radius: 12px;">
+        <span style="color: #8B5CF6;">ℹ️</span>
+        <span style="font-size: 14px; color: #A0A0B0;">Apple Silicon (M1/M2/M3) supported via Metal Performance Shaders</span>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section text-center">
+      <h2>Ready to decode brain signals?</h2>
+      <div class="hero-buttons" style="margin-top: 32px;">
+        <a href="docs.html" class="btn btn-primary btn-lg">Read Documentation</a>
+        <a href="https://github.com/wazder/NEST" target="_blank" class="btn btn-secondary btn-lg">View on GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <p class="footer-copyright">© 2026 NEST Project • MIT License</p>
+        <div class="footer-social">
+          <a href="https://github.com/wazder/NEST" target="_blank" aria-label="GitHub">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
