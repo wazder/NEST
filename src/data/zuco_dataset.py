@@ -226,6 +226,8 @@ if __name__ == "__main__":
 
 import torch
 from torch.utils.data import Dataset
+from typing import Callable, Optional
+
 
 class ZuCoTorchDataset(Dataset):
     """
