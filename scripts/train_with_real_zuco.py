@@ -104,6 +104,19 @@ def main():
                        help='Quick test with minimal data and epochs')
     args = parser.parse_args()
     
+    # Verify data
+    data_dir = Path("data/raw/zuco")
+    # Check if primary path has the task folder
+    if not (data_dir / "task1_SR").exists():
+        if (Path("ZuCo_Dataset") / "ZuCo").exists():
+             data_dir = Path("ZuCo_Dataset") / "ZuCo"
+             print(f"Using alternative data source: {data_dir}")
+    
+    if not data_dir.exists():
+        print("✗ Error: ZuCo data not found!")
+        print(f"  Expected: {Path('data/raw/zuco').absolute()} or ZuCo_Dataset/ZuCo/")
+        return
+
     # Quick test settings
     if args.quick_test:
         print("⚡ QUICK TEST MODE")
@@ -126,9 +139,9 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Load dataset
-    print("Loading real ZuCo data...")
+    print(f"Loading real ZuCo data from {data_dir}...")
     dataset = ZuCoTorchDataset(
-        root_dir="data/raw/zuco",
+        root_dir=str(data_dir),
         max_samples=20 if args.quick_test else None
     )
     

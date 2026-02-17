@@ -23,12 +23,6 @@ logger = logging.getLogger(__name__)
 class NEST_RNN_T(nn.Module):
     """
     NEST with RNN-Transducer architecture.
-    
-    Components:
-    1. Spatial CNN for channel-wise feature extraction
-    2. Temporal RNN encoder for sequence modeling
-    3. Prediction network (decoder) for label history
-    4. Joint network for combining encoder and prediction outputs
     """
     
     def __init__(
@@ -43,24 +37,12 @@ class NEST_RNN_T(nn.Module):
         num_encoder_layers: int = 3,
         num_decoder_layers: int = 2,
         dropout: float = 0.3,
-        blank_id: int = 0
+        blank_id: int = 0,
+        spatial_cnn: Optional[nn.Module] = None,
+        temporal_encoder: Optional[nn.Module] = None,
+        decoder: Optional[nn.Module] = None,
+        joint: Optional[nn.Module] = None
     ):
-        """
-        Initialize NEST RNN-Transducer.
-        
-        Args:
-            n_channels: Number of EEG channels
-            vocab_size: Output vocabulary size
-            spatial_cnn_type: Type of spatial CNN ('SpatialCNN' or 'EEGNet')
-            temporal_encoder_type: Type of temporal encoder ('LSTM' or 'GRU')
-            encoder_hidden_dim: Encoder hidden dimension
-            decoder_hidden_dim: Decoder hidden dimension
-            joint_dim: Joint network dimension
-            num_encoder_layers: Number of encoder layers
-            num_decoder_layers: Number of decoder layers
-            dropout: Dropout rate
-            blank_id: Blank token ID for transducer loss
-        """
         super(NEST_RNN_T, self).__init__()
         
         self.n_channels = n_channels
@@ -68,7 +50,13 @@ class NEST_RNN_T(nn.Module):
         self.blank_id = blank_id
         
         # Spatial CNN
-        if spatial_cnn_type == 'EEGNet':
+        if spatial_cnn is not None:
+             self.spatial_cnn = spatial_cnn
+             # Infer output dim if possible, or assume standard from factory
+             cnn_output_dim = 64 # Default for our factory setup
+             if hasattr(spatial_cnn, 'output_dim'):
+                 cnn_output_dim = spatial_cnn.output_dim
+        elif spatial_cnn_type == 'EEGNet':
             self.spatial_cnn = EEGNet(
                 n_channels=n_channels,
                 n_pointwise_filters=64,
@@ -84,7 +72,12 @@ class NEST_RNN_T(nn.Module):
             cnn_output_dim = 64
             
         # Temporal Encoder
-        if temporal_encoder_type == 'LSTM':
+        if temporal_encoder is not None:
+            self.temporal_encoder = temporal_encoder
+            encoder_output_dim = encoder_hidden_dim * 2 # Assumption/Default
+            if hasattr(temporal_encoder, 'output_dim'):
+                encoder_output_dim = temporal_encoder.output_dim
+        elif temporal_encoder_type == 'LSTM':
             self.temporal_encoder = LSTMEncoder(
                 input_dim=cnn_output_dim,
                 hidden_dim=encoder_hidden_dim,
@@ -106,43 +99,35 @@ class NEST_RNN_T(nn.Module):
             raise ValueError(f"Unknown encoder type: {temporal_encoder_type}")
             
         # Prediction Network (Decoder)
-        self.prediction_network = TransducerDecoder(
-            vocab_size=vocab_size,
-            embedding_dim=256,
-            hidden_dim=decoder_hidden_dim,
-            num_layers=num_decoder_layers,
-            dropout=dropout
-        )
+        if decoder is not None:
+            self.prediction_network = decoder
+        else:
+            self.prediction_network = TransducerDecoder(
+                vocab_size=vocab_size,
+                embedding_dim=256,
+                hidden_dim=decoder_hidden_dim,
+                num_layers=num_decoder_layers,
+                dropout=dropout
+            )
         
         # Joint Network
-        self.joint_network = JointNetwork(
-            encoder_dim=encoder_output_dim,
-            decoder_dim=decoder_hidden_dim,
-            joint_dim=joint_dim,
-            vocab_size=vocab_size
-        )
+        if joint is not None:
+            self.joint_network = joint
+        else:
+            self.joint_network = JointNetwork(
+                encoder_dim=encoder_output_dim,
+                decoder_dim=decoder_hidden_dim,
+                joint_dim=joint_dim,
+                vocab_size=vocab_size
+            )
         
-        logger.info(
-            f"Initialized NEST_RNN_T: spatial_cnn={spatial_cnn_type}, "
-            f"temporal_encoder={temporal_encoder_type}, "
-            f"encoder_dim={encoder_output_dim}, decoder_dim={decoder_hidden_dim}"
-        )
+        logger.info(f"Initialized NEST_RNN_T")
         
     def forward(
         self,
         eeg_data: torch.Tensor,
         target_labels: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
-        """
-        Forward pass.
-        
-        Args:
-            eeg_data: EEG data (batch, channels, time) or (batch, 1, channels, time)
-            target_labels: Target label sequences (batch, label_len) for training
-            
-        Returns:
-            Joint network output (batch, time, label_len, vocab_size)
-        """
         # Spatial feature extraction
         spatial_features = self.spatial_cnn(eeg_data)  # (batch, features, time)
         
@@ -150,7 +135,10 @@ class NEST_RNN_T(nn.Module):
         spatial_features = spatial_features.transpose(1, 2)
         
         # Temporal encoding
-        encoder_output, _ = self.temporal_encoder(spatial_features)  # (batch, time, encoder_dim)
+        if isinstance(self.temporal_encoder, TransformerEncoder):
+             encoder_output = self.temporal_encoder(spatial_features)
+        else:
+             encoder_output, _ = self.temporal_encoder(spatial_features)
         
         # Prediction network
         if target_labels is None:
@@ -163,7 +151,7 @@ class NEST_RNN_T(nn.Module):
                 device=eeg_data.device
             )
             
-        decoder_output, _ = self.prediction_network(target_labels)  # (batch, label_len, decoder_dim)
+        decoder_output, _ = self.prediction_network(target_labels)
         
         # Joint network
         joint_output = self.joint_network(encoder_output, decoder_output)
@@ -174,8 +162,6 @@ class NEST_RNN_T(nn.Module):
 class NEST_Transformer_T(nn.Module):
     """
     NEST with Transformer-Transducer architecture.
-    
-    Uses Transformer encoder for better long-range dependency modeling.
     """
     
     def __init__(
@@ -189,23 +175,12 @@ class NEST_Transformer_T(nn.Module):
         num_decoder_layers: int = 2,
         dim_feedforward: int = 2048,
         dropout: float = 0.1,
-        blank_id: int = 0
+        blank_id: int = 0,
+        spatial_cnn: Optional[nn.Module] = None,
+        temporal_encoder: Optional[nn.Module] = None,
+        decoder: Optional[nn.Module] = None,
+        joint: Optional[nn.Module] = None
     ):
-        """
-        Initialize NEST Transformer-Transducer.
-        
-        Args:
-            n_channels: Number of EEG channels
-            vocab_size: Output vocabulary size
-            spatial_cnn_type: Type of spatial CNN
-            d_model: Transformer model dimension
-            nhead: Number of attention heads
-            num_encoder_layers: Number of transformer encoder layers
-            num_decoder_layers: Number of prediction network layers
-            dim_feedforward: Feedforward network dimension
-            dropout: Dropout rate
-            blank_id: Blank token ID
-        """
         super(NEST_Transformer_T, self).__init__()
         
         self.n_channels = n_channels
@@ -213,7 +188,12 @@ class NEST_Transformer_T(nn.Module):
         self.blank_id = blank_id
         
         # Spatial CNN
-        if spatial_cnn_type == 'EEGNet':
+        if spatial_cnn is not None:
+            self.spatial_cnn = spatial_cnn
+            cnn_output_dim = 64
+            if hasattr(spatial_cnn, 'output_dim'):
+                 cnn_output_dim = spatial_cnn.output_dim
+        elif spatial_cnn_type == 'EEGNet':
             self.spatial_cnn = EEGNet(
                 n_channels=n_channels,
                 n_pointwise_filters=64,
@@ -229,36 +209,42 @@ class NEST_Transformer_T(nn.Module):
             cnn_output_dim = 64
             
         # Transformer Encoder
-        self.temporal_encoder = TransformerEncoder(
-            input_dim=cnn_output_dim,
-            d_model=d_model,
-            nhead=nhead,
-            num_layers=num_encoder_layers,
-            dim_feedforward=dim_feedforward,
-            dropout=dropout
-        )
+        if temporal_encoder is not None:
+            self.temporal_encoder = temporal_encoder
+        else:
+            self.temporal_encoder = TransformerEncoder(
+                input_dim=cnn_output_dim,
+                d_model=d_model,
+                nhead=nhead,
+                num_layers=num_encoder_layers,
+                dim_feedforward=dim_feedforward,
+                dropout=dropout
+            )
         
         # Prediction Network
-        self.prediction_network = TransducerDecoder(
-            vocab_size=vocab_size,
-            embedding_dim=256,
-            hidden_dim=d_model,
-            num_layers=num_decoder_layers,
-            dropout=dropout
-        )
+        if decoder is not None:
+             self.prediction_network = decoder
+        else:
+            self.prediction_network = TransducerDecoder(
+                vocab_size=vocab_size,
+                embedding_dim=256,
+                hidden_dim=d_model,
+                num_layers=num_decoder_layers,
+                dropout=dropout
+            )
         
         # Joint Network
-        self.joint_network = JointNetwork(
-            encoder_dim=d_model,
-            decoder_dim=d_model,
-            joint_dim=d_model,
-            vocab_size=vocab_size
-        )
+        if joint is not None:
+             self.joint_network = joint
+        else:
+            self.joint_network = JointNetwork(
+                encoder_dim=d_model,
+                decoder_dim=d_model,
+                joint_dim=d_model,
+                vocab_size=vocab_size
+            )
         
-        logger.info(
-            f"Initialized NEST_Transformer_T: d_model={d_model}, "
-            f"nhead={nhead}, encoder_layers={num_encoder_layers}"
-        )
+        logger.info(f"Initialized NEST_Transformer_T")
         
     def forward(
         self,
@@ -298,8 +284,6 @@ class NEST_Transformer_T(nn.Module):
 class NEST_Attention(nn.Module):
     """
     NEST with attention-based encoder-decoder architecture.
-    
-    Traditional seq2seq with cross-attention between encoder and decoder.
     """
     
     def __init__(
@@ -312,26 +296,21 @@ class NEST_Attention(nn.Module):
         decoder_hidden_dim: int = 512,
         num_encoder_layers: int = 3,
         num_decoder_layers: int = 2,
-        dropout: float = 0.3
+        dropout: float = 0.3,
+        spatial_cnn: Optional[nn.Module] = None,
+        temporal_encoder: Optional[nn.Module] = None,
+        decoder: Optional[nn.Module] = None,
+        attention: Optional[nn.Module] = None
     ):
-        """
-        Initialize NEST with attention.
-        
-        Args:
-            n_channels: Number of EEG channels
-            vocab_size: Output vocabulary size
-            spatial_cnn_type: Type of spatial CNN
-            encoder_type: Type of encoder ('LSTM', 'GRU', 'Transformer')
-            encoder_hidden_dim: Encoder hidden dimension
-            decoder_hidden_dim: Decoder hidden dimension
-            num_encoder_layers: Number of encoder layers
-            num_decoder_layers: Number of decoder layers
-            dropout: Dropout rate
-        """
         super(NEST_Attention, self).__init__()
         
         # Spatial CNN
-        if spatial_cnn_type == 'EEGNet':
+        if spatial_cnn is not None:
+            self.spatial_cnn = spatial_cnn
+            cnn_output_dim = 16
+            if hasattr(spatial_cnn, 'output_dim'):
+                 cnn_output_dim = spatial_cnn.output_dim
+        elif spatial_cnn_type == 'EEGNet':
             self.spatial_cnn = EEGNet(n_channels=n_channels, dropout=dropout)
             cnn_output_dim = 16  # EEGNet default
         else:
@@ -339,7 +318,12 @@ class NEST_Attention(nn.Module):
             cnn_output_dim = 16
             
         # Temporal Encoder
-        if encoder_type == 'LSTM':
+        if temporal_encoder is not None:
+             self.temporal_encoder = temporal_encoder
+             encoder_output_dim = encoder_hidden_dim * 2
+             if hasattr(temporal_encoder, 'output_dim'):
+                 encoder_output_dim = temporal_encoder.output_dim
+        elif encoder_type == 'LSTM':
             self.temporal_encoder = LSTMEncoder(
                 input_dim=cnn_output_dim,
                 hidden_dim=encoder_hidden_dim,
@@ -360,19 +344,19 @@ class NEST_Attention(nn.Module):
             raise ValueError(f"Unknown encoder type: {encoder_type}")
             
         # Attention Decoder
-        self.decoder = AttentionDecoder(
-            vocab_size=vocab_size,
-            embedding_dim=256,
-            encoder_dim=encoder_output_dim,
-            hidden_dim=decoder_hidden_dim,
-            num_layers=num_decoder_layers,
-            dropout=dropout
-        )
+        if decoder is not None:
+             self.decoder = decoder
+        else:
+            self.decoder = AttentionDecoder(
+                vocab_size=vocab_size,
+                embedding_dim=256,
+                encoder_dim=encoder_output_dim,
+                hidden_dim=decoder_hidden_dim,
+                num_layers=num_decoder_layers,
+                dropout=dropout
+            )
         
-        logger.info(
-            f"Initialized NEST_Attention: encoder={encoder_type}, "
-            f"encoder_dim={encoder_output_dim}"
-        )
+        logger.info(f"Initialized NEST_Attention")
         
     def forward(
         self,
@@ -399,41 +383,34 @@ class NEST_Attention(nn.Module):
 class NEST_CTC(nn.Module):
     """
     NEST with CTC (Connectionist Temporal Classification).
-    
-    Simplest architecture using CTC for alignment-free training.
     """
     
     def __init__(
         self,
-        n_channels: int,
-        vocab_size: int,
+        n_channels: int = 105, # Default to 105 for ZuCo
+        vocab_size: int = 30,
         spatial_cnn_type: str = 'EEGNet',
         encoder_type: str = 'LSTM',
         encoder_hidden_dim: int = 512,
         num_encoder_layers: int = 3,
         dropout: float = 0.3,
-        blank_id: int = 0
+        blank_id: int = 0,
+        spatial_cnn: Optional[nn.Module] = None,
+        temporal_encoder: Optional[nn.Module] = None,
+        decoder: Optional[nn.Module] = None
     ):
-        """
-        Initialize NEST with CTC.
-        
-        Args:
-            n_channels: Number of EEG channels
-            vocab_size: Output vocabulary size
-            spatial_cnn_type: Type of spatial CNN
-            encoder_type: Type of encoder
-            encoder_hidden_dim: Encoder hidden dimension
-            num_encoder_layers: Number of encoder layers
-            dropout: Dropout rate
-            blank_id: Blank token ID
-        """
         super(NEST_CTC, self).__init__()
         
         self.vocab_size = vocab_size
         self.blank_id = blank_id
         
         # Spatial CNN
-        if spatial_cnn_type == 'EEGNet':
+        if spatial_cnn is not None:
+            self.spatial_cnn = spatial_cnn
+            cnn_output_dim = 16
+            if hasattr(spatial_cnn, 'output_dim'):
+                 cnn_output_dim = spatial_cnn.output_dim
+        elif spatial_cnn_type == 'EEGNet':
             self.spatial_cnn = EEGNet(n_channels=n_channels, dropout=dropout)
             cnn_output_dim = 16
         else:
@@ -441,7 +418,12 @@ class NEST_CTC(nn.Module):
             cnn_output_dim = 16
             
         # Temporal Encoder
-        if encoder_type == 'LSTM':
+        if temporal_encoder is not None:
+             self.temporal_encoder = temporal_encoder
+             encoder_output_dim = encoder_hidden_dim * 2
+             if hasattr(temporal_encoder, 'output_dim'):
+                 encoder_output_dim = temporal_encoder.output_dim
+        elif encoder_type == 'LSTM':
             self.temporal_encoder = LSTMEncoder(
                 input_dim=cnn_output_dim,
                 hidden_dim=encoder_hidden_dim,
@@ -460,16 +442,17 @@ class NEST_CTC(nn.Module):
             encoder_output_dim = encoder_hidden_dim
             
         # CTC Decoder
-        self.ctc_decoder = CTCDecoder(
-            input_dim=encoder_output_dim,
-            vocab_size=vocab_size,
-            blank_id=blank_id
-        )
+        # Note: factory passes 'decoder' as CTCDecoder instance
+        if decoder is not None:
+             self.ctc_decoder = decoder
+        else:
+            self.ctc_decoder = CTCDecoder(
+                input_dim=encoder_output_dim,
+                vocab_size=vocab_size,
+                blank_id=blank_id
+            )
         
-        logger.info(
-            f"Initialized NEST_CTC: encoder={encoder_type}, "
-            f"encoder_dim={encoder_output_dim}"
-        )
+        logger.info(f"Initialized NEST_CTC")
         
     def forward(self, eeg_data: torch.Tensor) -> torch.Tensor:
         """Forward pass."""
