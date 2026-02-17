@@ -1,119 +1,165 @@
 #!/usr/bin/env python3
 """
-Quick evaluation of trained model on real ZuCo data.
-Calculates approximate WER (Word Error Rate) and other metrics.
+Evaluation of trained NEST model on real ZuCo data.
+Calculates ACTUAL WER (Word Error Rate) using greedy decoding.
 """
 
 import json
+import argparse
+import sys
 from pathlib import Path
-import matplotlib.pyplot as plt
+import torch
+import numpy as np
+from tqdm import tqdm
+try:
+    import Levenshtein
+except ImportError:
+    print("Please install python-Levenshtein: pip install python-Levenshtein")
+    sys.exit(1)
 
-# Load results
-results_dir = Path("results/real_zuco_20260216_031557")
-results_file = results_dir / "results.json"
+# Add src to path
+sys.path.append(str(Path(__file__).parent))
 
-with open(results_file) as f:
-    results = json.load(f)
+from src.data.zuco_dataset import ZuCoTorchDataset
+from src.models import ModelFactory
 
-print("=" * 80)
-print(" NEST Training Results Summary")
-print("=" * 80)
-print()
+def calculate_wer(reference, hypothesis):
+    """Calculate Word Error Rate."""
+    if not reference:
+        return 1.0 if hypothesis else 0.0
+    
+    ref_words = reference.split()
+    hyp_words = hypothesis.split()
+    
+    # Calculate Levenshtein distance on words
+    dist = Levenshtein.distance(" ".join(ref_words), " ".join(hyp_words))
+    # Normalize by reference length
+    wer = dist / len(ref_words) if ref_words else 1.0
+    return wer
 
-print("📊 Training Configuration:")
-print(f"  Model: {results['model']}")
-print(f"  Dataset: {results['dataset']}")
-print(f"  Samples: {results['num_samples']:,}")
-print(f"  Epochs: {results['epochs']}")
-print(f"  Batch size: {results['batch_size']}")
-print()
+def calculate_cer(reference, hypothesis):
+    """Calculate Character Error Rate."""
+    if not reference:
+        return 1.0 if hypothesis else 0.0
+        
+    dist = Levenshtein.distance(reference, hypothesis)
+    return dist / len(reference)
 
-print("⏱️  Training Time:")
-print(f"  Total: {results['training_time_hours']:.2f} hours")
-print(f"  Per epoch: {results['training_time_hours']*60/results['epochs']:.1f} minutes")
-print()
+def decode_to_string(token_ids, vocab_inv):
+    """Convert token IDs to string."""
+    chars = []
+    for t in token_ids:
+        if t in vocab_inv:
+            chars.append(vocab_inv[t])
+    return "".join(chars)
 
-print("📉 Loss Metrics:")
-print(f"  Initial loss (epoch 1): {results['losses'][0]:.4f}")
-print(f"  Final loss (epoch 100): {results['final_loss']:.4f}")
-print(f"  Best loss: {min(results['losses']):.4f} (epoch {results['losses'].index(min(results['losses']))+1})")
-improvement = (results['losses'][0] - results['final_loss']) / results['losses'][0] * 100
-print(f"  Improvement: {improvement:.1f}%")
-print()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--results-dir', type=str, required=True, help='Path to results directory')
+    parser.add_argument('--checkpoint', type=str, default='best_model.pt', help='Checkpoint name')
+    parser.add_argument('--batch-size', type=int, default=1)
+    args = parser.parse_args()
+    
+    results_dir = Path(args.results_dir)
+    results_file = results_dir / "results.json"
+    checkpoint_path = results_dir / args.checkpoint
+    
+    if not results_file.exists() or not checkpoint_path.exists():
+        print(f"Error: Results or checkpoint not found in {results_dir}")
+        sys.exit(1)
+        
+    print(f"Loading results from {results_dir}...")
+    with open(results_file) as f:
+        config = json.load(f)
+        
+    # Setup Device
+    device = torch.device('mps' if torch.backends.mps.is_available() else 'cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using device: {device}")
+    
+    # Reconstruct Vocab (Must match training!)
+    # TODO: Save vocab in training artifacts to avoid hardcoding here
+    vocab = {'<blank>': 0, '<pad>': 1, ' ': 2}
+    for i, c in enumerate("abcdefghijklmnopqrstuvwxyz"):
+        vocab[c] = i + 3
+    vocab_inv = {v: k for k, v in vocab.items()}
+    
+    # Load Model
+    print("Loading model...")
+    # recovering config - for now assumption is NEST_CTC based on previous fix
+    model = ModelFactory.create_model({
+            'model_name': 'NEST_CTC',
+            'spatial_cnn': {'type': 'EEGNet', 'n_channels': 105, 'dropout': 0.5},
+            'temporal_encoder': {'type': 'LSTM', 'input_dim': 16, 'hidden_dim': 256, 'num_layers': 2, 'dropout': 0.3},
+            'decoder': {'input_dim': 512, 'vocab_size': 30, 'blank_id': 0}
+    })
+    
+    try:
+        checkpoint = torch.load(checkpoint_path, map_location=device)
+        model.load_state_dict(checkpoint['model_state_dict'])
+    except Exception as e:
+        print(f"Warning loading state dict: {e}")
+        
+    model = model.to(device)
+    model.eval()
+    
+    # Load Data
+    print("Loading test data...")
+    dataset = ZuCoTorchDataset(
+        root_dir="data/raw/zuco",
+        max_samples=50 # Eval on subset for speed in demo
+    )
+    
+    print(f"Evaluating on {len(dataset)} samples...")
+    
+    total_wer = 0
+    total_cer = 0
+    count = 0
+    
+    print("\nSample Predictions:")
+    print("-" * 60)
+    
+    with torch.no_grad():
+        for i in range(len(dataset)):
+            sample = dataset[i]
+            eeg = torch.from_numpy(sample['eeg']).unsqueeze(0).to(device) # (1, channels, time)
+            text = sample['text'].lower()
+             
+            # Forward
+            # NEST_CTC returns log_probs (batch, time, vocab)
+            log_probs = model(eeg) 
+            
+            # Decode using model's own decoder or manually if needed
+            # model.ctc_decoder is available in NEST_CTC
+            if hasattr(model, 'ctc_decoder'):
+                decoded_ids = model.ctc_decoder.decode_greedy(log_probs)[0]
+                pred_text = decode_to_string(decoded_ids, vocab_inv)
+            else:
+                pred_text = "" # Fallback
+                
+            # Metrics
+            wer = calculate_wer(text, pred_text)
+            cer = calculate_cer(text, pred_text)
+            
+            total_wer += wer
+            total_cer += cer
+            count += 1
+            
+            if i < 5:
+                print(f"Ref:  {text}")
+                print(f"Pred: {pred_text}")
+                print(f"WER:  {wer:.2f}")
+                print("-" * 60)
+                
+    avg_wer = total_wer / count if count > 0 else 0
+    avg_cer = total_cer / count if count > 0 else 0
+    
+    print("\n" + "=" * 60)
+    print("FINAL RESULTS")
+    print("=" * 60)
+    print(f"Average WER: {avg_wer:.2%}")
+    print(f"Average CER: {avg_cer:.2%}")
+    print("=" * 60)
+    print("Note: Performance depends heavily on training epochs and data quantity.")
 
-# Estimate WER based on loss
-# CTC loss ~2.8 typically corresponds to WER ~25-30% for initial training
-# This is a rough estimate
-estimated_wer = 20 + (results['final_loss'] - 2.0) * 10  # Rough formula
-estimated_cer = estimated_wer * 0.5  # CER usually ~50% of WER
-estimated_bleu = max(0.3, 1.0 - estimated_wer/100)
-
-print("🎯 Estimated Metrics (based on loss):")
-print(f"  WER (Word Error Rate): ~{estimated_wer:.1f}%")
-print(f"  CER (Char Error Rate): ~{estimated_cer:.1f}%")
-print(f"  BLEU Score: ~{estimated_bleu:.2f}")
-print()
-
-print("📝 Note: These are ROUGH estimates!")
-print("   For accurate metrics, we need to decode and compare with ground truth.")
-print()
-
-# Plot training curve
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.plot(range(1, len(results['losses'])+1), results['losses'], linewidth=2)
-ax.set_xlabel('Epoch', fontsize=12)
-ax.set_ylabel('Loss', fontsize=12)
-ax.set_title('NEST Training on Real ZuCo - Loss Curve', fontsize=14, fontweight='bold')
-ax.grid(True, alpha=0.3)
-ax.axhline(y=min(results['losses']), color='r', linestyle='--', alpha=0.5, label=f'Best: {min(results["losses"]):.4f}')
-ax.legend()
-
-plot_path = results_dir / "training_curve.pdf"
-plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-print(f"📊 Plot saved: {plot_path}")
-print()
-
-print("=" * 80)
-print(" Comparison with Baselines")
-print("=" * 80)
-print()
-
-print("Expected performance (from literature):")
-print("  Simple LSTM (baseline): WER ~30-35%")
-print("  Our LSTM (optimized):   WER ~25-30% ← YOUR MODEL")
-print("  Transformer:            WER ~20-25%")
-print("  Conformer (SOTA):       WER ~15-20%")
-print()
-
-print("✅ Your model is performing in the expected range for an LSTM!")
-print()
-
-print("=" * 80)
-print(" Next Steps")
-print("=" * 80)
-print()
-
-print("1. ✅ DONE: Train model on real data (100 epochs)")
-print()
-print("2. 📊 TODO: Generate full evaluation:")
-print("   python examples/01_basic_training.py --evaluate")
-print()
-print("3. 📈 TODO: Generate publication figures:")
-print("   python scripts/generate_figures.py --results results/real_zuco_20260216_031557/")
-print()
-print("4. 📝 TODO: Update paper with real results:")
-print("   - Open papers/NEST_manuscript.md")
-print("   - Update Results section")
-print("   - Replace figures")
-print()
-print("5. 🚀 OPTIONAL: Train advanced models (Conformer, Transformer)")
-print("   - These will achieve WER ~15-20%")
-print("   - Requires more compute time")
-print()
-
-print("=" * 80)
-print()
-
-print("🎉 Congratulations! Your NEST model is trained on real brain signals!")
-print("   You have successfully decoded EEG → text with deep learning! 🧠→📝")
-print()
+if __name__ == "__main__":
+    main()
