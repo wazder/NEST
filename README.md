@@ -1,4 +1,4 @@
-# 🧠 NEST: Neural EEG Sequence Transducer
+# NEST: Neural EEG Sequence Transducer
 
 <div align="center">
 
@@ -11,15 +11,15 @@
 
 *Translating EEG brain signals into natural language text*
 
-[Getting Started](#-quick-start) · [Documentation](docs/) · [Results](#-latest-results) · [Paper](papers/NEST_manuscript.md)
+[Getting Started](#quick-start) | [Documentation](docs/) | [Results](#latest-results) | [Paper](papers/NEST_manuscript.md)
 
 </div>
 
 ---
 
-## 📊 Latest Results
+## Latest Results
 
-> **Last Training:** February 16, 2026 | **Dataset:** ZuCo (Real EEG) | **Epochs:** 100
+**Last Training:** February 16, 2026 | **Dataset:** ZuCo (Real EEG) | **Epochs:** 100
 
 <table>
 <tr>
@@ -39,8 +39,8 @@
 <td>
 
 ### Model Variants
-| Model | WER ↓ | Inference |
-|-------|-------|-----------|
+| Model | WER | Inference |
+|-------|-----|-----------|
 | Conformer | 16.3% | 12.6ms |
 | RNN-T | 18.2% | 14.3ms |
 | Transformer | 19.9% | 19.4ms |
@@ -50,35 +50,30 @@
 </tr>
 </table>
 
-```
-Training Loss Curve:
-Epoch 001: ████████████████████ 3.18
-Epoch 050: ██████████████░░░░░░ 2.78
-Epoch 100: █████████████░░░░░░░ 2.80 (converged)
-```
+**Training Loss:** 3.18 (epoch 1) → 2.80 (epoch 100, converged)
 
 ---
 
-## 🎯 What is NEST?
+## What is NEST?
 
 NEST is a deep learning framework that decodes **brain signals (EEG)** into **natural language text**.
 
 ```
-Input:  EEG Recording (105 channels × 2000 samples)
-        └─ Brain activity while reading text
+Input:  EEG Recording (105 channels x 2000 samples)
+        Brain activity while reading text
 
 Output: "The quick brown fox jumps over the lazy dog"
-        └─ ~74% words correctly decoded
+        ~74% words correctly decoded
 ```
 
 **Applications:**
-- 🗣️ Silent Speech Interfaces for speech-impaired individuals
-- 🧠 Brain-Computer Interface (BCI) research
-- 🏥 Communication aids for neurological disorders
+- Silent Speech Interfaces for speech-impaired individuals
+- Brain-Computer Interface (BCI) research
+- Communication aids for neurological disorders
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # 1. Clone and setup
@@ -99,7 +94,7 @@ python evaluate_results.py
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 NEST/
@@ -116,45 +111,51 @@ NEST/
 └── tests/                  # Test suite
 ```
 
-> 📂 **Detailed Guide:** [STRUCTURE.md](STRUCTURE.md)
+See [STRUCTURE.md](STRUCTURE.md) for detailed project navigation guide.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  EEG Input (105 channels × 2000 timepoints)             │
-└─────────────────────┬───────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────┐
-│  Preprocessing                                          │
-│  • Band-pass filter (0.5-50 Hz)                        │
-│  • Z-score normalization                               │
-│  • Temporal padding                                     │
-└─────────────────────┬───────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────┐
-│  Spatial CNN Encoder                                    │
-│  Conv1D: 105 → 128 → 256 channels                      │
-└─────────────────────┬───────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────┐
-│  Temporal Encoder (Bi-LSTM / Transformer / Conformer)  │
-│  2 layers × 256 hidden units → 512-dim embeddings      │
-└─────────────────────┬───────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────┐
-│  CTC Decoder                                            │
-│  Character-level output (28 classes: blank + a-z + ' ')│
-└─────────────────────┬───────────────────────────────────┘
-                      ▼
-┌─────────────────────────────────────────────────────────┐
-│  Output Text: "the quick brown fox..."                  │
-└─────────────────────────────────────────────────────────┘
++----------------------------------------------------------+
+|  EEG Input (105 channels x 2000 timepoints)              |
++------------------------------+---------------------------+
+                               |
+                               v
++----------------------------------------------------------+
+|  Preprocessing                                           |
+|  - Band-pass filter (0.5-50 Hz)                         |
+|  - Z-score normalization                                |
+|  - Temporal padding                                      |
++------------------------------+---------------------------+
+                               |
+                               v
++----------------------------------------------------------+
+|  Spatial CNN Encoder                                     |
+|  Conv1D: 105 -> 128 -> 256 channels                     |
++------------------------------+---------------------------+
+                               |
+                               v
++----------------------------------------------------------+
+|  Temporal Encoder (Bi-LSTM / Transformer / Conformer)   |
+|  2 layers x 256 hidden units -> 512-dim embeddings      |
++------------------------------+---------------------------+
+                               |
+                               v
++----------------------------------------------------------+
+|  CTC Decoder                                             |
+|  Character-level output (28 classes: blank + a-z + ' ') |
++------------------------------+---------------------------+
+                               |
+                               v
++----------------------------------------------------------+
+|  Output Text: "the quick brown fox..."                   |
++----------------------------------------------------------+
 ```
 
 **Training Configuration:**
+
 | Parameter | Value |
 |-----------|-------|
 | Optimizer | AdamW (lr=0.001) |
@@ -164,7 +165,7 @@ NEST/
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 | Document | Description |
 |----------|-------------|
@@ -176,6 +177,7 @@ NEST/
 | [docs/MODEL_CARD.md](docs/MODEL_CARD.md) | Model details & ethics |
 
 ### Phase Documentation
+
 | Phase | Topic | Link |
 |-------|-------|------|
 | 1 | Literature Review | [docs/literature-review/](docs/literature-review/) |
@@ -186,22 +188,22 @@ NEST/
 
 ---
 
-## 🗺️ Development Status
+## Development Status
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1 | Literature Review | ✅ Complete |
-| 2 | Data Preprocessing | ✅ Complete |
-| 3 | Model Architecture | ✅ Complete |
-| 4 | Advanced Features | ✅ Complete |
-| 5 | Evaluation & Optimization | ✅ Complete |
-| 6 | Documentation | ✅ Complete |
+| 1 | Literature Review | Complete |
+| 2 | Data Preprocessing | Complete |
+| 3 | Model Architecture | Complete |
+| 4 | Advanced Features | Complete |
+| 5 | Evaluation & Optimization | Complete |
+| 6 | Documentation | Complete |
 
 **Overall: 100% Complete** — Publication Ready for IEEE EMBC 2026
 
 ---
 
-## 🔬 Example Usage
+## Example Usage
 
 ```python
 from src.models import ModelFactory
@@ -225,7 +227,7 @@ with torch.no_grad():
 
 ---
 
-## 📄 Citation
+## Citation
 
 ```bibtex
 @software{nest2026,
@@ -238,7 +240,7 @@ with torch.no_grad():
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
@@ -251,7 +253,7 @@ pytest
 
 ---
 
-## 📜 License
+## License
 
 MIT License - see [LICENSE](LICENSE)
 
