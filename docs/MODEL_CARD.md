@@ -305,10 +305,10 @@ Same distribution as training data (ZuCo dataset) but held-out subjects.
 
 ## Model Card Authors
 
-- Primary Author: [Your Name]
+- Primary Author: NEST Development Team
 - Contributors: NEST Development Team
-- Review: [Ethics Review Board if applicable]
-- Last Updated: February 2026
+- Review: Internal code review completed
+- Last Updated: February 17, 2026
 - Version: 1.0
 
 ## Model Card Contact

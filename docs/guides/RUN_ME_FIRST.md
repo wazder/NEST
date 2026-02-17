@@ -5,7 +5,8 @@
 ## ⚡ Step 1: Install Dependencies (5 minutes)
 
 ```bash
-cd /Users/wazder/Documents/GitHub/NEST
+# Navigate to your NEST project directory
+cd NEST
 
 # Create virtual environment
 python3 -m venv venv

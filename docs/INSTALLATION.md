@@ -100,7 +100,7 @@ mkdir -p data/raw data/processed
 
 # Verify dataset structure
 ls data/raw/zuco/
-# Expected: task1-SR/, task2-NR/, task3-TSR/, etc.
+# Expected: task1_SR/, task2_NR/, task3_TSR/, etc.
 ```
 
 ### Preprocess Dataset

@@ -20,6 +20,7 @@ markers = [
     "unit: marks tests as unit tests",
     "gpu: marks tests that require GPU",
     "data: marks tests that require dataset download",
+    "benchmark: marks benchmark tests",
 ]
 
 [tool.coverage.run]
@@ -28,6 +29,7 @@ omit = [
     "*/tests/*",
     "*/test_*.py",
     "*/__init__.py",
+    "*/conftest.py",
 ]
 
 [tool.coverage.report]

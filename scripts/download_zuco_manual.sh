@@ -109,9 +109,9 @@ elif [[ "$1" == "--verify" ]]; then
         echo ""
         echo "Expected structure:"
         echo "  data/raw/zuco/"
-        echo "    ├── task1-SR/ (or similar)"
-        echo "    ├── task2-NR/"
-        echo "    └── task3-TSR/"
+        echo "    ├── task1_SR/ (or similar)"
+        echo "    ├── task2_NR/"
+        echo "    └── task3_TSR/"
     fi
     
 else

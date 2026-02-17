@@ -69,7 +69,15 @@ class PostTrainingQuantizer:
             if isinstance(module, nn.Sequential):
                 # Try to identify fusible patterns
                 # Conv + BN + ReLU, Conv + BN, etc.
+                # TODO: Implement automatic module fusion detection
                 pass
+        
+        if not modules_to_fuse:
+            warnings.warn(
+                "Module fusion not yet fully implemented. "
+                "Quantization will proceed without module fusion optimization.",
+                UserWarning
+            )
                 
         if modules_to_fuse:
             quant.fuse_modules(self.model, modules_to_fuse, inplace=True)
