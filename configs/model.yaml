@@ -8,15 +8,14 @@ nest_rnn_t:
   # Spatial CNN (EEG feature extraction)
   spatial_cnn:
     type: "EEGNet"  # Options: SpatialCNN, EEGNet, DeepConvNet
-    in_channels: 104  # Number of EEG electrodes (ZuCo)
-    out_channels: 128
-    kernel_size: 3
+    n_channels: 104  # Number of EEG electrodes (ZuCo)
+    n_pointwise_filters: 128
     dropout: 0.5
     
   # Temporal Encoder (sequence encoding)
   temporal_encoder:
     type: "LSTM"  # Options: LSTM, GRU
-    input_size: 128  # Must match spatial_cnn.out_channels
+    input_dim: 128  # Must match spatial_cnn.out_channels
     hidden_size: 512
     num_layers: 3
     dropout: 0.3
@@ -106,9 +105,8 @@ nest_attention:
   
   spatial_cnn:
     type: "EEGNet"
-    in_channels: 104
-    out_channels: 128
-    kernel_size: 3
+    n_channels: 104
+    n_pointwise_filters: 128
     dropout: 0.5
     
   temporal_encoder:
@@ -152,9 +150,8 @@ nest_ctc:
   
   spatial_cnn:
     type: "EEGNet"
-    in_channels: 104
-    out_channels: 128
-    kernel_size: 3
+    n_channels: 104
+    n_pointwise_filters: 128
     dropout: 0.5
     
   temporal_encoder:

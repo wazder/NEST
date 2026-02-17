@@ -257,11 +257,18 @@ class ZuCoTorchDataset(Dataset):
         self.transform = transform
         
         # Get list of files
-        self.files = list((self.root_dir / task / "Matlab_files").glob("*.mat"))
+        # Try finding the task folder with both underscore and hyphen
+        task_folder = self.root_dir / task
+        if not task_folder.exists():
+            task_hyphen = task.replace("_", "-")
+            if (self.root_dir / task_hyphen).exists():
+                task_folder = self.root_dir / task_hyphen
+        
+        self.files = list((task_folder / "Matlab_files").glob("*.mat"))
         
         if not self.files:
-            # Try alternative path structure
-            self.files = list((self.root_dir / task).glob("*.mat"))
+            # Try alternative path structure (flat in task folder)
+            self.files = list(task_folder.glob("*.mat"))
             
         if not self.files:
             logger.warning(f"No .mat files found in {self.root_dir}/{task}")
@@ -301,24 +308,31 @@ class ZuCoTorchDataset(Dataset):
         file_idx, sample_idx = self.indices[idx]
         fpath = self.files[file_idx]
         
-        # Load specific file
         try:
-            mat = scipy.io.loadmat(str(fpath), simplify_cells=True)
+            # Load specific file (with caching)
+            if getattr(self, '_last_file_path', None) == fpath:
+                mat = self._last_file_data
+            else:
+                mat = scipy.io.loadmat(str(fpath), simplify_cells=True)
+                self._last_file_path = fpath
+                self._last_file_data = mat
+                
             sent_data = mat['sentenceData']
             
             # Handle different structures
             if isinstance(sent_data, dict):
-                 sample = sent_data
+                sample = sent_data
             else:
-                 sample = sent_data[sample_idx]
-                 
+                sample = sent_data[sample_idx]
+            
             # Extract content
             eeg = sample['rawData']
             text = sample['content']
             
             # Basic validation
-            if eeg is None or not isinstance(eeg, np.ndarray):
-                raise ValueError("Invalid EEG data")
+            if not isinstance(eeg, np.ndarray) or eeg.size == 0 or np.any(np.isnan(eeg)):
+                logger.warning(f"Invalid EEG data for {fpath.name} index {idx} (sentence {sample_idx}). Skipping.")
+                return None
                 
             # Convert to float32
             eeg = eeg.astype(np.float32)
@@ -336,6 +350,5 @@ class ZuCoTorchDataset(Dataset):
             
         except Exception as e:
             # Return None or handle error
-            logger.error(f"Error loading sample {idx}: {e}")
-            raise e
-
+            logger.error(f"Error loading sample {idx} from {fpath.name}: {e}")
+            return None
