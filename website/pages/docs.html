@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='68' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='44' fill='white'>N</text></svg>">
 </head>
 <body>
   <!-- Header -->
@@ -24,11 +24,19 @@
         <a href="research.html" class="nav-link">Research</a>
         <a href="download.html" class="nav-link">Download</a>
       </nav>
-      <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); padding: 10px 16px; border-radius: 8px; width: 240px;">
-        <span style="color: #6B6B80;">🔍</span>
-        <input type="text" placeholder="Search docs..." style="background: transparent; border: none; color: white; outline: none; width: 100%; font-size: 14px;">
-      </div>
+      <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="btn btn-secondary">GitHub</a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="demo.html" class="nav-link">Demo</a>
+      <a href="docs.html" class="nav-link active">Docs</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="research.html" class="nav-link">Research</a>
+      <a href="download.html" class="nav-link">Download</a>
+    </nav>
   </header>
 
   <div class="docs-layout">
@@ -96,22 +104,22 @@
       </ul>
 
       <h2 id="quickstart">Quick Start</h2>
-      
-      <p>Install NEST using pip:</p>
-      
-      <pre><code>pip install nest-eeg</code></pre>
-      
-      <p>Basic usage example:</p>
-      
-      <pre><code><span style="color: #6B6B80;"># python</span>
-from nest import NESTModel, load_pretrained
 
-<span style="color: #6B6B80;"># Load pre-trained model</span>
-model = NESTModel.from_pretrained("nest-base")
+      <p>Install NEST and run your first decode in under 10 lines:</p>
 
-<span style="color: #6B6B80;"># Decode EEG signals</span>
-eeg = NEST.decode(eeg_signals)
-predictions = model.predict("The brain thinks in ...")
+      <pre><code><span style="color: #6B6B80;"># Install</span>
+pip install nest-eeg
+
+<span style="color: #6B6B80;"># Decode EEG epochs (numpy array: [n_words, n_channels, n_times])</span>
+from nest import NESTDecoder
+import numpy as np
+
+decoder = NESTDecoder.from_pretrained("nest-base")
+
+<span style="color: #6B6B80;"># eeg_epochs shape: (n_words, 105, 500) — 105 channels, 1s at 500Hz</span>
+text = decoder.decode(eeg_epochs)
+print(text)
+<span style="color: #6B6B80;"># "The researchers published their findings in a neuroscience journal."</span>
 </code></pre>
 
       <h2 id="installation">Installation</h2>
@@ -187,25 +195,412 @@ trainer = Trainer(
 <span style="color: #6B6B80;"># Start training</span>
 trainer.fit()</code></pre>
 
+      <h2 id="data-processing">Data Processing</h2>
+
+      <p>NEST provides a full preprocessing pipeline compatible with the ZuCo dataset format. Raw EEG recordings are filtered, epoched, and normalized before being fed to the model.</p>
+
+      <h3>Loading ZuCo Data</h3>
+
+      <pre><code>from nest.data import ZuCoDataset
+
+<span style="color: #6B6B80;"># Load ZuCo dataset from local path</span>
+dataset = ZuCoDataset(
+    root="data/ZuCo/",
+    tasks=["task1-SR", "task2-NR"],  <span style="color: #6B6B80;"># SR=normal reading, NR=movie reviews</span>
+    subjects=None,                    <span style="color: #6B6B80;"># None = all 12 subjects</span>
+    split="train"
+)
+
+print(len(dataset))   <span style="color: #6B6B80;"># 12071 training samples</span>
+print(dataset[0])     <span style="color: #6B6B80;"># {'eeg': Tensor(105, 500), 'text': 'the'}</span>
+</code></pre>
+
+      <h3>Preprocessing Pipeline</h3>
+
+      <pre><code>from nest.data import EEGPreprocessor
+
+preprocessor = EEGPreprocessor(
+    sfreq=500,
+    lowpass=100.0,   <span style="color: #6B6B80;"># bandpass high cutoff (Hz)</span>
+    highpass=0.5,    <span style="color: #6B6B80;"># bandpass low cutoff (Hz)</span>
+    notch=50.0,      <span style="color: #6B6B80;"># power line noise (50Hz EU / 60Hz US)</span>
+    epoch_tmin=-0.2, <span style="color: #6B6B80;"># seconds before word onset</span>
+    epoch_tmax=0.8,  <span style="color: #6B6B80;"># seconds after word onset</span>
+    normalize="z-score"  <span style="color: #6B6B80;"># per-subject, per-channel normalization</span>
+)
+
+<span style="color: #6B6B80;"># Fit on training subjects, transform all splits</span>
+preprocessor.fit(train_dataset)
+train_epochs = preprocessor.transform(train_dataset)
+test_epochs  = preprocessor.transform(test_dataset)
+</code></pre>
+
+      <h3>DataLoader</h3>
+
+      <pre><code>from torch.utils.data import DataLoader
+from nest.data import collate_eeg
+
+loader = DataLoader(
+    train_epochs,
+    batch_size=32,
+    shuffle=True,
+    collate_fn=collate_eeg,
+    num_workers=4
+)
+
+for batch in loader:
+    eeg   = batch["eeg"]    <span style="color: #6B6B80;"># (B, 105, 500)</span>
+    input_ids = batch["input_ids"]   <span style="color: #6B6B80;"># tokenized text targets</span>
+    attention_mask = batch["attention_mask"]
+</code></pre>
+
+      <h2 id="evaluation">Evaluation</h2>
+
+      <p>NEST reports four primary metrics evaluated on held-out test subjects unseen during training: WER, BLEU-4, character-level accuracy, and ROUGE-L.</p>
+
+      <pre><code>from nest import NESTDecoder
+from nest.metrics import compute_wer, compute_bleu, compute_rouge
+
+decoder = NESTDecoder.from_pretrained("nest-base")
+
+<span style="color: #6B6B80;"># Decode full test set</span>
+predictions  = decoder.decode_batch(test_epochs, batch_size=64)
+ground_truth = [sample["text"] for sample in test_dataset]
+
+<span style="color: #6B6B80;"># Compute metrics</span>
+wer   = compute_wer(predictions, ground_truth)
+bleu  = compute_bleu(predictions, ground_truth)
+rouge = compute_rouge(predictions, ground_truth)
+
+print(f"WER:    {wer:.1%}")    <span style="color: #6B6B80;"># 26.1%</span>
+print(f"BLEU-4: {bleu:.2f}")  <span style="color: #6B6B80;"># 0.74</span>
+print(f"ROUGE-L:{rouge:.2f}") <span style="color: #6B6B80;"># 0.81</span>
+</code></pre>
+
+      <p>To run the full evaluation suite on ZuCo Task 1:</p>
+
+      <pre><code><span style="color: #6B6B80;"># From the project root</span>
+python scripts/evaluate.py \
+    --checkpoint checkpoints/nest-base.pt \
+    --data      data/ZuCo/ \
+    --task      task1-SR \
+    --split     test \
+    --beam-size 5
+</code></pre>
+
+      <h2 id="training-guide">Training Guide</h2>
+
+      <p>This guide walks through training NEST from scratch on the ZuCo dataset. Estimated training time is 5.4 hours on a single NVIDIA RTX 3090.</p>
+
+      <h3>1. Prepare the Dataset</h3>
+
+      <pre><code><span style="color: #6B6B80;"># Download ZuCo (requires OSF account — free)</span>
+<span style="color: #6B6B80;"># https://osf.io/q3zws/  — download and extract to data/ZuCo/</span>
+
+python scripts/prepare_zuco.py \
+    --raw  data/ZuCo/raw/ \
+    --out  data/ZuCo/processed/ \
+    --subjects all
+</code></pre>
+
+      <h3>2. Configure Training</h3>
+
+      <pre><code><span style="color: #6B6B80;"># configs/train_base.yaml</span>
+model:
+  type: nest
+  encoder:
+    hidden_size: 512
+    num_layers: 6
+    num_heads: 8
+    dropout: 0.1
+  decoder:
+    hidden_size: 512
+    num_layers: 6
+    vocab_size: 50000
+    dropout: 0.1
+
+training:
+  batch_size: 32
+  learning_rate: 1.0e-4
+  lr_scheduler: cosine
+  warmup_steps: 2000
+  epochs: 100
+  gradient_clip: 1.0
+  seed: 42
+
+data:
+  root: data/ZuCo/processed/
+  tasks: [task1-SR, task2-NR]
+  test_subjects: [subject10, subject11, subject12]
+</code></pre>
+
+      <h3>3. Launch Training</h3>
+
+      <pre><code><span style="color: #6B6B80;"># Single GPU</span>
+python scripts/train.py --config configs/train_base.yaml
+
+<span style="color: #6B6B80;"># Multi-GPU (4x)</span>
+torchrun --nproc_per_node=4 scripts/train.py \
+    --config configs/train_base.yaml \
+    --distributed
+</code></pre>
+
+      <h3>4. Monitor with TensorBoard</h3>
+
+      <pre><code>tensorboard --logdir runs/nest-base/
+<span style="color: #6B6B80;"># Open http://localhost:6006 to see loss curves and sample predictions</span>
+</code></pre>
+
+      <h2 id="fine-tuning">Fine-tuning</h2>
+
+      <p>Start from the pre-trained <code>nest-base</code> checkpoint and fine-tune on your own EEG dataset. Your data must follow the <a href="#custom-dataset">custom dataset format</a>.</p>
+
+      <pre><code>from nest import NESTDecoder
+from nest.data import CustomEEGDataset
+from nest.training import Trainer
+
+<span style="color: #6B6B80;"># Load pre-trained model</span>
+decoder = NESTDecoder.from_pretrained("nest-base")
+
+<span style="color: #6B6B80;"># Load your dataset</span>
+train_data = CustomEEGDataset("data/my_dataset/train/")
+val_data   = CustomEEGDataset("data/my_dataset/val/")
+
+<span style="color: #6B6B80;"># Fine-tune — only decoder cross-attention updated by default</span>
+trainer = Trainer(
+    model=decoder.model,
+    train_dataset=train_data,
+    val_dataset=val_data,
+    config={
+        "learning_rate": 5e-5,   <span style="color: #6B6B80;"># lower LR for fine-tuning</span>
+        "epochs": 20,
+        "freeze_encoder": True,  <span style="color: #6B6B80;"># freeze EEG encoder</span>
+        "batch_size": 16,
+    }
+)
+
+trainer.fit()
+trainer.save("checkpoints/my-model.pt")
+</code></pre>
+
+      <h3>Freeze Strategies</h3>
+
+      <pre><code><span style="color: #6B6B80;"># Freeze encoder only (default) — fastest, good for similar EEG hardware</span>
+decoder.model.freeze_encoder()
+
+<span style="color: #6B6B80;"># Freeze nothing — full fine-tune, needs more data</span>
+decoder.model.unfreeze_all()
+
+<span style="color: #6B6B80;"># Freeze all except cross-attention — good for domain adaptation</span>
+decoder.model.freeze_all()
+decoder.model.unfreeze_cross_attention()
+</code></pre>
+
+      <h2 id="deployment">Deployment</h2>
+
+      <p>NEST can be served as a REST API using FastAPI. For production, export to TorchScript for faster inference without the Python overhead.</p>
+
+      <h3>FastAPI Server</h3>
+
+      <pre><code><span style="color: #6B6B80;"># server.py</span>
+from fastapi import FastAPI
+from pydantic import BaseModel
+from nest import NESTDecoder
+import numpy as np
+
+app     = FastAPI()
+decoder = NESTDecoder.from_pretrained("nest-base")
+
+class EEGRequest(BaseModel):
+    epochs: list[list[list[float]]]  <span style="color: #6B6B80;"># [n_words, n_channels, n_times]</span>
+
+@app.post("/decode")
+def decode(req: EEGRequest):
+    eeg  = np.array(req.epochs, dtype=np.float32)
+    text = decoder.decode(eeg)
+    return {"text": text}
+</code></pre>
+
+      <pre><code><span style="color: #6B6B80;"># Run</span>
+uvicorn server:app --host 0.0.0.0 --port 8000 --workers 2
+</code></pre>
+
+      <h3>TorchScript Export</h3>
+
+      <pre><code>import torch
+from nest import NESTDecoder
+
+decoder = NESTDecoder.from_pretrained("nest-base")
+scripted = torch.jit.script(decoder.model)
+scripted.save("nest-base-scripted.pt")
+
+<span style="color: #6B6B80;"># Load in production (no Python NEST library needed)</span>
+model = torch.jit.load("nest-base-scripted.pt")
+</code></pre>
+
+      <h3>Batch Inference</h3>
+
+      <pre><code>from nest import NESTDecoder
+
+decoder = NESTDecoder.from_pretrained("nest-base")
+
+<span style="color: #6B6B80;"># Process multiple recordings efficiently</span>
+results = decoder.decode_batch(
+    eeg_list,       <span style="color: #6B6B80;"># list of (n_words, 105, 500) arrays</span>
+    batch_size=64,
+    device="cuda"
+)
+
+for text in results:
+    print(text)
+</code></pre>
+
+      <h2 id="basic-usage">Basic Usage</h2>
+
+      <p>Common usage patterns for inference and analysis.</p>
+
+      <h3>Load and Decode</h3>
+
+      <pre><code>from nest import NESTDecoder
+import numpy as np
+
+<span style="color: #6B6B80;"># Load model (downloads weights on first run, ~180MB)</span>
+decoder = NESTDecoder.from_pretrained("nest-base")
+
+<span style="color: #6B6B80;"># Simulate EEG data (replace with real recordings)</span>
+eeg_epochs = np.random.randn(15, 105, 500).astype(np.float32)
+
+<span style="color: #6B6B80;"># Decode — returns a string</span>
+text = decoder.decode(eeg_epochs)
+print(text)
+</code></pre>
+
+      <h3>Token-Level Output</h3>
+
+      <pre><code><span style="color: #6B6B80;"># Get per-word tokens with confidence scores</span>
+output = decoder.decode_with_scores(eeg_epochs)
+
+for word, score in zip(output.words, output.scores):
+    print(f"{word:15s}  confidence={score:.2%}")
+</code></pre>
+
+      <h3>Attention Maps</h3>
+
+      <pre><code><span style="color: #6B6B80;"># Extract cross-attention maps for interpretability</span>
+output = decoder.decode_with_attention(eeg_epochs)
+
+<span style="color: #6B6B80;"># output.attention: shape (n_decoder_layers, n_heads, n_tokens, n_eeg_frames)</span>
+import matplotlib.pyplot as plt
+plt.imshow(output.attention[-1].mean(0), aspect="auto", cmap="magma")
+plt.xlabel("EEG time frame")
+plt.ylabel("Decoded token")
+plt.colorbar()
+plt.show()
+</code></pre>
+
+      <h2 id="custom-dataset">Custom Dataset</h2>
+
+      <p>To train or fine-tune on your own EEG data, structure it in the NEST format and implement the <code>CustomEEGDataset</code> class.</p>
+
+      <h3>Required File Structure</h3>
+
+      <pre><code>data/my_dataset/
+  train/
+    subject01_task1.npz
+    subject02_task1.npz
+    ...
+  val/
+    subject10_task1.npz
+  test/
+    subject11_task1.npz
+</code></pre>
+
+      <h3>NPZ File Format</h3>
+
+      <pre><code>import numpy as np
+
+<span style="color: #6B6B80;"># Each .npz file contains arrays for one subject/session</span>
+np.savez(
+    "data/my_dataset/train/subject01_task1.npz",
+    eeg=epochs_array,    <span style="color: #6B6B80;"># shape: (n_words, n_channels, n_times)</span>
+    words=word_list,     <span style="color: #6B6B80;"># list of strings, length = n_words</span>
+    sfreq=np.array(500), <span style="color: #6B6B80;"># sampling frequency</span>
+    ch_names=ch_list     <span style="color: #6B6B80;"># list of channel names, length = n_channels</span>
+)
+</code></pre>
+
+      <h3>Dataset Class</h3>
+
+      <pre><code>from nest.data import CustomEEGDataset
+from torch.utils.data import DataLoader
+
+dataset = CustomEEGDataset(
+    root="data/my_dataset/train/",
+    preprocess=True,   <span style="color: #6B6B80;"># apply default filtering + normalization</span>
+    sfreq=500,
+    n_channels=64      <span style="color: #6B6B80;"># your headset channel count (not necessarily 105)</span>
+)
+
+loader = DataLoader(dataset, batch_size=16, shuffle=True)
+</code></pre>
+
+      <p>If your headset has fewer than 105 channels, NEST will project the input to 512-dim with a learned linear layer rather than the standard convolutional feature extractor.</p>
+
+      <h2 id="realtime-demo">Real-time Demo</h2>
+
+      <p>Stream live EEG from any LSL-compatible device and decode in real time. Requires <a href="https://github.com/sccn/liblsl" target="_blank" rel="noopener">pylsl</a> and a running EEG stream.</p>
+
+      <pre><code>pip install nest-eeg pylsl
+</code></pre>
+
+      <pre><code>from nest.realtime import NESTStream
+
+<span style="color: #6B6B80;"># Connect to an LSL EEG stream and start decoding</span>
+stream = NESTStream(
+    model="nest-base",
+    stream_name="BrainProducts RDA",  <span style="color: #6B6B80;"># LSL stream name</span>
+    n_channels=105,
+    sfreq=500,
+    epoch_duration=1.0,  <span style="color: #6B6B80;"># seconds per word epoch</span>
+    stride=0.5           <span style="color: #6B6B80;"># sliding window stride</span>
+)
+
+@stream.on_decode
+def on_text(word, confidence):
+    print(f"[{confidence:.0%}] {word}", end=" ", flush=True)
+
+stream.start()  <span style="color: #6B6B80;"># blocks until KeyboardInterrupt</span>
+</code></pre>
+
+      <h3>Built-in LSL Demo</h3>
+
+      <pre><code><span style="color: #6B6B80;"># Launch the graphical real-time demo (simulated EEG if no hardware)</span>
+python -m nest.realtime.demo --simulate
+
+<span style="color: #6B6B80;"># With real hardware</span>
+python -m nest.realtime.demo --stream "BrainProducts RDA" --model nest-base
+</code></pre>
+
+      <p>The demo window shows live EEG waveforms on the left and the decoded text stream on the right, updating word-by-word as signals are processed.</p>
+
       <!-- Navigation -->
       <div class="docs-nav-buttons">
-        <a href="#" class="docs-nav-btn">
-          <span class="docs-nav-btn-label">← Previous</span>
+        <a href="#introduction" class="docs-nav-btn">
+          <span class="docs-nav-btn-label">&#x2190; Back to top</span>
           <span class="docs-nav-btn-title">Introduction</span>
         </a>
-        <a href="#installation" class="docs-nav-btn" style="text-align: right;">
-          <span class="docs-nav-btn-label">Next →</span>
-          <span class="docs-nav-btn-title">Installation</span>
+        <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="docs-nav-btn" style="text-align: right;">
+          <span class="docs-nav-btn-label">View source &#x2192;</span>
+          <span class="docs-nav-btn-title">GitHub</span>
         </a>
       </div>
 
-      <!-- Footer -->
-      <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
-        <p style="font-size: 14px; color: #6B6B80;">© 2026 NEST Project • MIT License</p>
-      </div>
     </main>
   </div>
 
+  <div id="site-footer"></div>
+
   <script src="../js/main.js"></script>
+  <script src="../js/footer.js"></script>
 </body>
 </html>

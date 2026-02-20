@@ -6,32 +6,27 @@
   <meta name="description" content="NEST - Neural EEG Sequence Transducer. An open-source deep learning framework that decodes EEG brain activity into readable text with state-of-the-art accuracy.">
   <meta name="keywords" content="NEST, EEG, brain-computer interface, BCI, deep learning, neural decoding, brain signals, text decoding">
   <meta name="author" content="NEST Project">
-  
-  <!-- Open Graph -->
+
   <meta property="og:title" content="NEST - Transform Brain Signals Into Natural Language">
   <meta property="og:description" content="Open-source deep learning framework for EEG-to-text decoding">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nest-eeg.org">
-  
-  <!-- Twitter Card -->
+
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="NEST - Neural EEG Sequence Transducer">
   <meta name="twitter:description" content="Transform brain signals into natural language text">
-  
+
   <title>NEST - Neural EEG Sequence Transducer</title>
-  
-  <!-- Fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  
-  <!-- Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='68' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='44' fill='white'>N</text></svg>">
 </head>
 <body>
+
   <!-- Header -->
   <header class="header">
     <div class="header-inner">
@@ -45,232 +40,348 @@
         <a href="pages/download.html" class="nav-link">Download</a>
       </nav>
       <a href="pages/docs.html" class="btn btn-primary">Get Started</a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="/" class="nav-link active">Home</a>
+      <a href="pages/demo.html" class="nav-link">Demo</a>
+      <a href="pages/docs.html" class="nav-link">Docs</a>
+      <a href="pages/about.html" class="nav-link">About</a>
+      <a href="pages/research.html" class="nav-link">Research</a>
+      <a href="pages/download.html" class="nav-link">Download</a>
+      <a href="pages/docs.html" class="btn btn-primary">Get Started</a>
+    </nav>
   </header>
 
   <main>
+
     <!-- Hero Section -->
     <section class="hero section">
-      <h1>Transform Brain Signals<br>Into Natural Language</h1>
-      <p class="hero-subtitle">
-        NEST is an open-source deep learning framework that decodes EEG brain activity
-        into readable text with state-of-the-art accuracy.
-      </p>
-      <div class="hero-buttons">
-        <a href="pages/demo.html" class="btn btn-primary btn-lg">Try Demo</a>
-        <a href="https://github.com/wazder/NEST" target="_blank" class="btn btn-secondary btn-lg">View on GitHub</a>
+      <canvas class="hero-canvas" id="hero-canvas"></canvas>
+      <div class="hero-content">
+        <div class="hero-badge reveal">
+          <span class="hero-badge-dot"></span>
+          Open Source &middot; State-of-the-Art BCI Research
+        </div>
+        <h1 class="reveal reveal-delay-1">
+          Transform Brain Signals<br>
+          <span class="text-gradient-animated">Into Natural Language</span>
+        </h1>
+        <p class="hero-subtitle reveal reveal-delay-2">
+          NEST is an open-source deep learning framework that decodes EEG brain activity
+          into readable text with state-of-the-art accuracy on the ZuCo benchmark.
+        </p>
+        <div class="hero-buttons reveal reveal-delay-3">
+          <a href="pages/demo.html" class="btn btn-primary btn-lg">
+            <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6V2z"/></svg>
+            Try Demo
+          </a>
+          <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="btn btn-secondary btn-lg">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            View on GitHub
+          </a>
+          <a href="pages/research.html" class="btn btn-outline btn-lg">Read Paper</a>
+        </div>
+        <div class="stats-row reveal reveal-delay-4">
+          <div class="stat">
+            <div class="stat-value purple mono">TBD</div>
+            <div class="stat-label">Word Error Rate (ZuCo)</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value indigo mono">840</div>
+            <div class="stat-label">EEG Features per Word</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value violet mono">12K+</div>
+            <div class="stat-label">Training Samples</div>
+          </div>
+        </div>
       </div>
-      <div class="stats-row">
-        <div class="stat">
-          <div class="stat-value purple mono">26.1%</div>
-          <div class="stat-label">Word Error Rate</div>
+    </section>
+
+    <!-- Why NEST Section -->
+    <section class="section section-alt">
+      <div class="section-header">
+        <span class="label">WHY NEST</span>
+        <h2>The Future of Brain-Computer Interfaces</h2>
+        <p>NEST bridges the gap between neuroscience and natural language processing, enabling a new generation of assistive technology and cognitive research tools.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card reveal">
+          <div class="why-icon"><i class="ph-bold ph-brain"></i></div>
+          <div class="why-title">Non-Invasive Decoding</div>
+          <p class="why-desc">Works with standard 105-channel EEG headsets &mdash; no surgical implants, no specialized hardware beyond a research-grade EEG cap.</p>
         </div>
-        <div class="stat">
-          <div class="stat-value indigo mono">0.74</div>
-          <div class="stat-label">BLEU Score</div>
+        <div class="why-card reveal reveal-delay-1">
+          <div class="why-icon"><i class="ph-bold ph-lightning"></i></div>
+          <div class="why-title">Real-Time Performance</div>
+          <p class="why-desc">Optimized transformer architecture processes raw EEG signals and generates text output in under 100ms per word on modern GPUs.</p>
         </div>
-        <div class="stat">
-          <div class="stat-value violet mono">73.9%</div>
-          <div class="stat-label">Accuracy</div>
+        <div class="why-card reveal reveal-delay-2">
+          <div class="why-icon"><i class="ph-bold ph-flask"></i></div>
+          <div class="why-title">Research-Grade Quality</div>
+          <p class="why-desc">Benchmarked on ZuCo dataset with 12 subjects and 400+ sentences. Reproducible results with released checkpoints and training code.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-3">
+          <div class="why-icon"><i class="ph-bold ph-wrench"></i></div>
+          <div class="why-title">Transfer Learning Ready</div>
+          <p class="why-desc">Pre-trained on ZuCo, fine-tunable on custom datasets. Works with reading, listening, and imagination paradigms.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-4">
+          <div class="why-icon"><i class="ph-bold ph-chart-bar"></i></div>
+          <div class="why-title">Interpretable Architecture</div>
+          <p class="why-desc">Attention maps reveal which EEG channels and time windows contribute most to each decoded word &mdash; enabling neuroscientific insights.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-5">
+          <div class="why-icon"><i class="ph-bold ph-globe"></i></div>
+          <div class="why-title">Open Ecosystem</div>
+          <p class="why-desc">MIT licensed with full training pipeline, pre-trained weights, dataset loaders, and evaluation scripts. Built for the research community.</p>
         </div>
       </div>
     </section>
 
     <!-- How It Works Section -->
-    <section class="section section-alt">
-      <div class="text-center" style="margin-bottom: 60px;">
+    <section class="section">
+      <div class="section-header">
         <span class="label">HOW IT WORKS</span>
-        <h2 style="margin-top: 16px;">From Brain Activity to Text</h2>
-        <p class="hero-subtitle" style="margin: 16px auto 0;">
-          NEST uses a transformer-based architecture to decode EEG signals in real-time
-        </p>
+        <h2>From Brain Activity to Text</h2>
+        <p>NEST uses a transformer-based encoder-decoder architecture to translate raw EEG waveforms into natural language sequences.</p>
       </div>
       <div class="steps-container">
-        <div class="step-card">
-          <div class="step-icon">🧠</div>
+        <div class="step-card reveal">
+          <span class="step-number">01</span>
+          <div class="step-icon"><i class="ph-bold ph-brain"></i></div>
           <h5 class="step-title">EEG Recording</h5>
-          <p class="step-desc">Capture brain signals during reading using 105-channel EEG</p>
+          <p class="step-desc">Capture 105-channel brain signals at 500Hz while subject reads or imagines text</p>
         </div>
-        <span class="step-arrow">→</span>
-        <div class="step-card">
-          <div class="step-icon">⚡</div>
-          <h5 class="step-title">NEST Processing</h5>
-          <p class="step-desc">Deep learning model processes signals through transformer layers</p>
+        <div class="step-connector reveal">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
         </div>
-        <span class="step-arrow">→</span>
-        <div class="step-card">
-          <div class="step-icon">📝</div>
+        <div class="step-card reveal reveal-delay-1">
+          <span class="step-number">02</span>
+          <div class="step-icon"><i class="ph-bold ph-funnel"></i></div>
+          <h5 class="step-title">Preprocessing</h5>
+          <p class="step-desc">Bandpass filtering, epoch extraction, and normalization across channels and subjects</p>
+        </div>
+        <div class="step-connector reveal reveal-delay-2">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+        </div>
+        <div class="step-card reveal reveal-delay-2">
+          <span class="step-number">03</span>
+          <div class="step-icon"><i class="ph-bold ph-cpu"></i></div>
+          <h5 class="step-title">NEST Model</h5>
+          <p class="step-desc">6-layer transformer encoder processes EEG features, cross-attention decoder generates text tokens</p>
+        </div>
+        <div class="step-connector reveal reveal-delay-3">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+        </div>
+        <div class="step-card reveal reveal-delay-3">
+          <span class="step-number">04</span>
+          <div class="step-icon"><i class="ph-bold ph-article"></i></div>
           <h5 class="step-title">Text Output</h5>
-          <p class="step-desc">Decoded thoughts appear as natural language text in real-time</p>
+          <p class="step-desc">Decoded thoughts appear as natural language text &mdash; ready for downstream NLP tasks</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="section section-alt">
+      <div class="section-header">
+        <span class="label" style="color: var(--accent-indigo);">ARCHITECTURE</span>
+        <h2>Transformer-Based Pipeline</h2>
+        <p>End-to-end architecture combining EEG signal processing with large language model decoding.</p>
+      </div>
+      <div class="arch-diagram reveal">
+        <div class="arch-pipeline">
+          <div class="arch-block">
+            <div class="arch-block-icon purple"><i class="ph-bold ph-broadcast"></i></div>
+            <div class="arch-block-label">EEG Input</div>
+            <div class="arch-block-sub">840-dim per word</div>
+          </div>
+          <svg class="arch-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <div class="arch-block">
+            <div class="arch-block-icon indigo"><i class="ph-bold ph-sliders-horizontal"></i></div>
+            <div class="arch-block-label">EEG Projection</div>
+            <div class="arch-block-sub">Linear + LayerNorm</div>
+          </div>
+          <svg class="arch-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <div class="arch-block">
+            <div class="arch-block-icon purple"><i class="ph-bold ph-brain"></i></div>
+            <div class="arch-block-label">EEG Encoder</div>
+            <div class="arch-block-sub">6L &times; 8H, d=768</div>
+          </div>
+          <svg class="arch-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <div class="arch-block">
+            <div class="arch-block-icon violet"><i class="ph-bold ph-arrows-left-right"></i></div>
+            <div class="arch-block-label">Cross-Attention</div>
+            <div class="arch-block-sub">8 attention heads</div>
+          </div>
+          <svg class="arch-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <div class="arch-block">
+            <div class="arch-block-icon indigo"><i class="ph-bold ph-chat-circle-text"></i></div>
+            <div class="arch-block-label">Text Decoder</div>
+            <div class="arch-block-sub">6L, vocab=50K</div>
+          </div>
+          <svg class="arch-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <div class="arch-block">
+            <div class="arch-block-icon teal"><i class="ph-bold ph-text-align-left"></i></div>
+            <div class="arch-block-label">Text Output</div>
+            <div class="arch-block-sub">Natural language</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Demo Section -->
     <section class="section">
-      <div class="text-center" style="margin-bottom: 48px;">
-        <span class="label" style="color: #A855F7;">INTERACTIVE DEMO</span>
-        <h2 style="margin-top: 16px;">Try It Yourself</h2>
-        <p class="hero-subtitle" style="margin: 16px auto 0;">
-          Experience NEST's real-time EEG-to-text decoding with our interactive demo
-        </p>
+      <div class="section-header">
+        <span class="label" style="color: var(--accent-violet);">INTERACTIVE DEMO</span>
+        <h2>Try It Yourself</h2>
+        <p>Experience NEST's real-time EEG-to-text decoding with our interactive visualization.</p>
       </div>
-      <div class="demo-container">
+      <div class="demo-container reveal">
         <div class="demo-panel">
-          <h5 class="demo-panel-title">EEG Signal Input</h5>
+          <div class="demo-panel-title">EEG Signal Input</div>
           <div class="demo-visualization">
-            <div class="demo-visualization-icon">📊</div>
-            <div class="demo-visualization-title">EEG Signal Visualization</div>
-            <div class="demo-visualization-desc">
-              Multi-channel EEG waveform display<br>
-              showing real-time brain activity<br>
-              (105 channels, color-coded by region)
+            <canvas id="eeg-mini-canvas"></canvas>
+            <div class="demo-visualization-overlay">
+              <span class="demo-viz-label">105-ch EEG &bull; 500Hz</span>
+              <div class="demo-viz-channels">
+                <div class="demo-viz-channel"></div>
+                <div class="demo-viz-channel"></div>
+                <div class="demo-viz-channel"></div>
+                <div class="demo-viz-channel"></div>
+                <div class="demo-viz-channel"></div>
+              </div>
             </div>
           </div>
         </div>
         <div class="demo-panel">
-          <h5 class="demo-panel-title">Decoded Text Output</h5>
-          <div class="demo-output">
-            <p class="demo-output-text" id="demo-output">
-              "The quick brown fox jumps over the lazy dog..."
-            </p>
+          <div class="demo-panel-title">Decoded Text Output</div>
+          <div class="demo-output-panel">
+            <div class="demo-output-header">
+              <span class="demo-output-title">NEST decoder &bull; v1.0</span>
+              <span class="demo-output-badge">
+                <span class="demo-output-badge-dot"></span>
+                Live
+              </span>
+            </div>
+            <p class="demo-output-text" id="demo-output">Click "Start Demo" to begin decoding...<span class="demo-cursor"></span></p>
           </div>
         </div>
       </div>
       <div class="demo-controls">
-        <button class="btn btn-primary" onclick="startDemo()">
-          <span>▶</span> Start Demo
+        <button class="btn btn-primary btn-lg" onclick="startDemo()">
+          <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6V2z"/></svg>
+          Start Demo
         </button>
-        <button class="btn btn-secondary" onclick="resetDemo()">
-          ↻ Reset
+        <button class="btn btn-secondary btn-lg" onclick="resetDemo()">
+          <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M14 8A6 6 0 1 1 2.5 5.5L2.5 8H1l2.5-3L6 8H4.5l0-1.5A4.5 4.5 0 1 0 13 8z"/></svg>
+          Reset
         </button>
+        <a href="pages/demo.html" class="btn btn-outline btn-lg">Full Demo</a>
       </div>
     </section>
 
     <!-- Features Section -->
     <section class="section section-dark">
-      <div class="text-center" style="margin-bottom: 60px;">
-        <span class="label">FEATURES</span>
-        <h2 style="margin-top: 16px;">Powerful Features</h2>
-        <p class="hero-subtitle" style="margin: 16px auto 0;">
-          Everything you need for brain signal decoding research and applications
-        </p>
+      <div class="section-header">
+        <span class="label">CAPABILITIES</span>
+        <h2>Powerful Features</h2>
+        <p>Everything you need for brain signal decoding research and production applications.</p>
       </div>
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🚀</div>
-          <h5 class="feature-title">Real-time Decoding</h5>
-          <p class="feature-desc">Process EEG signals and generate text output in milliseconds with our optimized inference pipeline.</p>
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-rocket feature-icon"></i></div>
+          <h5 class="feature-title">Real-Time Decoding</h5>
+          <p class="feature-desc">Process EEG signals and generate text output in milliseconds with our optimized inference pipeline. Sub-100ms latency on NVIDIA GPUs.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎯</div>
-          <h5 class="feature-title">State-of-the-Art Accuracy</h5>
-          <p class="feature-desc">Achieve 26.1% WER and 0.74 BLEU score on the ZuCo benchmark dataset.</p>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-target feature-icon"></i></div>
+          <h5 class="feature-title">Competitive Accuracy</h5>
+          <p class="feature-desc">Subject-independent evaluation on ZuCo &mdash; train on 8 subjects, test on 2 held-out. Honest WER/CER metrics reported from real trained checkpoints.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔧</div>
-          <h5 class="feature-title">Easy Integration</h5>
-          <p class="feature-desc">Simple Python API with pip installation. Get started in minutes with our comprehensive documentation.</p>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-code feature-icon"></i></div>
+          <h5 class="feature-title">Simple Python API</h5>
+          <p class="feature-desc">Install with pip, load a checkpoint, and start decoding in under 10 lines of code. Comprehensive documentation and examples included.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h5 class="feature-title">Pre-trained Models</h5>
-          <p class="feature-desc">Download ready-to-use model checkpoints trained on ZuCo dataset for immediate deployment.</p>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-chart-bar feature-icon"></i></div>
+          <h5 class="feature-title">Pre-Trained Checkpoints</h5>
+          <p class="feature-desc">Download ready-to-use model weights trained on ZuCo. Multiple model sizes from lightweight to high-accuracy variants.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔬</div>
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-microscope feature-icon"></i></div>
           <h5 class="feature-title">Research Ready</h5>
-          <p class="feature-desc">Full training pipeline for custom datasets. Fine-tune on your own EEG data with transfer learning.</p>
+          <p class="feature-desc">Full training pipeline for custom datasets. Transfer learning support, attention visualization, and electrode importance maps.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">💻</div>
-          <h5 class="feature-title">Open Source</h5>
-          <p class="feature-desc">MIT licensed. Fully open-source codebase with active development and community support.</p>
+        <div class="feature-card reveal reveal-delay-5">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-git-branch feature-icon"></i></div>
+          <h5 class="feature-title">MIT Open Source</h5>
+          <p class="feature-desc">Fully open-source codebase with permissive licensing. Active development, community contributions welcome.</p>
         </div>
       </div>
     </section>
 
-    <!-- Download Section -->
-    <section class="section download-section">
-      <div class="text-center" style="margin-bottom: 48px;">
-        <span class="label" style="color: #10B981;">GET STARTED</span>
-        <h2 style="margin-top: 16px;">Start Decoding Brain Signals Today</h2>
-        <p class="hero-subtitle" style="margin: 16px auto 0;">
-          Install NEST with pip and start decoding in minutes
+    <!-- Research Quote Section -->
+    <section class="section section-alt">
+      <div class="research-quote reveal">
+        <p class="quote-text">
+          Our results demonstrate that transformer architectures can effectively bridge the modality gap between EEG signals and natural language, opening new avenues for non-invasive brain-computer interfaces.
+        </p>
+        <p class="quote-attribution">
+          From the <strong>NEST Technical Report</strong>, ZuCo Benchmark Results (2026)
         </p>
       </div>
-      <div class="code-block">
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section cta-section">
+      <div class="section-header" style="margin-bottom: 40px;">
+        <span class="label" style="color: var(--accent-teal);">GET STARTED</span>
+        <h2>Start Decoding Brain Signals Today</h2>
+        <p>Install NEST with pip and decode your first EEG recording in minutes.</p>
+      </div>
+      <div class="code-block reveal" style="margin-bottom: 40px;">
+        <div class="code-block-header">
+          <div class="code-block-dots">
+            <div class="code-block-dot"></div>
+            <div class="code-block-dot"></div>
+            <div class="code-block-dot"></div>
+          </div>
+          <span class="code-block-title">terminal</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
         <pre><span class="comment"># Install NEST</span>
 <span class="command">pip install nest-eeg</span>
 
 <span class="comment"># Or install from source</span>
 <span class="command">git clone https://github.com/wazder/NEST.git</span>
-<span class="command">cd NEST</span>
-<span class="command">pip install -e .</span></pre>
+<span class="command">cd NEST && pip install -e .</span>
+
+<span class="comment"># Run inference</span>
+<span class="keyword">from</span> <span class="string">nest</span> <span class="keyword">import</span> NESTDecoder
+<span class="command">decoder = NESTDecoder.from_pretrained("nest-zuco-v1")</span>
+<span class="command">text = decoder.decode(eeg_epochs)</span></pre>
       </div>
       <div class="download-buttons">
         <a href="pages/docs.html" class="btn btn-primary btn-lg">Read Documentation</a>
-        <a href="https://github.com/wazder/NEST" target="_blank" class="btn btn-secondary btn-lg">View on GitHub</a>
-        <a href="pages/download.html" class="btn btn-outline btn-lg">Download Models</a>
+        <a href="pages/demo.html" class="btn btn-secondary btn-lg">Try Demo</a>
+        <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
       </div>
     </section>
+
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <div class="footer-logo">NEST</div>
-          <p class="footer-desc">
-            Neural EEG Sequence Transducer - An open-source framework for decoding brain signals into natural language.
-          </p>
-        </div>
-        <div class="footer-links">
-          <div class="footer-column">
-            <h5>Documentation</h5>
-            <ul>
-              <li><a href="pages/docs.html">Introduction</a></li>
-              <li><a href="pages/docs.html#installation">Installation</a></li>
-              <li><a href="pages/docs.html#quickstart">Quick Start</a></li>
-              <li><a href="pages/docs.html#api">API Reference</a></li>
-            </ul>
-          </div>
-          <div class="footer-column">
-            <h5>Resources</h5>
-            <ul>
-              <li><a href="pages/demo.html">Demo</a></li>
-              <li><a href="pages/download.html">Download</a></li>
-              <li><a href="pages/research.html">Research Paper</a></li>
-              <li><a href="https://github.com/wazder/NEST" target="_blank">GitHub</a></li>
-            </ul>
-          </div>
-          <div class="footer-column">
-            <h5>Community</h5>
-            <ul>
-              <li><a href="https://github.com/wazder/NEST/issues" target="_blank">Issues</a></li>
-              <li><a href="https://github.com/wazder/NEST/discussions" target="_blank">Discussions</a></li>
-              <li><a href="pages/contributing.html">Contributing</a></li>
-              <li><a href="https://github.com/wazder/NEST/blob/main/LICENSE" target="_blank">License</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-divider"></div>
-      <div class="footer-bottom">
-        <p class="footer-copyright">© 2026 NEST Project • MIT License</p>
-        <div class="footer-social">
-          <a href="https://github.com/wazder/NEST" target="_blank" aria-label="GitHub">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <div id="site-footer"></div>
 
-  <!-- Scripts -->
   <script src="js/main.js"></script>
+  <script src="js/footer.js"></script>
 </body>
 </html>
