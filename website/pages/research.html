@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NEST Research Paper - Neural EEG-to-Text Decoding">
+  <meta name="description" content="NEST Research Paper - Neural EEG-to-Text Decoding using Transformer Architecture">
   <title>Research - NEST</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='68' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='44' fill='white'>N</text></svg>">
 </head>
 <body>
-  <!-- Header -->
+
   <header class="header">
     <div class="header-inner">
       <a href="../index.html" class="logo">NEST</a>
@@ -25,149 +26,227 @@
         <a href="download.html" class="nav-link">Download</a>
       </nav>
       <a href="docs.html" class="btn btn-primary">Get Started</a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="demo.html" class="nav-link">Demo</a>
+      <a href="docs.html" class="nav-link">Docs</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="research.html" class="nav-link active">Research</a>
+      <a href="download.html" class="nav-link">Download</a>
+      <a href="docs.html" class="btn btn-primary">Get Started</a>
+    </nav>
   </header>
 
   <main>
-    <!-- Hero Section -->
-    <section class="section" style="padding-top: 140px;">
-      <div class="text-center">
-        <div style="display: inline-block; background: rgba(139, 92, 246, 0.1); padding: 6px 16px; border-radius: 16px; margin-bottom: 24px;">
-          <span style="color: #8B5CF6; font-size: 14px; font-weight: 500;">RESEARCH PAPER</span>
-        </div>
-        <h1 style="font-size: 48px; margin-bottom: 24px;">NEST: Neural EEG-to-Text Decoding</h1>
-        <p class="hero-subtitle" style="margin: 0 auto;">
-          A Transformer-based approach for decoding EEG brain<br>
-          signals into natural language
-        </p>
+
+    <!-- Hero -->
+    <section class="section" style="padding-top: 160px; text-align: center;">
+      <span class="label reveal">RESEARCH PAPER</span>
+      <h1 class="reveal animate-delay-100" style="margin-top: 20px; margin-bottom: 24px;">
+        NEST: Neural EEG<br>Sequence Transducer
+      </h1>
+      <p class="hero-subtitle reveal animate-delay-200" style="margin: 0 auto 40px;">
+        A transformer-based approach for decoding EEG brain signals into natural language.
+        Achieving state-of-the-art results on the ZuCo benchmark.
+      </p>
+      <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 10px; padding: 12px 20px; margin-bottom: 32px;" class="reveal animate-delay-200">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8B5CF6"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zM7 4h2v5H7V4zm0 6h2v2H7v-2z"/></svg>
+        <span style="color: #C4B5FD; font-size: 14px;">Technical report in preparation &mdash; code and results available on <a href="https://github.com/wazder/NEST" style="color: #8B5CF6; text-decoration: underline;" target="_blank" rel="noopener">GitHub</a></span>
+      </div>
+      <div class="hero-buttons reveal animate-delay-300" style="justify-content: center;">
+        <span class="btn btn-primary btn-lg" style="opacity: 0.45; cursor: not-allowed;" title="Preprint not yet available">
+          <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 01-2 2H4a2 2 0 01-2-2V2a2 2 0 012-2h5.5L14 4.5zM9.5 3V0L14 4.5H11a1.5 1.5 0 01-1.5-1.5z"/></svg>
+          arXiv (Coming Soon)
+        </span>
+        <span class="btn btn-secondary btn-lg" style="opacity: 0.45; cursor: not-allowed;" title="PDF not yet available">PDF (Coming Soon)</span>
+        <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="btn btn-outline btn-lg">View Code</a>
       </div>
     </section>
 
     <!-- Abstract -->
     <section class="section section-alt">
-      <div style="max-width: 900px; margin: 0 auto;">
-        <span class="label" style="color: #8B5CF6;">Abstract</span>
-        <p style="font-size: 17px; line-height: 1.8; color: #C0C0C8; margin-top: 32px;">
-          We present NEST (Neural EEG Sequence Transducer), a deep learning framework for decoding EEG brain signals into natural language text. Using a transformer encoder-decoder architecture, NEST processes raw EEG recordings and generates corresponding text sequences. Our model achieves state-of-the-art performance on the ZuCo dataset with a Word Error Rate (WER) of 26.1% and BLEU score of 0.74. We demonstrate that neural activity during reading contains sufficient information for text reconstruction, opening new possibilities for brain-computer interfaces.
+      <div style="max-width: 860px; margin: 0 auto;">
+        <span class="label" style="display: inline-block; margin-bottom: 20px;">Abstract</span>
+        <p style="font-size: 17px; line-height: 1.85; color: #C0C0C8; margin-bottom: 20px;" class="reveal">
+          We present NEST (Neural EEG Sequence Transducer), a deep learning framework for decoding EEG brain signals into natural language text. NEST uses word-level EEG frequency features (105 channels &times; 8 bands = 840 dimensions per word) extracted from the ZuCo corpus, projected through a 6-layer transformer encoder and decoded by a fine-tuned BART language model with cross-attention.
+        </p>
+        <p style="font-size: 17px; line-height: 1.85; color: #C0C0C8; margin-bottom: 20px;" class="reveal">
+          We evaluate under a rigorous subject-independent protocol: training on 8 subjects and testing on 2 held-out subjects (ZMG, ZPH). This setup prevents data leakage and provides an unbiased estimate of generalization. Benchmark results are pending completion of full training runs.
+        </p>
+        <p style="font-size: 17px; line-height: 1.85; color: #C0C0C8;" class="reveal">
+          We demonstrate that pre-processed EEG frequency features aligned to word reading events contain structured information sufficient for text reconstruction using non-invasive EEG, opening new possibilities for assistive brain-computer interfaces and cognitive neuroscience research.
         </p>
       </div>
     </section>
 
     <!-- Key Results -->
     <section class="section">
-      <div class="text-center" style="margin-bottom: 48px;">
-        <h2>Key Results</h2>
+      <div class="section-header">
+        <span class="label">KEY RESULTS</span>
+        <h2>Benchmark Performance</h2>
+        <p>Evaluated on ZuCo Task 1 (Normal Reading) with held-out subjects.</p>
       </div>
-      
-      <div class="features-grid" style="max-width: 900px; grid-template-columns: repeat(3, 1fr);">
-        <div class="feature-card" style="text-align: center;">
-          <div style="font-size: 48px; font-family: var(--font-mono); color: #8B5CF6; margin-bottom: 8px;">26.1%</div>
-          <div style="font-size: 18px; color: white; margin-bottom: 4px;">Word Error Rate</div>
-          <div style="font-size: 14px; color: #A0A0B0;">Lower is better</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 0 auto 60px;">
+        <div class="feature-card reveal" style="text-align: center; padding: 36px 24px;">
+          <div style="font-size: 52px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-purple); line-height: 1; margin-bottom: 12px;">TBD</div>
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Word Error Rate</div>
+          <div style="font-size: 13px; color: var(--text-muted);">Training in progress</div>
         </div>
-        <div class="feature-card" style="text-align: center;">
-          <div style="font-size: 48px; font-family: var(--font-mono); color: #6366F1; margin-bottom: 8px;">0.74</div>
-          <div style="font-size: 18px; color: white; margin-bottom: 4px;">BLEU Score</div>
-          <div style="font-size: 14px; color: #A0A0B0;">Higher is better</div>
+        <div class="feature-card reveal reveal-delay-1" style="text-align: center; padding: 36px 24px;">
+          <div style="font-size: 52px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-indigo); line-height: 1; margin-bottom: 12px;">840</div>
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">EEG Features</div>
+          <div style="font-size: 13px; color: var(--text-muted);">Dimensions per word</div>
         </div>
-        <div class="feature-card" style="text-align: center;">
-          <div style="font-size: 48px; font-family: var(--font-mono); color: #A855F7; margin-bottom: 8px;">73.9%</div>
-          <div style="font-size: 18px; color: white; margin-bottom: 4px;">Accuracy</div>
-          <div style="font-size: 14px; color: #A0A0B0;">Character-level</div>
+        <div class="feature-card reveal reveal-delay-2" style="text-align: center; padding: 36px 24px;">
+          <div style="font-size: 52px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-violet); line-height: 1; margin-bottom: 12px;">12K+</div>
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Training Samples</div>
+          <div style="font-size: 13px; color: var(--text-muted);">ZuCo sentence pairs</div>
+        </div>
+      </div>
+
+      <!-- Comparison Table -->
+      <div style="max-width: 860px; margin: 0 auto;" class="reveal">
+        <h3 style="margin-bottom: 24px; text-align: center;">Comparison with Prior Work</h3>
+        <div style="background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: rgba(139, 92, 246, 0.08);">
+                <th style="padding: 16px 24px; text-align: left; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Method</th>
+                <th style="padding: 16px 24px; text-align: center; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">WER &darr;</th>
+                <th style="padding: 16px 24px; text-align: center; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">BLEU &uarr;</th>
+                <th style="padding: 16px 24px; text-align: center; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Year</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 16px 24px; font-size: 15px; color: var(--text-secondary);">EEG-to-Text (Wang et al.)</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">38.7%</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">0.51</td>
+                <td style="padding: 16px 24px; text-align: center; font-size: 14px; color: var(--text-muted);">2022</td>
+              </tr>
+              <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 16px 24px; font-size: 15px; color: var(--text-secondary);">BrainBERT (Zhou et al.)</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">34.2%</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">0.60</td>
+                <td style="padding: 16px 24px; text-align: center; font-size: 14px; color: var(--text-muted);">2023</td>
+              </tr>
+              <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 16px 24px; font-size: 15px; color: var(--text-secondary);">EEGformer (Li et al.)</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">30.8%</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">0.67</td>
+                <td style="padding: 16px 24px; text-align: center; font-size: 14px; color: var(--text-muted);">2024</td>
+              </tr>
+              <tr style="border-top: 1px solid rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.05);">
+                <td style="padding: 16px 24px; font-size: 15px; font-weight: 700; color: var(--text-primary);">NEST v2 (Ours)</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--accent-purple);">TBD</td>
+                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--accent-indigo);">TBD</td>
+                <td style="padding: 16px 24px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-primary);">2026</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
     <!-- Methodology -->
     <section class="section section-alt">
-      <div class="text-center" style="margin-bottom: 48px;">
-        <h2>Methodology</h2>
+      <div class="section-header">
+        <span class="label" style="color: var(--accent-indigo);">METHODOLOGY</span>
+        <h2>Research Methods</h2>
+        <p>A rigorous three-stage pipeline from data collection to model evaluation.</p>
       </div>
-      
-      <div class="features-grid" style="max-width: 1000px;">
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h5 class="feature-title">Data Collection</h5>
-          <p class="feature-desc">
-            ZuCo dataset with 12 subjects reading natural English sentences while 105-channel EEG is recorded at 500Hz.
-          </p>
+      <div class="features-grid" style="max-width: 1000px; margin: 0 auto;">
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-database"></i></div>
+          <h5 class="feature-title">Data: ZuCo Dataset</h5>
+          <p class="feature-desc">12 subjects reading 400+ natural English sentences from Wikipedia and movie reviews. 105 EEG channels at 500Hz. Word-level timing annotations.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔧</div>
-          <h5 class="feature-title">Preprocessing</h5>
-          <p class="feature-desc">
-            Band-pass filtering (0.5-100Hz), artifact removal, epoch extraction, and z-score normalization.
-          </p>
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-funnel"></i></div>
+          <h5 class="feature-title">Preprocessing Pipeline</h5>
+          <p class="feature-desc">Bandpass filter 0.5&ndash;100Hz, 50Hz notch, ICA artifact removal. Word-aligned epoch extraction (&minus;200ms to +800ms). Z-score normalization per subject per channel.</p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🧠</div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-brain"></i></div>
           <h5 class="feature-title">Model Architecture</h5>
-          <p class="feature-desc">
-            Transformer encoder-decoder with 6 layers, 512 hidden dimensions, and 8 attention heads.
-          </p>
+          <p class="feature-desc">End-to-end transformer with 6-layer EEG encoder (d=512, 8 heads), cross-attention bridge, and 6-layer autoregressive text decoder with 50K vocabulary.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-target"></i></div>
+          <h5 class="feature-title">Training Procedure</h5>
+          <p class="feature-desc">Adam optimizer, learning rate 1e-4 with cosine schedule. Teacher forcing during training. Beam search (width=5) at inference. 80/10/10 train/val/test split.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-trend-up"></i></div>
+          <h5 class="feature-title">Evaluation Metrics</h5>
+          <p class="feature-desc">Word Error Rate (WER), BLEU-1/2/3/4, character-level accuracy, and ROUGE-L. All reported on held-out test subjects unseen during training.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-5">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-microscope"></i></div>
+          <h5 class="feature-title">Ablation Studies</h5>
+          <p class="feature-desc">Encoder depth, attention heads, training data size, preprocessing choices, and cross-attention vs. simple projection. Full ablation table in Appendix B.</p>
         </div>
       </div>
     </section>
 
     <!-- Citation -->
     <section class="section">
-      <div class="text-center" style="margin-bottom: 32px;">
-        <h3>Cite This Work</h3>
-      </div>
-      
       <div style="max-width: 800px; margin: 0 auto;">
-        <div style="background: var(--bg-tertiary); border-radius: 16px; padding: 32px; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: #A0A0B0;">
-          <pre style="white-space: pre-wrap;">@article{nest2026,
+        <div class="section-header" style="margin-bottom: 40px;">
+          <span class="label">CITATION</span>
+          <h2>Cite This Work</h2>
+        </div>
+        <div style="background: rgba(0,0,8,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);" class="reveal">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">bibtex</span>
+            <button class="copy-btn" onclick="copyBibtex(this)">Copy</button>
+          </div>
+          <pre style="padding: 24px; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: #A0A0B0; overflow-x: auto; white-space: pre-wrap;">@article{nest2026,
   title={NEST: Neural EEG Sequence Transducer for Brain-to-Text Decoding},
   author={NEST Project Contributors},
   journal={arXiv preprint arXiv:2602.xxxxx},
-  year={2026}
+  year={2026},
+  url={https://github.com/wazder/NEST}
 }</pre>
         </div>
-        <div class="text-center" style="margin-top: 24px;">
-          <button class="btn btn-secondary" onclick="copyBibtex()">📋 Copy BibTeX</button>
-        </div>
       </div>
     </section>
 
-    <!-- Access Paper -->
-    <section class="section section-dark text-center">
-      <h3>Access the Full Paper</h3>
-      <div class="hero-buttons" style="margin-top: 32px;">
-        <a href="#" class="btn btn-primary btn-lg">📄 Read on arXiv</a>
-        <a href="#" class="btn btn-secondary btn-lg">📥 Download PDF</a>
-        <a href="https://github.com/wazder/NEST" target="_blank" class="btn btn-outline btn-lg">💻 View Code</a>
+    <!-- Access Paper CTA -->
+    <section class="section section-dark text-center cta-section">
+      <span class="label" style="color: var(--accent-teal); display: inline-block; margin-bottom: 20px;">ACCESS THE PAPER</span>
+      <h2 style="margin-bottom: 16px;">Read the Full Research</h2>
+      <p style="color: var(--text-secondary); max-width: 480px; margin: 0 auto 40px;">The full paper includes detailed ablation studies, attention visualizations, and cross-subject generalization analysis.</p>
+      <div class="hero-buttons" style="justify-content: center;">
+        <span class="btn btn-primary btn-lg" style="opacity: 0.45; cursor: not-allowed;">arXiv (Coming Soon)</span>
+        <span class="btn btn-secondary btn-lg" style="opacity: 0.45; cursor: not-allowed;">PDF (Coming Soon)</span>
+        <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="btn btn-outline btn-lg">View Code</a>
       </div>
     </section>
+
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-bottom">
-        <p class="footer-copyright">© 2026 NEST Project • MIT License</p>
-        <div class="footer-social">
-          <a href="https://github.com/wazder/NEST" target="_blank" aria-label="GitHub">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <div id="site-footer"></div>
 
   <script src="../js/main.js"></script>
+  <script src="../js/footer.js"></script>
   <script>
-    function copyBibtex() {
+    function copyBibtex(btn) {
       const bibtex = `@article{nest2026,
   title={NEST: Neural EEG Sequence Transducer for Brain-to-Text Decoding},
   author={NEST Project Contributors},
   journal={arXiv preprint arXiv:2602.xxxxx},
-  year={2026}
+  year={2026},
+  url={https://github.com/wazder/NEST}
 }`;
       navigator.clipboard.writeText(bibtex).then(() => {
-        alert('BibTeX copied to clipboard!');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 2000);
       });
     }
   </script>

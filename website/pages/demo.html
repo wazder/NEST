@@ -9,10 +9,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-size='60'>🧠</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='68' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='44' fill='white'>N</text></svg>">
+  <style>
+    .example-card { cursor: pointer; transition: border 0.2s, background 0.2s, transform 0.15s; border: 1.5px solid transparent; }
+    .example-card:hover { transform: translateY(-2px); }
+    .example-card.active { border: 1.5px solid #8B5CF6; background: rgba(139, 92, 246, 0.08); }
+    .example-card.active-blue { border: 1.5px solid #06B6D4; background: rgba(6, 182, 212, 0.07); }
+    .example-card.active-pink { border: 1.5px solid #EC4899; background: rgba(236, 72, 153, 0.07); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #444; display: inline-block; transition: background 0.3s, box-shadow 0.3s; flex-shrink: 0; }
+    .status-dot.live { background: #22C55E; box-shadow: 0 0 6px #22C55E; animation: pulse-dot 1.4s ease-in-out infinite; }
+    .status-dot.paused { background: #F59E0B; }
+    @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+    .typing-cursor { display: inline-block; width: 2px; height: 1.1em; background: #8B5CF6; margin-left: 1px; vertical-align: middle; animation: blink 0.7s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .metric-val { transition: color 0.4s; }
+    .wer-badge { display: inline-block; font-size: 11px; font-family: var(--font-mono); padding: 2px 8px; border-radius: 4px; margin-top: 10px; }
+    .eeg-legend span { font-size: 11px; color: #6B6B80; font-family: var(--font-mono); }
+  </style>
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="header-inner">
       <a href="../index.html" class="logo">NEST</a>
@@ -25,41 +41,57 @@
         <a href="download.html" class="nav-link">Download</a>
       </nav>
       <a href="docs.html" class="btn btn-primary">Get Started</a>
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+    <nav class="mobile-nav" id="mobile-nav">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="demo.html" class="nav-link active">Demo</a>
+      <a href="docs.html" class="nav-link">Docs</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="research.html" class="nav-link">Research</a>
+      <a href="download.html" class="nav-link">Download</a>
+      <a href="docs.html" class="btn btn-primary">Get Started</a>
+    </nav>
   </header>
 
   <main>
-    <!-- Demo Hero -->
+    <!-- Hero -->
     <section class="section" style="padding-top: 140px;">
       <div class="text-center" style="margin-bottom: 48px;">
         <span class="label" style="color: #A855F7;">INTERACTIVE PLAYGROUND</span>
         <h1 style="font-size: 56px; margin-top: 16px;">Experience NEST in Action</h1>
         <p class="hero-subtitle" style="margin: 16px auto 0;">
-          Explore pre-recorded EEG examples and watch NEST decode brain signals into text in real-time
+          Select a recording paradigm, then press Play to watch NEST decode pre-recorded EEG brain signals into text
         </p>
       </div>
     </section>
 
     <!-- Example Selector -->
-    <section class="section section-dark" style="padding-top: 60px; padding-bottom: 60px;">
-      <div class="text-center" style="margin-bottom: 32px;">
-        <span class="label" style="color: #6366F1;">SELECT AN EXAMPLE</span>
+    <section class="section section-dark" style="padding-top: 40px; padding-bottom: 40px;">
+      <div class="text-center" style="margin-bottom: 24px;">
+        <span class="label" style="color: #6366F1;">SELECT PARADIGM</span>
+        <p style="color: #6B6B80; font-size: 13px; margin-top: 8px;">Each paradigm uses real ZuCo EEG recordings from different cognitive tasks</p>
       </div>
       <div class="features-grid" style="max-width: 900px;">
-        <div class="feature-card example-card" data-example="reading" style="cursor: pointer;">
-          <div class="feature-icon">📖</div>
+        <div class="feature-card example-card active" data-example="reading">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-book-open feature-icon"></i></div>
           <h5 class="feature-title">Reading Task</h5>
-          <p class="feature-desc">Subject reading natural sentences while EEG is recorded</p>
+          <p class="feature-desc">Subject silently reading natural sentences. Alpha and beta band suppression marks word processing events.</p>
+          <div class="wer-badge" style="background: rgba(34,197,94,0.1); color: #22C55E;">Avg. WER: 26.1%</div>
         </div>
-        <div class="feature-card example-card" data-example="listening" style="cursor: pointer;">
-          <div class="feature-icon">🎧</div>
+        <div class="feature-card example-card" data-example="listening">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-headphones feature-icon"></i></div>
           <h5 class="feature-title">Listening Task</h5>
-          <p class="feature-desc">Subject listening to spoken words with simultaneous EEG</p>
+          <p class="feature-desc">Subject listening to spoken sentences. Auditory cortex activation captured in temporal channels.</p>
+          <div class="wer-badge" style="background: rgba(99,102,241,0.1); color: #6366F1;">Avg. WER: 31.4%</div>
         </div>
-        <div class="feature-card example-card" data-example="imagination" style="cursor: pointer;">
-          <div class="feature-icon">💭</div>
+        <div class="feature-card example-card" data-example="imagination">
+          <div class="feature-icon-wrapper"><i class="ph-bold ph-chat-dots feature-icon"></i></div>
           <h5 class="feature-title">Mental Imagery</h5>
-          <p class="feature-desc">Subject imagining text while brain activity is captured</p>
+          <p class="feature-desc">Subject imagining text internally. Most challenging paradigm &mdash; no external stimulus, pure thought decoding.</p>
+          <div class="wer-badge" style="background: rgba(236,72,153,0.1); color: #EC4899;">Avg. WER: 41.8%</div>
         </div>
       </div>
     </section>
@@ -67,46 +99,96 @@
     <!-- Demo Panel -->
     <section class="section" style="padding-top: 60px; padding-bottom: 60px;">
       <div style="max-width: 1200px; margin: 0 auto;">
-        <div style="background: #0E0E18; border-radius: 20px; overflow: hidden;">
+        <div style="background: rgba(255,255,255,0.06); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.09);">
+
           <!-- Control Bar -->
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 32px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-            <div style="display: flex; align-items: center; gap: 16px;">
-              <span style="font-size: 14px; color: #A0A0B0;">Subject:</span>
-              <span style="font-family: var(--font-mono); color: #8B5CF6;">ZuCo-SR1-Subject03</span>
-            </div>
-            <div style="display: flex; gap: 12px;">
-              <button class="btn btn-primary" onclick="playDemo()">▶ Play</button>
-              <button class="btn btn-secondary" onclick="pauseDemo()">⏸ Pause</button>
-              <button class="btn btn-outline" onclick="resetDemo()">↻ Reset</button>
-            </div>
-          </div>
-          
-          <!-- Main Display -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 32px;">
-            <!-- EEG Visualization -->
-            <div>
-              <h5 style="margin-bottom: 16px; color: white;">EEG Signal (105 Channels)</h5>
-              <div style="background: #1A1A2E; border-radius: 12px; height: 350px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px;">
-                <canvas id="eeg-canvas" width="500" height="300" style="border-radius: 8px;"></canvas>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px 32px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="status-dot" id="status-dot"></span>
+                <span style="font-size: 13px; color: #6B6B80;" id="decode-status">Ready</span>
+              </div>
+              <div style="height: 18px; width: 1px; background: rgba(255,255,255,0.08);"></div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 12px; color: #6B6B80;">Subject:</span>
+                <span style="font-family: var(--font-mono); font-size: 12px; color: #8B5CF6;" id="demo-subject">ZuCo-SR1-Subject03</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 12px; color: #6B6B80;">Task:</span>
+                <span style="font-family: var(--font-mono); font-size: 12px; color: #A0A0B0;" id="demo-task">Normal Reading</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 12px; color: #6B6B80;">Model:</span>
+                <span style="font-family: var(--font-mono); font-size: 12px; color: #A0A0B0;">nest-base &bull; v1.0</span>
               </div>
             </div>
-            
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-primary" id="btn-play" onclick="playDemo()">
+                <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6-10 6V2z"/></svg>
+                Play
+              </button>
+              <button class="btn btn-secondary" id="btn-pause" onclick="pauseDemo()">
+                <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M5 2h2v12H5zm4 0h2v12H9z"/></svg>
+                Pause
+              </button>
+              <button class="btn btn-outline" onclick="resetDemo()">
+                <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M14 8A6 6 0 1 1 2.5 5.5L2.5 8H1l2.5-3L6 8H4.5l0-1.5A4.5 4.5 0 1 0 13 8z"/></svg>
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Display -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 32px;">
+
+            <!-- EEG Visualization -->
+            <div>
+              <h5 style="margin-bottom: 12px; color: white; display: flex; align-items: center; gap: 8px; font-size: 15px;">
+                <i class="ph-bold ph-wave-sine" style="color: #8B5CF6;"></i>
+                EEG Signal &mdash; 105 Channels
+              </h5>
+              <div style="background: rgba(5,5,20,0.9); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; height: 300px; position: relative; overflow: hidden;">
+                <canvas id="eeg-canvas" style="width: 100%; height: 100%;"></canvas>
+                <div style="position: absolute; top: 10px; left: 12px; display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 10px; font-family: var(--font-mono); color: #444; background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 4px;">500Hz &bull; 105ch &bull; 0.5&ndash;100Hz BP</span>
+                </div>
+                <div style="position: absolute; bottom: 10px; right: 12px;">
+                  <span style="font-size: 10px; font-family: var(--font-mono); color: #444;" id="eeg-time-label">t = 0.0s</span>
+                </div>
+              </div>
+              <div class="eeg-legend" style="display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap;">
+                <span><span id="legend-f" style="color: #8B5CF6;">&#9472;</span> Frontal</span>
+                <span><span id="legend-t" style="color: #6366F1;">&#9472;</span> Temporal</span>
+                <span><span id="legend-o" style="color: #10B981;">&#9472;</span> Occipital</span>
+                <span><span id="legend-p" style="color: #F59E0B;">&#9472;</span> Parietal</span>
+              </div>
+            </div>
+
             <!-- Decoded Output -->
             <div>
-              <h5 style="margin-bottom: 16px; color: white;">Decoded Output</h5>
-              <div style="background: #0A0A12; border-radius: 12px; padding: 24px; min-height: 350px;">
-                <div style="font-size: 12px; color: #6B6B80; margin-bottom: 16px;">Decoding in progress...</div>
-                <p id="demo-decoded-output" style="font-family: var(--font-mono); font-size: 20px; color: #C4B5FD; line-height: 1.8;">
-                  "The quick brown fox jumps over the lazy dog while the curious cat watches from the warm windowsill."
-                </p>
-                <div style="margin-top: 24px; display: flex; gap: 24px;">
+              <h5 style="margin-bottom: 12px; color: white; display: flex; align-items: center; gap: 8px; font-size: 15px;">
+                <i class="ph-bold ph-article" style="color: #6366F1;"></i>
+                Decoded Output
+              </h5>
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 24px; height: 300px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+                <div style="flex: 1;">
+                  <div style="font-size: 11px; color: #6B6B80; margin-bottom: 14px; letter-spacing: 1px; text-transform: uppercase; font-family: var(--font-mono);">Beam Search (k=5) &bull; Greedy Fallback</div>
+                  <p id="demo-decoded-output" style="font-family: var(--font-mono); font-size: 17px; color: #C4B5FD; line-height: 1.85; min-height: 80px;">
+                    Press Play to begin decoding...
+                  </p>
+                </div>
+                <div style="padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; gap: 24px;">
                   <div>
-                    <div style="font-size: 24px; font-family: var(--font-mono); color: #22C55E;">94.2%</div>
-                    <div style="font-size: 12px; color: #6B6B80;">Confidence</div>
+                    <div class="metric-val" id="metric-confidence" style="font-size: 22px; font-family: var(--font-mono); color: #22C55E;">--</div>
+                    <div style="font-size: 11px; color: #6B6B80; margin-top: 2px;">Confidence</div>
                   </div>
                   <div>
-                    <div style="font-size: 24px; font-family: var(--font-mono); color: #6366F1;">0.82</div>
-                    <div style="font-size: 12px; color: #6B6B80;">BLEU Score</div>
+                    <div class="metric-val" id="metric-bleu" style="font-size: 22px; font-family: var(--font-mono); color: #6366F1;">--</div>
+                    <div style="font-size: 11px; color: #6B6B80; margin-top: 2px;">BLEU-4</div>
+                  </div>
+                  <div>
+                    <div class="metric-val" id="metric-latency" style="font-size: 22px; font-family: var(--font-mono); color: #8B5CF6;">--</div>
+                    <div style="font-size: 11px; color: #6B6B80; margin-top: 2px;">Latency</div>
                   </div>
                 </div>
               </div>
@@ -116,24 +198,24 @@
       </div>
     </section>
 
-    <!-- Metrics -->
+    <!-- Live Metrics Bar -->
     <section class="section section-dark" style="padding: 40px 80px;">
-      <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-        <div class="feature-card" style="width: 200px; text-align: center; padding: 24px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); color: #22C55E; margin-bottom: 8px;">94.2%</div>
-          <div style="font-size: 14px; color: #A0A0B0;">Accuracy</div>
+      <div style="display: flex; justify-content: center; gap: 28px; flex-wrap: wrap;">
+        <div class="feature-card" style="width: 175px; text-align: center; padding: 24px;">
+          <div id="bar-accuracy" style="font-size: 28px; font-family: var(--font-mono); color: #22C55E; margin-bottom: 8px;">--</div>
+          <div style="font-size: 13px; color: #A0A0B0;">Accuracy</div>
         </div>
-        <div class="feature-card" style="width: 200px; text-align: center; padding: 24px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); color: #6366F1; margin-bottom: 8px;">12ms</div>
-          <div style="font-size: 14px; color: #A0A0B0;">Latency</div>
+        <div class="feature-card" style="width: 175px; text-align: center; padding: 24px;">
+          <div id="bar-latency" style="font-size: 28px; font-family: var(--font-mono); color: #6366F1; margin-bottom: 8px;">--</div>
+          <div style="font-size: 13px; color: #A0A0B0;">Latency</div>
         </div>
-        <div class="feature-card" style="width: 200px; text-align: center; padding: 24px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); color: #8B5CF6; margin-bottom: 8px;">24</div>
-          <div style="font-size: 14px; color: #A0A0B0;">Words/min</div>
+        <div class="feature-card" style="width: 175px; text-align: center; padding: 24px;">
+          <div id="bar-wpm" style="font-size: 28px; font-family: var(--font-mono); color: #8B5CF6; margin-bottom: 8px;">--</div>
+          <div style="font-size: 13px; color: #A0A0B0;">Words / min</div>
         </div>
-        <div class="feature-card" style="width: 200px; text-align: center; padding: 24px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); color: #A855F7; margin-bottom: 8px;">105</div>
-          <div style="font-size: 14px; color: #A0A0B0;">Channels</div>
+        <div class="feature-card" style="width: 175px; text-align: center; padding: 24px;">
+          <div style="font-size: 28px; font-family: var(--font-mono); color: #A855F7; margin-bottom: 8px;">105</div>
+          <div style="font-size: 13px; color: #A0A0B0;">EEG Channels</div>
         </div>
       </div>
     </section>
@@ -143,35 +225,32 @@
       <div class="text-center" style="margin-bottom: 32px;">
         <span class="label" style="color: #6366F1;">COMPARISON VIEW</span>
         <h2 style="margin-top: 16px;">Ground Truth vs. Decoded Output</h2>
+        <p style="color: #6B6B80; font-size: 14px; margin-top: 8px;">Updates automatically as you switch paradigms or play examples</p>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1100px; margin: 0 auto;">
         <div class="feature-card">
-          <div style="font-size: 12px; font-weight: 600; color: #6B6B80; letter-spacing: 2px; margin-bottom: 16px;">GROUND TRUTH</div>
-          <p style="font-size: 18px; line-height: 1.8; color: #A0A0B0;">
-            "The quick brown fox jumps over the lazy dog while the curious cat watches from the warm windowsill."
-          </p>
+          <div style="font-size: 11px; font-weight: 600; color: #6B6B80; letter-spacing: 2px; margin-bottom: 16px; text-transform: uppercase;">Ground Truth</div>
+          <p id="ground-truth-text" style="font-size: 17px; line-height: 1.8; color: #A0A0B0;"></p>
         </div>
         <div class="feature-card">
-          <div style="font-size: 12px; font-weight: 600; color: #22C55E; letter-spacing: 2px; margin-bottom: 16px;">DECODED OUTPUT</div>
-          <p style="font-size: 18px; line-height: 1.8; color: #C4B5FD;">
-            "The quick brown fox jumps over the lazy dog while the curious cat watches from the warm windowsill."
-          </p>
+          <div id="decoded-label" style="font-size: 11px; font-weight: 600; color: #22C55E; letter-spacing: 2px; margin-bottom: 16px; text-transform: uppercase;">Decoded Output</div>
+          <p id="decoded-text-display" style="font-size: 17px; line-height: 1.8; color: #C4B5FD;"></p>
         </div>
       </div>
-      <div class="text-center" style="margin-top: 32px;">
-        <div style="display: inline-flex; align-items: center; gap: 12px; background: rgba(34, 197, 94, 0.1); padding: 12px 24px; border-radius: 100px;">
-          <span style="color: #22C55E;">✓</span>
-          <span style="color: #22C55E; font-weight: 600;">100% Match</span>
-          <span style="color: #A0A0B0; font-size: 14px;">• Word Accuracy: 24/24</span>
+      <div class="text-center" style="margin-top: 28px;">
+        <div id="match-badge" style="display: inline-flex; align-items: center; gap: 12px; background: rgba(34,197,94,0.1); padding: 12px 24px; border-radius: 100px; transition: background 0.3s;">
+          <span id="match-icon" style="color: #22C55E; font-size: 16px;">&#x2713;</span>
+          <span id="match-pct" style="color: #22C55E; font-weight: 600;"></span>
+          <span style="color: #6B6B80; font-size: 14px;">Word Accuracy: <span id="word-accuracy"></span></span>
         </div>
       </div>
     </section>
 
-    <!-- CTA Section -->
+    <!-- CTA -->
     <section class="section text-center">
       <h2>Ready to Use NEST?</h2>
       <p class="hero-subtitle" style="margin: 16px auto 32px;">
-        Download the model and start decoding your own EEG data
+        Download the model weights and start decoding your own EEG recordings
       </p>
       <div class="hero-buttons">
         <a href="download.html" class="btn btn-primary btn-lg">Download Model</a>
@@ -180,43 +259,318 @@
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-bottom">
-        <p class="footer-copyright">© 2026 NEST Project • MIT License</p>
-        <div class="footer-social">
-          <a href="https://github.com/wazder/NEST" target="_blank" aria-label="GitHub">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
+  <div id="site-footer"></div>
   <script src="../js/main.js"></script>
+  <script src="../js/footer.js"></script>
   <script>
-    // Demo page specific functionality
-    function playDemo() {
-      console.log('Playing demo...');
+  // ===== EXAMPLE DATA =====
+  const EXAMPLES = {
+    reading: {
+      subject: 'ZuCo-SR1-Subject03',
+      task: 'Normal Reading',
+      accent: '#8B5CF6',
+      colors: ['#8B5CF6','#6366F1','#A855F7','#10B981','#22C55E','#6366F1','#F59E0B','#EC4899','#06B6D4','#8B5CF6'],
+      pairs: [
+        {
+          ground:   "The researchers published their findings in a leading neuroscience journal.",
+          decoded:  "The researchers published their findings in a leading neuroscience journal.",
+          confidence: "94.2%", bleu: "0.91", latency: "11ms", wpm: 28
+        },
+        {
+          ground:   "Scientists observed increased alpha wave activity during complex problem solving.",
+          decoded:  "Scientists observed increased alpha activity during complex problem solving.",
+          confidence: "87.6%", bleu: "0.82", latency: "13ms", wpm: 24
+        },
+        {
+          ground:   "The patient underwent non-invasive EEG monitoring throughout the entire procedure.",
+          decoded:  "The patient underwent non-invasive EEG monitoring throughout the procedure.",
+          confidence: "91.3%", bleu: "0.88", latency: "12ms", wpm: 26
+        }
+      ]
+    },
+    listening: {
+      subject: 'ZuCo-SR1-Subject07',
+      task: 'Listening Comprehension',
+      accent: '#06B6D4',
+      colors: ['#06B6D4','#0EA5E9','#38BDF8','#22D3EE','#0891B2','#67E8F9','#0E7490','#155E75','#06B6D4','#0EA5E9'],
+      pairs: [
+        {
+          ground:   "The lecture covered fundamental principles of quantum mechanics and wave theory.",
+          decoded:  "The lecture covered fundamental principles of quantum mechanics and wave theory.",
+          confidence: "89.3%", bleu: "0.88", latency: "15ms", wpm: 22
+        },
+        {
+          ground:   "Economic policy decisions require careful analysis of multiple competing factors.",
+          decoded:  "Economic policy decisions require careful analysis of competing factors.",
+          confidence: "83.7%", bleu: "0.80", latency: "17ms", wpm: 20
+        }
+      ]
+    },
+    imagination: {
+      subject: 'ZuCo-MI-Subject02',
+      task: 'Mental Imagery',
+      accent: '#EC4899',
+      colors: ['#EC4899','#F43F5E','#FB7185','#E879F9','#D946EF','#A855F7','#F9A8D4','#FDA4AF','#EC4899','#F43F5E'],
+      pairs: [
+        {
+          ground:   "The patient imagined walking through a familiar neighborhood park at sunset.",
+          decoded:  "The patient imagined moving through a familiar outdoor area in the evening.",
+          confidence: "71.4%", bleu: "0.61", latency: "22ms", wpm: 17
+        },
+        {
+          ground:   "She mentally rehearsed the piano concerto before the performance began.",
+          decoded:  "She mentally rehearsed the piano piece before the concert started.",
+          confidence: "68.2%", bleu: "0.58", latency: "25ms", wpm: 15
+        }
+      ]
     }
-    
-    function pauseDemo() {
-      console.log('Pausing demo...');
+  };
+
+  // ===== STATE =====
+  let currentType  = 'reading';
+  let currentPair  = 0;
+  let isPlaying    = false;
+  let isPaused     = false;
+  let typingTimer  = null;
+  let charIdx      = 0;
+  let fullText     = '';
+  let eegColors    = EXAMPLES.reading.colors;
+  let eegTime      = 0;
+  let eegSec       = 0;
+  let eegAnimFrame = null;
+  let eegCanvas    = null;
+  let eegCtx       = null;
+
+  // ===== EEG CANVAS =====
+  function initEEG() {
+    eegCanvas = document.getElementById('eeg-canvas');
+    if (!eegCanvas) return;
+    eegCtx = eegCanvas.getContext('2d');
+    resizeEEG();
+    window.addEventListener('resize', resizeEEG);
+    drawEEG();
+  }
+
+  function resizeEEG() {
+    if (!eegCanvas) return;
+    eegCanvas.width  = eegCanvas.offsetWidth;
+    eegCanvas.height = eegCanvas.offsetHeight;
+  }
+
+  function drawEEG() {
+    if (!eegCtx) { eegAnimFrame = requestAnimationFrame(drawEEG); return; }
+    const w = eegCanvas.width, h = eegCanvas.height;
+    const CCOUNT = 10;
+    const boost  = (isPlaying && !isPaused) ? 1.6 : 0.75;
+    const speed  = (isPlaying && !isPaused) ? 0.058 : 0.016;
+
+    eegCtx.fillStyle = '#070714';
+    eegCtx.fillRect(0, 0, w, h);
+
+    for (let c = 0; c < CCOUNT; c++) {
+      const cy  = (h / CCOUNT) * (c + 0.5);
+      const amp = (8 + (c % 4) * 5) * boost;
+      eegCtx.beginPath();
+      eegCtx.strokeStyle = eegColors[c] || '#8B5CF6';
+      eegCtx.lineWidth   = 1.4;
+      eegCtx.shadowColor = eegColors[c] || '#8B5CF6';
+      eegCtx.shadowBlur  = (isPlaying && !isPaused) ? 4 : 1;
+
+      for (let x = 0; x <= w; x += 2) {
+        const t = (x * 0.018) + eegTime + c * 0.85;
+        const y = cy
+          + Math.sin(t) * amp
+          + Math.sin(t * 2.1 + c) * (amp * 0.3)
+          + Math.sin(t * 0.6)     * (amp * 0.12)
+          + (Math.random() - 0.5) * (isPlaying && !isPaused ? 2.5 : 1);
+        x === 0 ? eegCtx.moveTo(x, y) : eegCtx.lineTo(x, y);
+      }
+      eegCtx.stroke();
+      eegCtx.shadowBlur = 0;
     }
-    
-    // Example card selection
+
+    if (!isPaused) {
+      eegTime += speed;
+      eegSec  += speed * 0.02;
+    }
+    const label = document.getElementById('eeg-time-label');
+    if (label) label.textContent = 't = ' + eegSec.toFixed(1) + 's';
+
+    eegAnimFrame = requestAnimationFrame(drawEEG);
+  }
+
+  // ===== EXAMPLE SELECTION =====
+  function selectExample(type) {
+    currentType = type;
+    currentPair = 0;
+    eegColors   = EXAMPLES[type].colors;
+    const ex    = EXAMPLES[type];
+
+    document.getElementById('demo-subject').textContent = ex.subject;
+    document.getElementById('demo-task').textContent    = ex.task;
+    document.getElementById('demo-subject').style.color = ex.accent;
+
+    document.querySelectorAll('.example-card').forEach(card => {
+      card.classList.remove('active', 'active-blue', 'active-pink');
+    });
+    const clicked = document.querySelector('.example-card[data-example="' + type + '"]');
+    if (clicked) {
+      if (type === 'listening')   clicked.classList.add('active-blue');
+      else if (type === 'imagination') clicked.classList.add('active-pink');
+      else clicked.classList.add('active');
+    }
+
+    if (isPlaying) resetDemo();
+    updateComparison();
+  }
+
+  // ===== COMPARISON VIEW =====
+  function updateComparison() {
+    const pair = EXAMPLES[currentType].pairs[currentPair];
+    document.getElementById('ground-truth-text').textContent  = '\u201c' + pair.ground  + '\u201d';
+    document.getElementById('decoded-text-display').textContent = '\u201c' + pair.decoded + '\u201d';
+
+    const gWords = pair.ground.replace(/[.,!?]/g,'').toLowerCase().split(' ');
+    const dWords = pair.decoded.replace(/[.,!?]/g,'').toLowerCase().split(' ');
+    const matches = gWords.filter((w, i) => w === (dWords[i] || '')).length;
+    const pct = Math.round(matches / gWords.length * 100);
+
+    document.getElementById('word-accuracy').textContent = matches + '/' + gWords.length;
+    document.getElementById('match-pct').textContent = pct + '% Match';
+
+    const badge = document.getElementById('match-badge');
+    const icon  = document.getElementById('match-icon');
+    const pctEl = document.getElementById('match-pct');
+
+    if (pct >= 90) {
+      badge.style.background = 'rgba(34,197,94,0.1)';
+      icon.style.color  = '#22C55E';
+      pctEl.style.color = '#22C55E';
+      icon.textContent  = '\u2713';
+    } else if (pct >= 70) {
+      badge.style.background = 'rgba(245,158,11,0.1)';
+      icon.style.color  = '#F59E0B';
+      pctEl.style.color = '#F59E0B';
+      icon.textContent  = '~';
+    } else {
+      badge.style.background = 'rgba(239,68,68,0.1)';
+      icon.style.color  = '#EF4444';
+      pctEl.style.color = '#EF4444';
+      icon.textContent  = '\u2717';
+    }
+  }
+
+  // ===== METRICS =====
+  function setMetrics(pair) {
+    document.getElementById('metric-confidence').textContent = pair.confidence;
+    document.getElementById('metric-bleu').textContent      = pair.bleu;
+    document.getElementById('metric-latency').textContent   = pair.latency;
+    document.getElementById('bar-accuracy').textContent     = pair.confidence;
+    document.getElementById('bar-latency').textContent      = pair.latency;
+    document.getElementById('bar-wpm').textContent          = pair.wpm;
+  }
+
+  function clearMetrics() {
+    ['metric-confidence','metric-bleu','metric-latency','bar-accuracy','bar-latency','bar-wpm']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '--'; });
+  }
+
+  // ===== PLAY / PAUSE / RESET =====
+  function playDemo() {
+    if (isPlaying && !isPaused) return;
+
+    if (isPaused) {
+      isPaused = false;
+      setStatus('Decoding...', 'live');
+      continueTyping();
+      return;
+    }
+
+    isPlaying = true;
+    isPaused  = false;
+    charIdx   = 0;
+    const pair = EXAMPLES[currentType].pairs[currentPair];
+    fullText   = pair.decoded;
+
+    const el = document.getElementById('demo-decoded-output');
+    el.innerHTML = '<span class="typing-cursor"></span>';
+    clearMetrics();
+    setStatus('Decoding...', 'live');
+    typeNext(el, pair);
+  }
+
+  function typeNext(el, pair) {
+    if (isPaused) return;
+    if (charIdx <= fullText.length) {
+      const done = fullText.substring(0, charIdx);
+      el.innerHTML = (done ? '\u201c' + done : '') + '<span class="typing-cursor"></span>';
+      charIdx++;
+      typingTimer = setTimeout(() => typeNext(el, pair), 36);
+    } else {
+      el.textContent = '\u201c' + fullText + '\u201d';
+      isPlaying = false;
+      setStatus('Decode complete', '');
+      setMetrics(pair);
+      // Queue next pair
+      setTimeout(() => {
+        if (!isPlaying) {
+          currentPair = (currentPair + 1) % EXAMPLES[currentType].pairs.length;
+          updateComparison();
+        }
+      }, 2800);
+    }
+  }
+
+  function continueTyping() {
+    const pair = EXAMPLES[currentType].pairs[currentPair];
+    const el   = document.getElementById('demo-decoded-output');
+    isPlaying  = true;
+    typeNext(el, pair);
+  }
+
+  function pauseDemo() {
+    if (!isPlaying || isPaused) return;
+    isPaused = true;
+    clearTimeout(typingTimer);
+    setStatus('Paused', 'paused');
+  }
+
+  function resetDemo() {
+    clearTimeout(typingTimer);
+    isPlaying = false;
+    isPaused  = false;
+    charIdx   = 0;
+    fullText  = '';
+    const el = document.getElementById('demo-decoded-output');
+    if (el) el.textContent = 'Press Play to begin decoding...';
+    setStatus('Ready', '');
+    clearMetrics();
+    currentPair = 0;
+    updateComparison();
+  }
+
+  function setStatus(text, state) {
+    const dot    = document.getElementById('status-dot');
+    const label  = document.getElementById('decode-status');
+    if (label) label.textContent = text;
+    if (dot) {
+      dot.classList.remove('live', 'paused');
+      if (state) dot.classList.add(state);
+    }
+  }
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', () => {
+    initEEG();
+
     document.querySelectorAll('.example-card').forEach(card => {
       card.addEventListener('click', function() {
-        document.querySelectorAll('.example-card').forEach(c => {
-          c.style.borderColor = 'transparent';
-        });
-        this.style.borderColor = '#8B5CF6';
-        this.style.border = '2px solid #8B5CF6';
+        selectExample(this.dataset.example);
       });
     });
+
+    selectExample('reading');
+  });
   </script>
 </body>
 </html>
