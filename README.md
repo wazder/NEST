@@ -2,74 +2,91 @@
 
 <div align="center">
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![arXiv](https://img.shields.io/badge/arXiv-2026-b31b1b.svg)](papers/NEST_manuscript.md)
 
-**Brain-to-Text Decoding with Deep Learning**
+**Open-Vocabulary EEG-to-Text Decoding with Deep Learning**
 
 *Translating EEG brain signals into natural language text*
 
-[Getting Started](#quick-start) | [Documentation](docs/) | [Results](#latest-results) | [Paper](papers/NEST_manuscript.md)
+[Quick Start](#quick-start) | [Architecture](#architecture) | [Training](#training) | [Paper](papers/NEST_manuscript.md)
 
 </div>
 
 ---
 
-## Latest Results
+## Overview
 
-**Last Training:** February 16, 2026 | **Dataset:** ZuCo (Real EEG) | **Epochs:** 100
-
-<table>
-<tr>
-<td>
-
-### Real Data Performance
-| Metric | Value |
-|--------|-------|
-| **Word Error Rate** | 26.1% |
-| **Character Error Rate** | 13.0% |
-| **BLEU Score** | 0.74 |
-| **Accuracy** | 73.9% |
-| **Training Samples** | 12,071 |
-| **Training Time** | 5.4 hours |
-
-</td>
-<td>
-
-### Model Variants
-| Model | WER | Inference |
-|-------|-----|-----------|
-| Conformer | 16.3% | 12.6ms |
-| RNN-T | 18.2% | 14.3ms |
-| Transformer | 19.9% | 19.4ms |
-| LSTM-CTC | 22.7% | 17.7ms |
-
-</td>
-</tr>
-</table>
-
-**Training Loss:** 3.18 (epoch 1) → 2.80 (epoch 100, converged)
-
----
-
-## What is NEST?
-
-NEST is a deep learning framework that decodes **brain signals (EEG)** into **natural language text**.
+NEST decodes **EEG brain signals** recorded during reading into **natural language text**.
+It uses pre-processed frequency-domain EEG features from the ZuCo corpus and a
+Transformer + BART architecture to achieve open-vocabulary decoding.
 
 ```
-Input:  EEG Recording (105 channels x 2000 samples)
-        Brain activity while reading text
+Input:  Word-level EEG (105 channels × 8 frequency bands = 840 features per word)
+        Brain activity recorded while a subject reads each word
 
-Output: "The quick brown fox jumps over the lazy dog"
-        ~74% words correctly decoded
+Output: "presents a good case while failing to provide a reason..."
+        Full sentence decoded from EEG alone
 ```
 
 **Applications:**
-- Silent Speech Interfaces for speech-impaired individuals
-- Brain-Computer Interface (BCI) research
-- Communication aids for neurological disorders
+- Silent speech interfaces for communication-impaired individuals
+- Brain-computer interface (BCI) research
+- Cognitive neuroscience (reading comprehension, semantic processing)
+- Assistive technology for ALS, locked-in syndrome
+
+---
+
+## Dataset
+
+**ZuCo** (Zurich Cognitive Language Processing Corpus):
+- 11-12 subjects, 3 reading tasks (SR, NR, TSR)
+- ~12,884 sentence-subject pairs
+- EEG: 105 channels, pre-processed into 8 frequency bands
+- Feature format: 840-dim vector per fixated word (105 ch × 8 bands)
+
+Download from [OSF](https://osf.io/q3zws/) or use the provided download script.
+
+---
+
+## Architecture
+
+NEST v2 uses frequency-domain EEG features — not raw time-series — following
+the approach of Wang et al. (2022, ACL):
+
+```
+Word-level EEG features: (batch, max_words, 840)
+  105 channels × 8 frequency bands (θ1/θ2, α1/α2, β1/β2, γ1/γ2)
+         |
+         v
+EEG Projection: Linear(840 → 768) + LayerNorm + GELU
+         |
+         v
+Positional Encoding (sinusoidal)
+         |
+         v
+Transformer Encoder
+  6 layers, d_model=768, 8 heads, pre-norm, GELU FFN
+         |
+         v
+BART Decoder (facebook/bart-base)
+  Cross-attention to EEG encoder output
+  First 4 layers frozen, last 2 + cross-attention fine-tuned
+         |
+         v
+Text output (beam search, beam_size=4)
+```
+
+| Component | Config |
+|-----------|--------|
+| EEG Input dim | 840 (105ch × 8 bands) |
+| d_model | 768 |
+| Encoder layers | 6 |
+| Attention heads | 8 |
+| BART model | facebook/bart-base |
+| Trainable params | ~30M |
 
 ---
 
@@ -82,14 +99,80 @@ cd NEST
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-# 2. Quick test (30 seconds)
-python scripts/train_with_real_zuco.py --quick-test
+# 2. Verify dataset
+python src/data/zuco_pickle_dataset.py ZuCo_Dataset/ZuCo
 
-# 3. Full training (~5 hours)
-./start_full_training.sh
+# 3. Quick sanity check (2 epochs, 50 samples)
+python scripts/train_nest_v2.py --quick-test --model ctc
 
-# 4. Evaluate results
-python evaluate_results.py
+# 4. Full training — CTC baseline (fast, CPU/GPU)
+python scripts/train_nest_v2.py --model ctc --epochs 200
+
+# 5. Full training — BART (best quality, requires GPU)
+python scripts/train_nest_v2.py --model bart --epochs 200 --fp16
+```
+
+---
+
+## Training
+
+### Local (GPU recommended)
+
+```bash
+python scripts/train_nest_v2.py \
+    --model bart \
+    --epochs 200 \
+    --batch-size 16 \
+    --fp16 \
+    --d-model 768 \
+    --num-layers 6 \
+    --tasks task1-SR task2-NR task3-TSR
+```
+
+### Cloud (Google Colab / Lambda / Vast.ai)
+
+See [notebooks/NEST_CloudTraining.ipynb](notebooks/NEST_CloudTraining.ipynb) for
+a ready-to-run Colab notebook with Google Drive integration.
+
+Recommended cloud config: A100 40GB, ~8-12 hours for 200 epochs.
+
+### Subject-Independent Evaluation
+
+By default, NEST trains on 8 subjects and evaluates on 2 held-out subjects
+(ZMG, ZPH) that are never seen during training or validation.
+This is the strictest and most realistic evaluation protocol.
+
+---
+
+## Evaluation
+
+```bash
+# Evaluate a trained model
+python scripts/train_nest_v2.py \
+    --resume results/nest_v2_bart_*/best_model.pt \
+    --epochs 0  # eval only
+```
+
+Results are saved to `results/nest_v2_*/results.json`:
+```json
+{
+  "model": "bart",
+  "evaluation": "subject-independent",
+  "test_wer": 0.XXX,
+  "test_cer": 0.XXX,
+  "note": "Real experimental results, honest evaluation"
+}
+```
+
+---
+
+## Upload to Hugging Face
+
+```bash
+python scripts/upload_to_huggingface.py \
+    --model-path results/best_model.pt \
+    --repo-id your-username/NEST-EEG-to-Text \
+    --token $HF_TOKEN
 ```
 
 ---
@@ -98,131 +181,27 @@ python evaluate_results.py
 
 ```
 NEST/
-├── src/                    # Source code
-│   ├── models/             # Neural architectures (LSTM, Transformer, Conformer)
-│   ├── preprocessing/      # EEG signal processing
-│   ├── training/           # Training loops & metrics
-│   └── evaluation/         # Inference & deployment
-├── scripts/                # Runnable scripts
-├── configs/                # YAML configurations
-├── results/                # Training outputs
-├── docs/                   # Documentation
-├── examples/               # Usage examples
-└── tests/                  # Test suite
-```
-
-See [STRUCTURE.md](STRUCTURE.md) for detailed project navigation guide.
-
----
-
-## Architecture
-
-```
-+----------------------------------------------------------+
-|  EEG Input (105 channels x 2000 timepoints)              |
-+------------------------------+---------------------------+
-                               |
-                               v
-+----------------------------------------------------------+
-|  Preprocessing                                           |
-|  - Band-pass filter (0.5-50 Hz)                         |
-|  - Z-score normalization                                |
-|  - Temporal padding                                      |
-+------------------------------+---------------------------+
-                               |
-                               v
-+----------------------------------------------------------+
-|  Spatial CNN Encoder                                     |
-|  Conv1D: 105 -> 128 -> 256 channels                     |
-+------------------------------+---------------------------+
-                               |
-                               v
-+----------------------------------------------------------+
-|  Temporal Encoder (Bi-LSTM / Transformer / Conformer)   |
-|  2 layers x 256 hidden units -> 512-dim embeddings      |
-+------------------------------+---------------------------+
-                               |
-                               v
-+----------------------------------------------------------+
-|  CTC Decoder                                             |
-|  Character-level output (28 classes: blank + a-z + ' ') |
-+------------------------------+---------------------------+
-                               |
-                               v
-+----------------------------------------------------------+
-|  Output Text: "the quick brown fox..."                   |
-+----------------------------------------------------------+
-```
-
-**Training Configuration:**
-
-| Parameter | Value |
-|-----------|-------|
-| Optimizer | AdamW (lr=0.001) |
-| Batch Size | 32 |
-| Parameters | ~2.5M |
-| Device | Apple M2 (MPS) / CUDA |
-
----
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [STRUCTURE.md](STRUCTURE.md) | Project navigation guide |
-| [ROADMAP.md](ROADMAP.md) | Development phases |
-| [docs/USAGE.md](docs/USAGE.md) | Usage guide |
-| [docs/INSTALLATION.md](docs/INSTALLATION.md) | Setup instructions |
-| [docs/API.md](docs/API.md) | API reference |
-| [docs/MODEL_CARD.md](docs/MODEL_CARD.md) | Model details & ethics |
-
-### Phase Documentation
-
-| Phase | Topic | Link |
-|-------|-------|------|
-| 1 | Literature Review | [docs/literature-review/](docs/literature-review/) |
-| 2 | Preprocessing | [docs/phase2-preprocessing.md](docs/phase2-preprocessing.md) |
-| 3 | Model Architecture | [docs/phase3-models.md](docs/phase3-models.md) |
-| 4 | Advanced Features | [docs/phase4-advanced-features.md](docs/phase4-advanced-features.md) |
-| 5 | Evaluation | [docs/phase5-evaluation-optimization.md](docs/phase5-evaluation-optimization.md) |
-
----
-
-## Development Status
-
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1 | Literature Review | Complete |
-| 2 | Data Preprocessing | Complete |
-| 3 | Model Architecture | Complete |
-| 4 | Advanced Features | Complete |
-| 5 | Evaluation & Optimization | Complete |
-| 6 | Documentation | Complete |
-
-**Overall: 100% Complete** — Publication Ready for IEEE EMBC 2026
-
----
-
-## Example Usage
-
-```python
-from src.models import ModelFactory
-from src.preprocessing import PreprocessingPipeline
-import torch
-
-# Load model
-model = ModelFactory.from_config_file('configs/model.yaml', 'nest_lstm')
-model.load_state_dict(torch.load('results/real_zuco_*/checkpoints/best_model.pt'))
-
-# Preprocess EEG
-pipeline = PreprocessingPipeline('configs/preprocessing.yaml')
-processed = pipeline.transform(raw_eeg, sfreq=500)
-
-# Decode
-with torch.no_grad():
-    output = model(processed)
-    text = decode_ctc(output)
-    print(f"Decoded: {text}")
+├── src/
+│   ├── data/
+│   │   ├── zuco_pickle_dataset.py   # ZuCo dataset loader (pickle-based)
+│   │   └── zuco_dataset.py          # Legacy MATLAB loader
+│   ├── models/
+│   │   ├── nest_v2.py               # NEST v2 (primary: CTC + BART)
+│   │   ├── nest_bart.py             # NEST-Conformer-BART (raw EEG)
+│   │   └── nest.py                  # Legacy NEST models
+│   └── training/
+│       └── trainer.py               # Training utilities
+├── scripts/
+│   ├── train_nest_v2.py             # Primary training script
+│   ├── train_nest_bart.py           # BART training (raw EEG version)
+│   └── upload_to_huggingface.py     # HF Hub upload
+├── notebooks/
+│   └── NEST_CloudTraining.ipynb     # Google Colab notebook
+├── papers/
+│   └── NEST_manuscript.md           # Research paper draft
+├── configs/                         # YAML model configurations
+├── results/                         # Training outputs
+└── ZuCo_Dataset/                    # Dataset (not in git)
 ```
 
 ---
@@ -230,39 +209,21 @@ with torch.no_grad():
 ## Citation
 
 ```bibtex
-@software{nest2026,
-  title = {NEST: Neural EEG Sequence Transducer},
-  author = {NEST Contributors},
-  year = {2026},
-  url = {https://github.com/wazder/NEST}
+@article{nest2026,
+  title     = {NEST: Open-Vocabulary EEG-to-Text Decoding via Sequence Transduction},
+  author    = {},
+  journal   = {arXiv preprint},
+  year      = {2026},
+  url       = {https://github.com/wazder/NEST}
 }
-```
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-```bash
-# Development setup
-pip install -r requirements-dev.txt
-pre-commit install
-pytest
 ```
 
 ---
 
 ## License
 
-MIT License - see [LICENSE](LICENSE)
+MIT — see [LICENSE](LICENSE).
 
----
+## Contributing
 
-<div align="center">
-
-**NEST** — Neural EEG Sequence Transducer
-
-*Advancing brain-computer interfaces through deep learning*
-
-</div>
+See [CONTRIBUTING.md](CONTRIBUTING.md).

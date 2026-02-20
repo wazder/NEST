@@ -275,3 +275,11 @@ site/
 tmp/
 temp/
 *.tmp
+
+# Agent Manager (Antigravity)
+.gemini/
+
+# AI agent files
+.agent/
+.agentignore
+GEMINI.md
