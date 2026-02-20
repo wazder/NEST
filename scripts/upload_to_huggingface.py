@@ -25,8 +25,9 @@ language: en
 tags:
 - eeg
 - brain-computer-interface
-- speech-recognition
+- eeg-to-text
 - pytorch
+- transformers
 license: mit
 datasets:
 - ZuCo
@@ -35,44 +36,56 @@ metrics:
 - cer
 ---
 
-# NEST: Neural EEG Sequence Transducer
+# NEST v2: Neural EEG Sequence Transducer
 
-State-of-the-art EEG-to-text decoding framework achieving {wer}% WER on ZuCo dataset.
+EEG-to-text decoding framework using word-level frequency features and BART decoder.
+Trained on ZuCo dataset with subject-independent evaluation (WER: {wer}, CER: {cer}).
 
 ## Model Description
 
-NEST uses a Conformer encoder with CTC/BART decoder to decode EEG brain signals into text.
-Trained on the ZuCo dataset (subject-independent split).
+NEST v2 takes pre-processed EEG frequency features (105 channels x 8 frequency bands = 840
+dimensions per word) and decodes them into natural language text using a transformer encoder
+and fine-tuned BART decoder with cross-attention.
+
+**Architecture:**
+- Input: Word-level EEG frequency features (840-dim: 105 channels x theta/alpha/beta/gamma)
+- EEG Projection: Linear(840 -> 768) + LayerNorm + GELU
+- EEG Encoder: 6-layer Transformer (d_model=768, 8 heads, pre-norm)
+- Text Decoder: facebook/bart-base with cross-attention to EEG encoder
+- Evaluation: Subject-independent (train on 8, test on 2 held-out ZuCo subjects)
 
 ## Performance
 
-| Dataset | WER | CER |
-|---------|-----|-----|
-| ZuCo (test) | {wer}% | {cer}% |
-
-## Architecture
-
-- Encoder: Conformer (Large, 12 layers)
-- Decoder: CTC + optional BART
-- Input: EEG channels x time steps
-- Output: Text (BPE tokens)
+| Dataset | Split | WER | CER |
+|---------|-------|-----|-----|
+| ZuCo (test subjects ZMG, ZPH) | subject-independent | {wer} | {cer} |
 
 ## Usage
 
 ```python
 import torch
 from huggingface_hub import hf_hub_download
+from src.models.nest_v2 import NEST_BART_v2
 
-# Download model
+# Download checkpoint
 ckpt_path = hf_hub_download(repo_id="{repo_id}", filename="model.pt")
 checkpoint = torch.load(ckpt_path, map_location="cpu")
 
-model_config = checkpoint["config"]
-# Load your model with config
-# model = NESTModel(model_config)
-# model.load_state_dict(checkpoint["model_state_dict"])
-# model.eval()
+model = NEST_BART_v2()
+model.load_state_dict(checkpoint["model_state_dict"])
+model.eval()
+
+# eeg shape: (batch, n_words, 840)
+import torch
+eeg = torch.randn(1, 17, 840)
+text = model.generate(eeg)
+print(text)
 ```
+
+## Data
+
+ZuCo (Zurich Cognitive Language Processing Corpus). Request access at:
+https://osf.io/q3zws/
 
 ## Citation
 
@@ -128,9 +141,14 @@ def build_config(checkpoint: dict) -> dict:
         if isinstance(cfg, dict):
             return cfg
     return {
-        "model_type": "nest_conformer_ctc",
-        "architecture": "ConformerCTC-Large",
-        "note": "Config not stored in checkpoint; refer to training script for full config.",
+        "model_type": "nest_bart_v2",
+        "architecture": "Transformer-BART",
+        "eeg_dim": 840,
+        "d_model": 768,
+        "num_encoder_layers": 6,
+        "nhead": 8,
+        "bart_model": "facebook/bart-base",
+        "note": "Config not stored in checkpoint; refer to src/models/nest_v2.py for full config.",
     }
 
 
@@ -208,7 +226,7 @@ def upload(args):
 
     print()
     print(f"Upload complete: https://huggingface.co/{args.repo_id}")
-    print(f"  WER: {metrics['wer']}%  |  CER: {metrics['cer']}%")
+    print(f"  WER: {metrics['wer']}  |  CER: {metrics['cer']}")
 
 
 def main():
