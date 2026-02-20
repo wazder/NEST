@@ -46,7 +46,7 @@ def _get_sentence_eeg(sentence_level_eeg: Dict) -> np.ndarray:
         if key in sentence_level_eeg:
             arr = np.array(sentence_level_eeg[key], dtype=np.float32)
             if arr.shape == (N_CHANNELS,):
-                bands.append(arr)
+                bands.append(np.nan_to_num(arr, nan=0.0, posinf=0.0, neginf=0.0))
             else:
                 bands.append(np.zeros(N_CHANNELS, dtype=np.float32))
         else:
@@ -76,7 +76,7 @@ def _get_word_eeg(word_level_eeg: Dict, measure: str = "FFD") -> np.ndarray:
         if key in measure_dict:
             arr = np.array(measure_dict[key], dtype=np.float32)
             if arr.shape == (N_CHANNELS,):
-                bands.append(arr)
+                bands.append(np.nan_to_num(arr, nan=0.0, posinf=0.0, neginf=0.0))
             else:
                 bands.append(np.zeros(N_CHANNELS, dtype=np.float32))
         else:
@@ -360,6 +360,7 @@ def collate_word_sequence_ctc(
 
     for sample in batch:
         eeg = sample["eeg"].astype(np.float32) if isinstance(sample["eeg"], np.ndarray) else sample["eeg"]
+        eeg = np.nan_to_num(eeg, nan=0.0, posinf=0.0, neginf=0.0)
         eeg_list.append(eeg)
         eeg_lengths.append(sample["eeg_len"])
 
