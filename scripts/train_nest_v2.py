@@ -372,6 +372,7 @@ def collate_bart_v2(batch: List[Dict]) -> Optional[Dict]:
     eeg_list, eeg_lengths, texts = [], [], []
     for sample in batch:
         eeg = sample["eeg"].astype(np.float32) if isinstance(sample["eeg"], np.ndarray) else sample["eeg"]
+        eeg = np.nan_to_num(eeg, nan=0.0, posinf=0.0, neginf=0.0)
         eeg_list.append(eeg)
         eeg_lengths.append(sample["eeg_len"])
         texts.append(sample["text"].lower().strip())
