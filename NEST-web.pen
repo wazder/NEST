@@ -334,6 +334,273 @@
         },
         {
           "type": "frame",
+          "id": "brpHj",
+          "name": "Why NEST Section",
+          "width": "fill_container",
+          "fill": "#0E0E18",
+          "layout": "vertical",
+          "gap": 60,
+          "padding": [
+            100,
+            80
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "HENo0",
+              "name": "whyHeader",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bdvdL",
+                  "name": "whyLabel",
+                  "fill": "#8B5CF6",
+                  "content": "WHY NEST",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "semibold",
+                  "letterSpacing": 3
+                },
+                {
+                  "type": "text",
+                  "id": "WoTHY",
+                  "name": "whyTitle",
+                  "fill": "#FFFFFF",
+                  "content": "The Future of Brain-Computer Interfaces",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 48,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "text",
+                  "id": "8zpvU",
+                  "name": "whyDesc",
+                  "fill": "#A0A0B0",
+                  "content": "NEST bridges the gap between neuroscience and natural language processing",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NN3Gl",
+              "name": "whyRow1",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ViaHe",
+                  "name": "whyCard1",
+                  "width": 340,
+                  "fill": "#12121B",
+                  "cornerRadius": 16,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Mp80o",
+                      "fill": "#FFFFFF",
+                      "content": "Non-Invasive Decoding",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zSl3g",
+                      "fill": "#A0A0B0",
+                      "content": "Works with standard 105-channel EEG headsets, no surgical implants needed",
+                      "lineHeight": 1.7,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "EqJEt",
+                  "name": "whyCard2",
+                  "width": 340,
+                  "fill": "#12121B",
+                  "cornerRadius": 16,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ZNsTm",
+                      "fill": "#FFFFFF",
+                      "content": "Real-Time Performance",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZmRoK",
+                      "fill": "#A0A0B0",
+                      "content": "Sub-100ms latency. Optimized inference pipeline for modern GPUs.",
+                      "lineHeight": 1.7,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "S2H78",
+                  "name": "whyCard3",
+                  "width": 340,
+                  "fill": "#12121B",
+                  "cornerRadius": 16,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XAVM1",
+                      "fill": "#FFFFFF",
+                      "content": "Research-Grade Quality",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "4tZM3",
+                      "fill": "#A0A0B0",
+                      "content": "Benchmarked on ZuCo dataset. Reproducible results with released checkpoints.",
+                      "lineHeight": 1.7,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "4Zns5",
+              "name": "whyRow2",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fBpXg",
+                  "name": "whyCard4",
+                  "width": 340,
+                  "fill": "#12121B",
+                  "cornerRadius": 16,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Wq1TF",
+                      "fill": "#FFFFFF",
+                      "content": "Transfer Learning Ready",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "S6xEd",
+                      "fill": "#A0A0B0",
+                      "content": "Pre-trained on ZuCo, fine-tunable on custom datasets with any paradigm.",
+                      "lineHeight": 1.7,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hwcXB",
+                  "name": "whyCard5",
+                  "width": 340,
+                  "fill": "#12121B",
+                  "cornerRadius": 16,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jiLH5",
+                      "fill": "#FFFFFF",
+                      "content": "Interpretable Architecture",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "NXOZo",
+                      "fill": "#A0A0B0",
+                      "content": "Attention maps reveal which EEG channels contribute most to each decoded word.",
+                      "lineHeight": 1.7,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Lm8Nw",
+                  "name": "whyCard6",
+                  "width": 340,
+                  "fill": "#12121B",
+                  "cornerRadius": 16,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WXQRA",
+                      "fill": "#FFFFFF",
+                      "content": "Open Ecosystem",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "y31it",
+                      "fill": "#A0A0B0",
+                      "content": "MIT licensed with full training pipeline, pre-trained weights, and dataset loaders.",
+                      "lineHeight": 1.7,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
           "id": "Di159",
           "name": "How It Works",
           "width": "fill_container",
@@ -598,6 +865,350 @@
                       "textAlign": "center",
                       "fontFamily": "Inter",
                       "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dawPD",
+          "name": "Architecture Section",
+          "width": "fill_container",
+          "fill": "#0A0A12",
+          "layout": "vertical",
+          "gap": 60,
+          "padding": [
+            100,
+            80
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "AgZ7Q",
+              "name": "archHeader",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "8SNMA",
+                  "name": "archLabel",
+                  "fill": "#6366F1",
+                  "content": "ARCHITECTURE",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "semibold",
+                  "letterSpacing": 3
+                },
+                {
+                  "type": "text",
+                  "id": "JFuzs",
+                  "name": "archTitle",
+                  "fill": "#FFFFFF",
+                  "content": "Transformer-Based Pipeline",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 48,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "text",
+                  "id": "teEB6",
+                  "name": "archDesc",
+                  "fill": "#A0A0B0",
+                  "content": "End-to-end architecture combining EEG signal processing with large language model decoding",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ecZMI",
+              "name": "archDiagram",
+              "width": 1100,
+              "fill": "#12121B",
+              "cornerRadius": 24,
+              "gap": 16,
+              "padding": 48,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "QbXmb",
+                  "name": "archBlock1",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Tl0Mw",
+                      "name": "archIcon1",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "#8B5CF620",
+                      "cornerRadius": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "Y8aOb",
+                      "fill": "#FFFFFF",
+                      "content": "EEG Input",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "QnjHQ",
+                      "fill": "#6B6B80",
+                      "content": "105ch × 500Hz",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "om26V",
+                  "fill": "#8B5CF680",
+                  "content": "→",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "uQnXZ",
+                  "name": "archBlock2",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "A7dDQ",
+                      "name": "archIcon2",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "#6366F120",
+                      "cornerRadius": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "PMPtT",
+                      "fill": "#FFFFFF",
+                      "content": "Feature Extractor",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hPXlM",
+                      "fill": "#6B6B80",
+                      "content": "Conv + Norm",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "kwyAo",
+                  "fill": "#8B5CF680",
+                  "content": "→",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "CayJY",
+                  "name": "archBlock3",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "5M60s",
+                      "name": "archIcon3",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "#8B5CF620",
+                      "cornerRadius": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "0L3CE",
+                      "fill": "#FFFFFF",
+                      "content": "EEG Encoder",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "WP4r9",
+                      "fill": "#6B6B80",
+                      "content": "6L × 8H, d=512",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "m9rPb",
+                  "fill": "#8B5CF680",
+                  "content": "→",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "O4YsD",
+                  "name": "archBlock4",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "E5sXY",
+                      "name": "archIcon4",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "#A855F720",
+                      "cornerRadius": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "QpEaE",
+                      "fill": "#FFFFFF",
+                      "content": "Cross-Attention",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Ts5cs",
+                      "fill": "#6B6B80",
+                      "content": "8 attention heads",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "WMvxr",
+                  "fill": "#8B5CF680",
+                  "content": "→",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "D4SRz",
+                  "name": "archBlock5",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ISrWF",
+                      "name": "archIcon5",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "#6366F120",
+                      "cornerRadius": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "ksX9u",
+                      "fill": "#FFFFFF",
+                      "content": "Text Decoder",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "akWjV",
+                      "fill": "#6B6B80",
+                      "content": "6L, vocab=50K",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "5yZ7r",
+                  "fill": "#8B5CF680",
+                  "content": "→",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "HJj2t",
+                  "name": "archBlock6",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "UG19y",
+                      "name": "archIcon6",
+                      "width": 56,
+                      "height": 56,
+                      "fill": "#10B98120",
+                      "cornerRadius": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "yrsMC",
+                      "fill": "#FFFFFF",
+                      "content": "Text Output",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "9EcXm",
+                      "fill": "#6B6B80",
+                      "content": "Natural language",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
                       "fontWeight": "normal"
                     }
                   ]
@@ -7050,11 +7661,6 @@
                       "id": "eoJXw",
                       "name": "r1c3",
                       "fill": "#C0C0C8",
-                      "stroke": {
-                        "align": "inside",
-                        "thickness": 1,
-                        "fill": "#000000ff"
-                      },
                       "textGrowth": "fixed-width",
                       "width": 63,
                       "content": "45 MB",
