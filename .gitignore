@@ -283,3 +283,6 @@ temp/
 .agent/
 .agentignore
 GEMINI.md
+
+# Wrangler local state
+.wrangler/
