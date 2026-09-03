@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>NEST — Hasat 2026</title>
+<link rel="stylesheet" href="deck-template.css">
+</head><body>
+
+<section class="s cov">
+  <img class="logo" src="logo/nest-logo-512.png" alt="">
+  <h1 style="margin-top:.3in">NEST</h1>
+  <p class="lead" style="margin-top:.24in;max-width:8.6in">Okuma sırasında kaydedilen non-invaziv EEG sinyalini metne çeviren,
+  donanımdan bağımsız açık yapay zeka altyapısı.</p>
+  <div class="rule"></div>
+  <p style="margin-top:.24in;font-size:13pt;color:#666">nest-eeg.org &nbsp;·&nbsp; Hasan Tatar &nbsp;·&nbsp; İstanbul Ticaret Üniversitesi</p>
+  <div class="foot"><span>HASAT 2026 · BİYOTEKNOLOJİ &amp; SAĞLIK</span><span>Eylül 2026</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Problem</div>
+  <h2>Konuşamayan bir insanın bugün iki seçeneği var:<br>yavaş ya da ameliyatlı.</h2>
+  <div class="body">
+    <div class="ex">
+      <div class="row"><span class="lbl">Göz takibi</span><span>Harf harf seçim yapan iletişim cihazları (AAC)</span><span class="tk">~10 kelime / dk</span></div>
+      <div class="row"><span class="lbl">İmplant</span><span>Stanford ve UCSF, 2023: beyne yerleştirilen elektrot dizileri</span><span class="tk">62–78 kelime / dk, cerrahi</span></div>
+      <div class="row"><span class="lbl">EEG</span><span>Mevcut non-invaziv arayüzler (P300, SSVEP): sabit menüden seçim</span><span class="tk">kapalı sözlük</span></div>
+    </div>
+    <div class="grid3">
+      <div class="card"><div class="k">Kim etkileniyor</div><p>Dünyada yaklaşık <b>97 milyon</b> kişinin karmaşık iletişim ihtiyacı var: ALS, inme, locked-in, serebral palsi.</p></div>
+      <div class="card"><div class="k">Türkiye</div><p>Tahmini <b>8–10 bin</b> ALS hastası; tahmini yılda <b>125–200 bin</b> inme. Çoğunda okuma ve anlama korunuyor.</p></div>
+      <div class="card"><div class="k">Boşluk</div><p>Bildiğimiz kadarıyla ameliyat gerektirmeyen, <b>açık sözlüklü</b> ve cihaza bağlı olmayan bir çözümleme katmanı yok.</p></div>
+    </div>
+    <p class="src">Kaynaklar: Beukelman &amp; Light 2020; Willett ve ark. 2023; Metzger ve ark. 2023; ALS-MNH Derneği; GBD 2019 (Topçuoğlu 2022).</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>2 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Zamanlama</div>
+  <h2>Non-invaziv beyinden metne, 2025'te laboratuvardan çıkıp<br>yatırım alanına girdi.</h2>
+  <div class="body">
+    <ul>
+      <li><b>Meta Brain2Qwerty:</b> MEG ile, kapalı sözlüklü yazma görevinde Şubat 2025'te karakter hata oranı %32; Haziran 2026 v2'de
+      kelime doğruluğu <b>%61</b>. Aynı çalışmanın EEG koşulu %67 hata ile çok geride: non-invaziv yol ilerliyor, EEG tarafı açık problem.</li>
+      <li><b>Sermaye:</b> Beyin-bilgisayar arayüzü girişimlerine risk sermayesi 2024'te ~0,4 milyar $, 2025'te <b>~1 milyar $</b>.
+      2026'nın ilk yedi ayında non-invaziv projelerin payı bir pazar raporuna göre yaklaşık %29'a çıktı.</li>
+      <li><b>Sabi (Nisan 2026, Khosla Ventures):</b> Kendi EEG başlığıyla düşünceden metne. Dikey entegre, kapalı model,
+      kendi donanımına bağlı.</li>
+      <li><b>Boşluk:</b> Herhangi bir EEG cihazıyla çalışan, açık ve dürüst ölçülen bir <b>çözümleme yazılımı katmanı</b> bildiğimiz kadarıyla yok.
+      NEST bu boşluğu, sonucu ne çıkarsa çıksın yayınlanacak bir ölçüm protokolüyle dolduruyor.</li>
+    </ul>
+    <p class="src">Kaynaklar: Meta AI, Brain2Qwerty (2025) ve v2 (BCBL, 2026); NewMarketPitch BCI funding trends (2025–2026); InsideBCI, Sabi (16 Nisan 2026).</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>3 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Çözüm</div>
+  <h2>Kelime kelime okunan EEG'yi<br>açık sözlüklü metne çeviren altyapı.</h2>
+  <div class="body">
+    <div class="pipe">
+      <div class="step"><div class="num">01</div><div class="t">EEG kaydı</div><div class="d">105 kanal, okuma sırasında</div></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="num">02</div><div class="t">Kelime hizalı öznitelik</div><div class="d">8 frekans bandı × 105 kanal = 840 boyut</div></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="num">03</div><div class="t">Transformer encoder</div><div class="d">6 katman, d=768, 8 dikkat başlığı</div></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="num">04</div><div class="t">BART decoder</div><div class="d">çapraz dikkat, dil önbilgisi</div></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="num">05</div><div class="t">Metin</div><div class="d">serbest çözümleme, açık sözlük</div></div>
+    </div>
+    <ul>
+      <li><b>Donanım üretmiyoruz.</b> Kelime hizalı öznitelik üretebilen her araştırma EEG sistemiyle çalışan yazılım katmanıyız. Az kanallı tüketici cihazlarına aktarım Faz 3'ün araştırma sorusu, henüz gösterilmedi.</li>
+      <li><b>Denekten bağımsız protokol.</b> 8 denekle eğitiyoruz, hiç görülmemiş 2 denekte test ediyoruz. Kişiye özel ezber yok.</li>
+      <li><b>Açık kaynak.</b> Kod, veri hattı ve değerlendirme betikleri github.com/wazder/nest ve nest-eeg.org'da.</li>
+      <li><b>Bugünkü veri okuma verisi.</b> ZuCo, ekranda gösterilen metni okurken kaydedilmiş EEG'yi çözer. Hastanın kendi ürettiği cümleyi (iç konuşma) çözmek Faz 2'nin araştırma sorusu; bunu saklamıyoruz.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>NEST</span><span>4 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Yöntem</div>
+  <h2>Alanın sayıları şişkin çıktı.<br>Protokolümüz buna göre kuruldu.</h2>
+  <div class="body">
+    <div class="grid2 tight">
+      <div class="card"><div class="k">Yayınlanan</div><p>Wang &amp; Ji (AAAI 2022) BLEU-1 %40, DeWave (NeurIPS 2023) %41.
+      İkisi de değerlendirmede modele doğru önceki kelimeyi veren <b>teacher forcing</b> ile ölçüldü.</p></div>
+      <div class="card"><div class="k">Düzeltilen</div><p>Jo ve ark. 2024: gürültü girdisi, gerçek EEG ile <b>aynı skoru</b> alıyor.
+      Temmuz 2026 tekrarı: serbest çözümlemede WER <b>%99'un üzerinde</b>.</p></div>
+    </div>
+    <ul>
+      <li>Biz de Şubat 2026'da loss'tan türetilmiş bir WER tahminini <b>geri çektik</b>; ölçülmemiş sayı yayınlamıyoruz.</li>
+      <li>Değerlendirme kodumuz <b>serbest çözümleme</b> kullanıyor: teacher forcing yok, bugün greedy, beam search sırada. Gürültü kontrolü ve protokol, ilk sonuçla birlikte raporlanacak.</li>
+      <li><b>Beklentimiz de alanın sayısı:</b> ilk ölçüm gürültü tabanında (WER %99) çıkabilir. Çıkarsa bunu da yayınlarız ve Faz 2'de mimariyi değil veriyi değiştiririz: iç konuşma paradigması ve daha yoğun kayıt. Hedef: ilk sonuç Ekim 2026'da nest-eeg.org'da.</li>
+    </ul>
+    <p class="src">Kaynaklar: Wang &amp; Ji, AAAI 2022; Duan ve ark., NeurIPS 2023; Jo ve ark., arXiv 2405.06459 (2024); arXiv 2607.18749 (Temmuz 2026).</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>5 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Ürün durumu</div>
+  <h2>Yedi ayda eğitilebilir bir sistem<br>ve gerçek veri hattı kuruldu.</h2>
+  <div class="body">
+    <table>
+      <tr><th>Bileşen</th><th>Bugün</th></tr>
+      <tr><td><b>Kod tabanı</b></td><td>24.137 satır Python: ön işleme (band-pass, ICA), 6 model mimarisi, eğitim ve değerlendirme betikleri</td></tr>
+      <tr><td><b>Veri</b></td><td>ZuCo veri hattı kodlandı ve gerçek veriyle çalıştırıldı: 66 GB ham korpus (53 .mat), 12 denek, 105 kanal, <span class="n" style="font-size:13pt">12.071</span> cümle-denek çifti. Ham veri GPU koşusu öncesi yeniden indirilecek</td></tr>
+      <tr class="hi"><td><b>Modeller</b></td><td>NEST v2 CTC <b>45,3 M</b> parametre · NEST v2 BART <b>184 M</b> (64,7 M eğitilebilir), oluşturulup doğrulandı</td></tr>
+      <tr><td><b>Eğitim</b></td><td>v1 modeli 100 epoch, 12.071 örnek, 5,4 saat (M2 dizüstü). Loss düşüyor; WER henüz ölçülmedi</td></tr>
+      <tr><td><b>Dağıtım</b></td><td>Pruning, quantization, ONNX/TorchScript export ve streaming modülleri yazıldı, henüz ölçülmedi</td></tr>
+    </table>
+    <p class="note">Açık kaynak, MIT lisansı. nest-eeg.org yayında. Sayılar 3 Eylül 2026 itibarıyla depodan doğrulandı. ZuCo: Hollenstein ve ark. 2018, CC BY 4.0; ticari kullanıma açık, atıf zorunlu. Lisans: depoda, açık kaynak.</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>6 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Durum</div>
+  <h2>Nerede olduğumuzu olduğu gibi söylüyoruz.</h2>
+  <div class="body">
+    <div class="grid2">
+      <div class="card"><div class="k">Tamamlanan</div>
+      <p>Mimari, gerçek veri hattı, denekten bağımsız bölme ve serbest çözümlemeli değerlendirme kodu. Prototip bu: eğitilebilir sistem, henüz çözülmüş cümle yok. Marka ve site hazır, nest-eeg.org yayında.</p></div>
+      <div class="card"><div class="k">Süren</div>
+      <p>v2 modelinin ilk tam eğitimi ve gürültü kontrollü değerlendirme. Bu, bulutta 8–12 saatlik, yaklaşık 20 $'lık bir A100 işi; final öncesinde tamamlamayı hedefliyoruz.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="k">Doğrulanmış WER</div><p>Henüz yok. İlk sayı, protokolüyle birlikte yayınlanacak.</p></div>
+      <div class="card"><div class="k">Gelir · Yatırım · Şirket</div><p>Yok · Almadık · Henüz kurulmadı.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>NEST</span><span>7 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Pazar</div>
+  <h2>Küçük, hızla büyüyen<br>ve ilk müşterisi belli bir pazar.</h2>
+  <div class="body">
+    <table>
+      <tr><th>Segment</th><th>Büyüklük</th><th>Not</th></tr>
+      <tr><td><b>BCI pazarı</b> (2024–25)</td><td class="n">0,24–2,9 milyar $</td><td>Alt uç yalnız cihaz, üst uç tüm nöroteknoloji; non-invaziv ~%82</td></tr>
+      <tr><td><b>AAC cihazları</b> (2025)</td><td class="n">2,3 milyar $</td><td>Yılda %11 büyüme</td></tr>
+      <tr><td><b>BCI risk sermayesi</b> (2025)</td><td class="n">~1,0 milyar $</td><td>2024'ün 2,5 katı</td></tr>
+    </table>
+    <ul>
+      <li><b>İlk müşteri:</b> EEG araştırma laboratuvarları. Referans: EmotivPRO lisansı yılda 1.068–2.689 $. Faz 1 bilinçli küçük: 100 lisans ≈ 200 bin $/yıl; ölçek Faz 2–3'te.</li>
+      <li><b>Sonraki müşteri:</b> Nöroloji ve rehabilitasyon klinikleri; okuma-anlaması korunmuş ALS ve locked-in hastaları.</li>
+      <li><b>Türkiye:</b> Bildiğimiz kadarıyla EEG'den metne ticari bir girişim yok; Türkçe bir EEG-okuma korpusu da yayımlanmadı. İkisine de ilk biz talibiz.</li>
+    </ul>
+    <p class="src">Kaynaklar: Fortune BI, MarketsandMarkets, Grand View, Precedence (2024–25); TBRC (2025); NewMarketPitch (2025); Emotiv fiyat listesi (2026).</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>8 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">İş modeli</div>
+  <h2>Önce araştırma aracı,<br>sonra klinik ürün.</h2>
+  <div class="body">
+    <div class="pipe">
+      <div class="step"><div class="num">FAZ 1 · 0–12 AY</div><div class="t">Araştırma SDK'sı, açık benchmark, Türkçe korpus</div><div class="d">Tıbbi cihaz kapsamı dışında; laboratuvar lisansı; etik kurul ve KVKK açık rıza ile veri toplama</div></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="num">FAZ 2 · 12–24 AY</div><div class="t">Klinik araştırma pilotu ve iç konuşma verisi</div><div class="d">Rehabilitasyon merkeziyle araştırma amaçlı pilot çalışma; hastanın ürettiği cümleyi hedefleyen veri; OEM görüşmeleri</div></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="num">FAZ 3 · 24+ AY</div><div class="t">Asistif iletişim ürünü</div><div class="d">CE / MDR yolu, EEG donanım partnerleriyle OEM lisans</div></div>
+    </div>
+    <ul>
+      <li><b>Gelir kalemleri:</b> akademik ve kurumsal SDK lisansı; veri ve benchmark iş birlikleri; ileride cihaz üreticilerine OEM lisans.</li>
+      <li><b>Kamu finansmanı:</b> TÜBİTAK 1812 BiGG Yatırım (dilutif: %3 hisse karşılığı 1,35 milyon TL, 2026 çağrısı), 1507 hibesi (3,5 milyon TL'ye kadar, şirket şart),
+      Teknopark İstanbul Cube (18 ay ücretsiz ofis, 4691 sayılı kanun vergi istisnası).</li>
+      <li><b>Konum:</b> Donanım şirketlerinin rakibi değil tamamlayıcısıyız. Cihaz değişmiyor, üstüne katman geliyor. Bu başvuru bir yatırım turu değil; tohum yatırımı ilk benchmark'tan sonra.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>NEST</span><span>9 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Rekabet</div>
+  <h2>Herkes ya ameliyat ediyor ya cihaz satıyor.<br>Biz ikisini de yapmıyoruz.</h2>
+  <div class="body">
+    <div class="quad">
+      <div class="q"><div class="k">İnvaziv · donanım</div><p><b>Neuralink</b> (656 milyon $, 2025), <b>Synchron</b> (200 milyon $), Precision, Paradromics.
+      Beyin cerrahisi; klinik onay yolu yıllar sürüyor.</p></div>
+      <div class="q"><div class="k">Non-invaziv · donanım</div><p><b>Emotiv, OpenBCI, Kernel, Neurable, Cognixion.</b>
+      Cihaz satıyorlar; açık sözlüklü metin çözümleme yok.</p></div>
+      <div class="q"><div class="k">Non-invaziv · dikey entegre metin</div><p><b>Meta Brain2Qwerty</b> (araştırma, ürün değil), <b>Sabi</b> (2026; kendi başlığı, kapalı model).
+      Yalnızca kendi donanımlarında çalışıyor.</p></div>
+      <div class="q us"><div class="k">Non-invaziv · donanımdan bağımsız yazılım</div><p><b>NEST.</b> Açık kaynak, dürüst ölçüm taahhüdü, Türkçe korpus planı.
+      Bu kutu bildiğimiz kadarıyla boş; ilk dolduran biz olmayı hedefliyoruz.</p></div>
+    </div>
+    <p class="note">Neden ezilmeyiz: Meta ürün yapmıyor, Sabi kendi kapalı donanımına bağlı. Donanım üreticileri kendi çözücülerini yazabilir; cevabımız kopyalanması zaman alan varlıklar: açık benchmark, Türkçe korpus, klinik iş birlikleri. Veri dezavantajımızı da saklamıyoruz: 12 bin çift, Sabi'nin 100 bin saatine karşı.</p>
+    <p class="src">Kaynaklar: SiliconANGLE (Haziran 2025); BusinessWire (Kasım 2025); şirket ürün sayfaları; InsideBCI (Nisan 2026).</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>10 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Ekip</div>
+  <h2>Mühendislik ve akademi iş birliği kuruluyor.</h2>
+  <div class="body">
+    <div class="grid3">
+      <div class="card"><div class="k">Kurucu</div><p><b>Hasan Tatar</b><br>Makine öğrenmesi ve yazılım. İstanbul Ticaret Üniversitesi Bilgisayar Mühendisliği.
+      IEEE SIU 2026'da yayımlanan çok dilli VLA çalışmasının ilk yazarı (IEEE Xplore 11636432). CamelLayer'ın kurucusu.</p></div>
+      <div class="card"><div class="k">Akademik danışman</div><p><b>[AD SOYAD — doldurulacak]</b><br>İstanbul Ticaret Üniversitesi öğretim üyesi.
+      Sinyal işleme ve derin öğrenme. Etik kurul ve veri toplama protokolünden sorumlu.</p></div>
+      <div class="card"><div class="k">Akademik danışman</div><p><b>[AD SOYAD — doldurulacak]</b><br>İstanbul Ticaret Üniversitesi öğretim üyesi.
+      Nöro-görüntüleme ve deneysel tasarım. Klinik iş birliklerinden sorumlu.</p></div>
+    </div>
+    <ul>
+      <li>Proje, İstanbul Ticaret Üniversitesi'nde öğretim üyeleriyle yürütülen bir araştırma olarak başladı; şirketleşme üniversite iş birliğiyle planlanıyor.</li>
+      <li>Ekibin ölçüm disiplini yayınlarına yansıyor: SIU 2026 çalışması ve CamelLayer benchmark'ları aynı ilkeyle yazıldı. Ölçmediğimizi söylemiyoruz.</li>
+    </ul>
+  </div>
+  <div class="foot"><span>NEST</span><span>11 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Yol haritası</div>
+  <h2>Önümüzdeki 12 ay.</h2>
+  <div class="body">
+    <table>
+      <tr><th>Dönem</th><th>Hedef</th></tr>
+      <tr><td><b>Çeyrek 1</b></td><td>v2 modelinin GPU eğitimi; serbest çözümleme ve gürültü kontrolüyle ilk doğrulanmış benchmark; arXiv teknik raporu</td></tr>
+      <tr><td><b>Çeyrek 2</b></td><td>Etik kurul onayı ve KVKK uyumu (açık rıza, özel nitelikli veri önlemleri, veri Türkiye'de); Türkçe EEG-okuma korpusu için veri toplama (20 katılımcı; İngilizce şablon protokol Türkçeleştirilip KVKK'ya uyarlanacak); SDK v0.1</td></tr>
+      <tr><td><b>Çeyrek 3</b></td><td>TÜBİTAK 1812 BiGG Yatırım başvurusu (şirketleşmeden önce); onay sonrası Cube kuluçka programıyla şirketleşme; ilk laboratuvar lisansları</td></tr>
+      <tr><td><b>Çeyrek 4</b></td><td>Rehabilitasyon merkeziyle pilot anlaşması ve etik başvurusu (pilot Faz 2'de); ilk EEG donanım entegrasyonu denemesi (Emotiv / OpenBCI sınıfı, aktarım ölçülerek)</td></tr>
+    </table>
+    <p class="note">Her çeyreğin çıktısı ölçülebilir: benchmark raporu, korpus sürümü, lisans sayısı, pilot protokolü. Karar kapısı Ç1 sonunda: benchmark gürültü tabanını geçmezse Ç2'de okuma yerine iç konuşma paradigmasına ve daha yoğun kayda geçilir; SDK ve korpus işi sürer.</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>12 / 13</span></div>
+</section>
+
+<section class="s">
+  <div class="tag">Hasat 2026'dan beklentimiz</div>
+  <h2>Benchmark'ı bitirip ürüne çevirecek üç şey.</h2>
+  <div class="body">
+    <ul>
+      <li><b>Hibe ve sürekli hesaplama erişimi.</b> Tek bir eğitim ucuz; asıl ihtiyaç hiperparametre taramaları ve Türkçe korpus için model eğitimlerine sürekli GPU erişimi. Veri toplamanın gerçek maliyeti ayrı bir kalem: EEG laboratuvar zamanı ve katılımcı ödemeleri.</li>
+      <li><b>Klinik ekosistem erişimi.</b> İSEK ve Teknopark İstanbul sağlık ağı üzerinden nöroloji ve rehabilitasyon bölümleriyle araştırma pilotu.</li>
+      <li><b>Şirketleşme, patent ve mentorluk.</b> Cube kuluçka programı, üniversite spin-off yapısı ve MDR/TİTCK yol haritası için danışmanlık.</li>
+    </ul>
+    <div class="grid3" style="margin-top:.2in">
+      <div class="card"><div class="k">Bu başvuru</div><p>Yatırım turu değil; hibe, hesaplama, kuluçka ve erişim başvurusu.</p></div>
+      <div class="card"><div class="k">12 aylık kaynak ihtiyacı (tahmini)</div><p>GPU 2–5 bin $ · veri toplama 50–100 bin TL · hukuk, KVKK, şirketleşme 50–100 bin TL</p></div>
+      <div class="card"><div class="k">Karşılığında</div><p>Benchmark raporu, açık Türkçe korpus, ilk laboratuvar lisansları.</p></div>
+    </div>
+    <div class="rule" style="margin-top:.3in"></div>
+    <p style="margin-top:.2in;font-size:13.5pt;color:#666">nest-eeg.org &nbsp;·&nbsp; github.com/wazder/nest &nbsp;·&nbsp; Hasan Tatar</p>
+  </div>
+  <div class="foot"><span>NEST</span><span>13 / 13</span></div>
+</section>
+
+<script>
+if (/qa=1/.test(location.search)) window.addEventListener('load', function(){ setTimeout(function(){
+  var rep=[]; document.querySelectorAll('section.s').forEach(function(s,i){
+    var box=s.getBoundingClientRect(); var foot=s.querySelector('.foot'); var fb=foot?foot.getBoundingClientRect():null;
+    var over=[]; s.querySelectorAll('*').forEach(function(el){ if(el===foot||(foot&&foot.contains(el)))return; var r=el.getBoundingClientRect(); if(!r.width||!r.height)return;
+      if(r.bottom>box.bottom-0.5||r.right>box.right-0.5) over.push(el.tagName+':'+(el.textContent||'').trim().slice(0,30));
+      if(fb&&r.bottom>fb.top-2&&r.top<fb.top&&el.children.length===0&&(el.textContent||'').trim()) over.push('FOOT-COLLIDE '+el.tagName+':'+(el.textContent||'').trim().slice(0,30)); });
+    var maxb=0; s.querySelectorAll('.body *, h1, h2, .lead, .tag, .rule, img').forEach(function(el){ if(foot&&foot.contains(el))return; var r=el.getBoundingClientRect(); if(r.height&&r.bottom>maxb)maxb=r.bottom; });
+    rep.push({slide:i+1, sh:s.scrollHeight, ch:s.clientHeight, gap:fb?Math.round(fb.top-maxb):null, overflow:over.slice(0,8)}); });
+  var pre=document.createElement('pre'); pre.id='__qa'; pre.textContent=JSON.stringify(rep); document.body.appendChild(pre); },800); });
+</script>
+</body></html>
