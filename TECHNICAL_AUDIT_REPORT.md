@@ -1,5 +1,7 @@
 # NEST Project - Technical Audit Report
 
+> **Archived note from February 2026.** This report cites "WER: 26.1%, BLEU: 0.74" as a "publication-ready result." That figure came from a loss-based heuristic (`estimate_wer_from_ctc_loss()` in `detailed_analysis.py`), not a decode-and-compare measurement, and is not a valid result. See [docs/STATUS.md](docs/STATUS.md).
+
 **Date:** February 17, 2026  
 **Auditor:** Senior Software Architect & Technical Lead  
 **Project:** NEST (Neural EEG Sequence Transducer)  

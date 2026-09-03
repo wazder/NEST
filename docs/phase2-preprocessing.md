@@ -1,5 +1,7 @@
 # Phase 2: Data Acquisition & Preprocessing
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](STATUS.md).
+
 ## Overview
 
 Phase 2 implements the complete data acquisition and preprocessing pipeline for the NEST project. This phase focuses on preparing EEG data for neural sequence transduction models.

@@ -1,5 +1,7 @@
 # Real ZuCo Training Status
 
+> **Archived note from February 2026.** Any WER/CER/BLEU numbers below come from synthetic generated data or from a loss-based estimate and are not valid results. See [docs/STATUS.md](../STATUS.md).
+
 ## ✅ Successfully Training on Real Data!
 
 **Date**: February 16, 2026  

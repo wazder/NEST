@@ -33,12 +33,14 @@ The framework supports multiple architectural variants:
 
 ### Model Variants
 
-| Variant | Parameters | Speed (ms) | WER (%) | Best For |
-|---------|-----------|------------|---------|----------|
-| NEST-Attention | 2.5M | 15 | 16.5 | General purpose |
-| NEST-RNN-T | 3.2M | 18 | 17.2 | Streaming inference |
-| NEST-Conformer | 4.1M | 22 | 15.8 | Best accuracy |
-| NEST-CTC | 2.1M | 12 | 18.5 | Fast inference |
+No variant has a trained checkpoint or a measured WER, CER, or latency. The two variants under active development are:
+
+| Variant | Parameters | Status |
+|---------|-----------|--------|
+| NEST-CTC-v2 | 45,310,637 | Implemented; not yet trained to completion |
+| NEST-BART-v2 | 184,424,592 total / 64,697,232 trainable | Implemented; not yet trained to completion |
+
+Earlier architectural variants named in this document (NEST-Attention, NEST-RNN-T, NEST-Conformer) refer to an earlier iteration of the codebase and have no associated trained checkpoint or benchmark either.
 
 ## Intended Use
 
@@ -71,7 +73,7 @@ The model should **NOT** be used for:
 ### Relevant Factors
 
 **Subject Variability**
-- Performance varies across individuals (WER: 12-25%)
+- Performance is expected to vary across individuals, consistent with the wider EEG-to-text literature, but no NEST-specific per-subject WER has been measured yet
 - Subject-specific adaptation recommended for deployment
 - Cross-subject generalization challenging
 
@@ -86,7 +88,7 @@ The model should **NOT** be used for:
 - Sentence length: optimal 5-20 words
 
 **Hardware Requirements**
-- 32-channel EEG system (minimum)
+- 105-channel EEG system (matching the ZuCo 1.0 recording montage used for training data)
 - 500 Hz sampling rate recommended
 - Standard 10-20 electrode placement
 
@@ -103,24 +105,13 @@ Models evaluated across:
 
 ### Model Performance Metrics
 
-**Primary Metrics**
-- **Word Error Rate (WER)**: 16.5% (best model)
-- **Character Error Rate (CER)**: 8.3%
-- **BLEU Score**: 0.72
+**No trained checkpoint has been released, and no WER, CER, BLEU, or perplexity number has been measured for NEST v2.** A figure that previously appeared here ("16.5% WER", "8.3% CER", "BLEU 0.72") was not a measurement — it originated from a hand-written heuristic (`estimate_wer_from_ctc_loss()` in `detailed_analysis.py`) that converts training loss into a WER percentage, applied to an unrelated ad hoc smoke-test model, with no decoding or reference comparison involved. It has been withdrawn; see [STATUS.md](STATUS.md).
 
-**Secondary Metrics**
-- **Perplexity**: 15.2
-- **Inference Time**: 15 ms per sample (CPU)
-- **Real-time Factor**: 0.3x (streaming mode)
+The evaluation code itself is real and implemented in `scripts/train_nest_v2.py`: `eval_bart()` decodes autoregressively with `model.generate()` (no teacher forcing; the `num_beams=4` argument is accepted but the current implementation is greedy) and `eval_ctc()` uses greedy CTC decoding; WER/CER are computed via word/character Levenshtein distance. These will be used to report results once training completes.
 
 ### Detailed Results
 
-| Metric | Train | Validation | Test |
-|--------|-------|------------|------|
-| WER (%) | 12.3 | 15.1 | 16.5 |
-| CER (%) | 5.8 | 7.2 | 8.3 |
-| BLEU | 0.85 | 0.76 | 0.72 |
-| Perplexity | 10.5 | 13.8 | 15.2 |
+Pending, no trained checkpoint released. No train/validation/test metric table exists yet.
 
 ### Decision Thresholds
 
@@ -138,26 +129,25 @@ Models evaluated across:
 - **License**: CC BY 4.0
 
 **Dataset Characteristics**
-- **Tasks**: Reading comprehension, task-specific reading
-- **Subjects**: 12 participants
-- **Sentences**: ~9,000 sentences
-- **Words**: ~150,000 words
-- **EEG Data**: 32-channel recordings at 500 Hz
+- **Tasks**: Reading comprehension — SR (normal reading), NR, and TSR (task-specific reading)
+- **Subjects**: 12 participants (ZuCo 1.0)
+- **Sentences**: 1,107 sentences (ZuCo 1.0)
+- **EEG Data**: 105-channel recordings at 500 Hz
 - **Language**: English
 
 ### Data Split
 
-- **Training**: 70% (6,300 sentences, 8 subjects)
-- **Validation**: 15% (1,350 sentences, 2 subjects)
-- **Test**: 15% (1,350 sentences, 2 subjects)
+- **Training**: 8 subjects
+- **Validation**: 2 subjects
+- **Test**: 2 subjects (held out, never seen during training or validation)
 
 **Split Strategy**: Subject-independent (no subject overlap between splits)
 
 ### Preprocessing
 
 1. **Filtering**: Band-pass 0.5-50 Hz, notch filter at 60 Hz
-2. **Artifact Removal**: ICA with 20 components
-3. **Electrode Selection**: 32 most informative channels
+2. **Artifact Removal**: ICA
+3. **Feature Extraction**: 105-channel signal processed into 8 frequency bands (theta, alpha, beta, gamma sub-bands), yielding an 840-dimensional feature vector per fixated word
 4. **Normalization**: Z-score normalization per channel
 5. **Augmentation**: 
    - Gaussian noise (σ=0.1)
@@ -183,11 +173,7 @@ Same distribution as training data (ZuCo dataset) but held-out subjects.
 
 ### Evaluation Results by Scenario
 
-| Scenario | WER (%) | CER (%) | BLEU |
-|----------|---------|---------|------|
-| In-domain | 14.2 | 7.1 | 0.78 |
-| Cross-subject | 16.5 | 8.3 | 0.72 |
-| Noisy (SNR=10dB) | 22.3 | 11.2 | 0.58 |
+Pending, no trained checkpoint released. Once training completes, results for these scenarios will be reported using free decoding (no teacher forcing) with a noise-input control, per the commitment in `docs/STATUS.md`.
 
 ## Ethical Considerations
 
@@ -267,15 +253,7 @@ Same distribution as training data (ZuCo dataset) but held-out subjects.
 
 ### Environmental Impact
 
-**Training**:
-- GPU hours: ~100 hours (NVIDIA A100)
-- Estimated CO₂: ~15 kg (based on electricity source)
-- Dataset storage: ~50 GB
-
-**Inference**:
-- CPU inference: ~15 ms per sample
-- GPU inference: ~5 ms per sample
-- Power consumption: ~5W (CPU), ~20W (GPU)
+Pending, no trained checkpoint released. NEST v2 has not been trained to completion on GPU, so GPU-hours, estimated CO₂, and inference power/latency figures do not yet exist. The only completed training run (an ad hoc smoke-test model, not NEST v2) ran on an Apple M2 laptop CPU for approximately 5.4 hours; that run is not representative of NEST v2's eventual training cost.
 
 ## References
 

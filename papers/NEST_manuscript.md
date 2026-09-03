@@ -6,9 +6,13 @@
 
 ---
 
+> **Draft. No experimental results yet; see Section 5.** This manuscript describes the NEST architecture, methodology, and evaluation protocol. NEST v2 has not yet completed a full training run, and no word error rate, character error rate, BLEU, or ROUGE score has been measured on held-out data. Section 5 describes the evaluation protocol that will be used, not results that have been obtained. See `docs/STATUS.md` in the repository for the current, single-source-of-truth status of the project.
+
+---
+
 ## Abstract
 
-Brain-computer interfaces (BCIs) promise direct communication from neural signals to text, but existing approaches suffer from limited vocabularies, subject-specific training requirements, and reliance on invasive recordings. We introduce **NEST v2** (Neural EEG Sequence Transducer), an end-to-end deep learning framework for decoding non-invasive EEG signals directly into open-vocabulary English text. NEST v2 exploits frequency-domain EEG features extracted from the ZuCo corpus—105-channel recordings processed into 8 frequency bands (theta, alpha, beta, gamma), yielding 840-dimensional word-level neural representations. Our architecture employs a multi-layer Transformer encoder to process sequences of word-level EEG features, cross-attended by a pre-trained BART decoder for text generation. We evaluate under strict subject-independent protocols on the ZuCo reading corpus (3 tasks, 12 subjects), training on 8 subjects and testing on 2 held-out subjects never seen during training. NEST v2 represents a complete, open-source framework for EEG-to-text research including pre-processing, training, evaluation, and deployment pipelines. Full experimental results from trained models are reported in Section 5.
+Brain-computer interfaces (BCIs) promise direct communication from neural signals to text, but existing approaches suffer from limited vocabularies, subject-specific training requirements, and reliance on invasive recordings. We introduce **NEST v2** (Neural EEG Sequence Transducer), an end-to-end deep learning framework for decoding non-invasive EEG signals directly into open-vocabulary English text. NEST v2 exploits frequency-domain EEG features extracted from the ZuCo corpus—105-channel recordings processed into 8 frequency bands (theta, alpha, beta, gamma), yielding 840-dimensional word-level neural representations. Our architecture employs a multi-layer Transformer encoder to process sequences of word-level EEG features, cross-attended by a pre-trained BART decoder for text generation. We evaluate under strict subject-independent protocols on the ZuCo reading corpus (3 tasks, 12 subjects), training on 8 subjects and testing on 2 held-out subjects never seen during training. NEST v2 represents a complete, open-source framework for EEG-to-text research including pre-processing, training, evaluation, and deployment pipelines. **This is a draft manuscript: full training of NEST v2 has not yet completed, and no benchmark results are reported here.** Section 5 describes the planned evaluation protocol, including free-decoding metrics and a noise-input control following Jo et al. (2024).
 
 **Keywords**: Brain-computer interface, EEG decoding, sequence transduction, attention mechanism, silent speech, neural networks, deep learning
 
@@ -70,15 +74,15 @@ We introduce **NEST** (Neural EEG Sequence Transducer), a comprehensive deep lea
 
 3. **Rigorous subject-independent evaluation** on ZuCo dataset (12 subjects, 3 tasks) with held-out test subjects for unbiased performance estimation.
 
-4. **Effective subject adaptation** methods improving cross-subject WER by 22% through DANN and subject embeddings.
+4. **Planned subject adaptation evaluation**: domain adversarial training (DANN) and subject embeddings are implemented and intended to improve cross-subject generalization, but their effect on WER has not yet been measured.
 
-5. **Deployment-ready optimizations** achieving <20ms real-time inference through pruning (40% sparsity) and quantization (INT8) with <1% accuracy loss.
+5. **Planned deployment optimization**: pruning and quantization utilities for real-time inference are implemented in the codebase, but have not yet been benchmarked for latency or accuracy impact.
 
-6. **Open-source release** with complete codebase, pretrained models, comprehensive documentation, and reproducibility protocols at https://github.com/wazder/NEST.
+6. **Open-source release** with complete codebase, comprehensive documentation, and reproducibility protocols at https://github.com/wazder/NEST. No pre-trained model checkpoint has been released yet (see Section 5).
 
 ### 1.5 Paper Organization
 
-The remainder of this paper is organized as follows. Section 2 provides background on EEG signal characteristics, sequence transduction, and attention mechanisms. Section 3 details the NEST architecture and training methodology. Section 4 describes our experimental setup, including dataset, preprocessing, and evaluation protocols. Section 5 presents results comparing architecture variants and subject adaptation methods. Section 6 discusses findings, limitations, and future directions. Section 7 concludes.
+The remainder of this paper is organized as follows. Section 2 provides background on EEG signal characteristics, sequence transduction, and attention mechanisms. Section 3 details the NEST architecture and training methodology. Section 4 describes our experimental setup, including dataset, preprocessing, and evaluation protocols. Section 5 describes the planned experimental evaluation protocol; no results have been collected yet. Section 6 discusses anticipated findings, limitations, and future directions in light of that open evaluation. Section 7 concludes.
 
 ---
 
@@ -370,196 +374,64 @@ Measures model confidence. Lower indicates better predictive distribution.
 - **Hardware**: NVIDIA A100 40GB GPU for training, CPU/GPU benchmarking for inference
 - **Reproducibility**: Fixed random seeds (42) for Python, NumPy, PyTorch, CUDA
 - **Code**: https://github.com/wazder/NEST (MIT License)
-- **Checkpoints**: Pre-trained models available on Hugging Face Model Hub
+- **Checkpoints**: No trained checkpoint has been released yet; full training is pending GPU access (see Section 5)
 
 ---
 
-## 5. Results
+## 5. Planned Experiments and Evaluation Protocol
 
-### 5.1 Architecture Comparison
+**No results are reported in this manuscript.** NEST v2 has not yet completed a full training run — training to completion requires GPU resources that had not yet been allocated to this project at the time of writing — and no word error rate, character error rate, BLEU, or ROUGE score has been measured against reference text. This section describes the evaluation protocol that will be used once training completes, not results that have already been obtained. Numbers that previously circulated in project documentation (e.g., "15.8% WER," "26.1% WER," DANN/subject-embedding ablations, pruning and quantization tables) were fabricated or were estimates never grounded in an actual decode-and-compare evaluation; they have been withdrawn (see `docs/STATUS.md`).
 
-Table 1 reports test set performance for architecture variants using subject-independent evaluation.
+### 5.1 Models Under Evaluation
 
-**Table 1: Performance of NEST Architecture Variants**
+- **NEST-CTC-v2**: Transformer encoder with a linear CTC head (45,310,637 parameters), trained end-to-end with CTC loss.
+- **NEST-BART-v2**: Transformer encoder with a BART (`facebook/bart-base`) decoder and EEG cross-attention (184,424,592 total parameters, 64,697,232 trainable — the first four BART decoder layers are frozen, the last two and cross-attention are fine-tuned).
 
-| Model | WER ↓ | CER ↓ | BLEU ↑ | PPL ↓ | Params | Inference (ms) CPU/GPU |
-|-------|-------|-------|--------|-------|--------|------------------------|
-| Random Baseline | 98.2 | 94.5 | 0.02 | - | - | - |
-| CTC-LSTM | 24.3 | 12.7 | 0.58 | 8.2 | 2.7M | 45 / 8 |
-| Seq2Seq-LSTM | 19.7 | 10.4 | 0.67 | 6.1 | 3.1M | 52 / 11 |
-| Transformer | 18.1 | 9.6 | 0.71 | 5.4 | 3.8M | 38 / 7 |
-| **NEST-Conformer** | **15.8** | **8.3** | **0.76** | **4.7** | 4.2M | 41 / 8 |
-| NEST-Deep | 16.2 | 8.6 | 0.75 | 4.9 | 5.1M | 48 / 9 |
+Both are implemented in `src/models/nest_v2.py` and trained/evaluated via `scripts/train_nest_v2.py`. Neither has completed a full training run at the time of writing.
 
-**Key Findings**:
+### 5.2 Free Decoding, Not Teacher Forcing
 
-1. **Conformer outperforms LSTM and pure Transformer**: NEST-Conformer achieves 15.8% WER, representing 35% relative reduction vs. CTC-LSTM baseline (24.3%) and 18% reduction vs. Transformer (18.1%). The combination of local convolution and global self-attention effectively captures EEG's multi-scale temporal structure.
+Following Jo et al. (2024, *Are EEG-to-Text Models Working?*, arXiv:2405.06459), which showed that much of the accuracy reported by prior ZuCo-based EEG-to-text work was an artifact of teacher forcing at evaluation time — feeding reference tokens back into the decoder lets a language-model prior reconstruct much of the sentence largely independent of the EEG input — NEST commits to reporting **free-decoding** metrics only, with no reference text supplied to the model at inference time:
 
-2. **Attention-based decoding superior to CTC**: Comparing Seq2Seq-LSTM (19.7% WER) to CTC-LSTM (24.3%), attention mechanisms yield 19% relative improvement by learning flexible alignments and incorporating language modeling in the decoder.
+- **NEST-BART-v2**: `eval_bart()` in `scripts/train_nest_v2.py` decodes with `model.generate()` autoregressively with no teacher forcing. The current `generate()` implementation is greedy; the `num_beams=4` argument is accepted but not yet used, and beam search will be reported separately when implemented.
+- **NEST-CTC-v2**: `eval_ctc()` performs greedy CTC decoding (arg-max per frame, collapsing repeats and blanks), which is inherently non-teacher-forced.
 
-3. **Deeper spatial CNN provides marginal gains**: NEST-Deep (DeepConvNet spatial features) achieves only 0.4% absolute WER reduction vs. NEST-Conformer (EEGNet), suggesting spatial feature extraction is not the primary bottleneck. The simpler EEGNet provides a better parameter efficiency trade-off.
+### 5.3 Noise-Input Control
 
-4. **Character Error Rate follows Word Error Rate**: CER rankings mirror WER, with NEST-Conformer achieving 8.3% CER (34% relative reduction vs. CTC-LSTM).
+As an additional control recommended by Jo et al. (2024), we will report model performance when the EEG input is replaced by uninformative noise (e.g., shuffled features or Gaussian noise) that carries no information about the target sentence. A model that performs similarly on real EEG and on noise input is not decoding brain signals — it is exploiting dataset-level language priors (e.g., a small or repetitive sentence set). Every WER/CER/BLEU/ROUGE number we report for NEST will be accompanied by this noise-input baseline so the improvement attributable to the EEG signal itself, rather than to the language model or dataset artifacts, is visible.
 
-5. **Inference Speed**: All models achieve <50ms CPU inference, suitable for real-time BCI with offline preprocessing. GPU inference (<10ms) enables interactive applications.
+### 5.4 Data Split
 
-### 5.2 Cross-Subject Generalization
+Subject-independent evaluation on ZuCo (12 subjects, 105-channel EEG, 1,107 sentences, 3 reading tasks — SR, NR, TSR):
 
-Figure 2 shows per-subject WER distributions. Mean WER is 15.8% but subject-specific performance ranges from 11.2% to 22.4%, indicating substantial inter-subject variability. Subjects with higher signal quality (lower average EEG impedance, fewer ICA-rejected components) tend to have lower WER (Pearson r = 0.63, p < 0.05).
+- Train: 8 subjects (ZAB, ZDN, ZDM, ZGW, ZJM, ZJN, ZJS, ZKB)
+- Validation: 2 subjects (ZKH, ZKW)
+- Test: 2 subjects (ZMG, ZPH), never seen during training or validation
 
-**Cross-Validation Results** (6-fold with rotating test subjects):  
-Mean WER: 16.3% ± 3.1% (std across folds)  
-This confirms the 15.8% test WER generalizes across subject pairs.
+### 5.5 Metrics
 
-### 5.3 Subject Adaptation
+- **Word Error Rate (WER)** and **Character Error Rate (CER)**: word- and character-level Levenshtein edit distance between the free-decoded hypothesis and the reference sentence, as implemented in `scripts/train_nest_v2.py`.
+- **BLEU** and **ROUGE**: n-gram overlap metrics reported alongside WER/CER for comparability with the broader sequence-generation and EEG-to-text literature.
 
-To improve cross-subject performance, we evaluate two adaptation techniques:
+### 5.6 What Has Actually Been Run So Far
 
-**Domain Adversarial Neural Networks (DANN)**:  
-Add a gradient reversal layer (Ganin et al., 2016) and subject classifier during training. Encoder learns subject-invariant features by maximizing subject classification loss.
-
-**Subject Embeddings**:  
-Add learnable embedding vector e_s ∈ ℝ^64 for each subject, concatenated with encoder outputs. For new subjects, initialize with mean embedding and fine-tune on 50-100 calibration sentences.
-
-**Table 2: Subject Adaptation Results**
-
-| Method | WER ↓ | Improvement |
-|--------|-------|-------------|
-| NEST-Conformer (baseline) | 15.8 | - |
-| + DANN | 14.2 | 10.1% rel. |
-| + Subject Embeddings (50 cal. sentences) | 13.5 | 14.6% rel. |
-| + Subject Embeddings (100 cal. sentences) | 12.9 | 18.4% rel. |
-| + DANN + Subject Embeddings (100) | **12.3** | **22.2% rel.** |
-
-**Findings**:
-
-1. **DANN improves generalization**: 10.1% relative WER reduction indicates successful learning of subject-invariant representations.
-
-2. **Subject embeddings enable personalization**: Fine-tuning with 100 calibration sentences achieves 18.4% relative improvement. Performance improves gradually with calibration data (50 → 100 sentences: 13.5% → 12.9%).
-
-3. **Combining methods is additive**: DANN + subject embeddings achieves 22.2% relative improvement (15.8% → 12.3% absolute WER), suggesting complementary benefits.
-
-4. **Practical Implications**: Collecting 100 calibration sentences (~10-15 minutes) is realistic for BCI users, making personalization feasible.
-
-### 5.4 Ablation Studies
-
-We systematically ablate components to assess their contributions:
-
-**Table 3: Ablation Study**
-
-| Configuration | WER ↓ | ΔWER |
-|---------------|-------|------|
-| NEST-Conformer (full) | 15.8 | - |
-| - Multi-head attention (single head) | 17.6 | +1.8 |
-| - Positional encoding | 18.9 | +3.1 |
-| - Feedforward network | 19.4 | +3.6 |
-| - Convolution module | 18.1 | +2.3 |
-| - Data augmentation | 17.2 | +1.4 |
-| - Mixed precision training | 15.9 | +0.1 |
-
-**Key Insights**:
-
-- **Positional encoding essential**: Removing it increases WER by 3.1 absolute points, showing importance of temporal position information.
-- **Feedforward networks critical**: Largest degradation (3.6 points), highlighting non-linear transformations' role.
-- **Convolution module important**: Removing it regresses to pure Transformer (18.1% WER), confirming Conformer's advantage.
-- **Data augmentation helps**: 1.4-point improvement demonstrates regularization benefit for small datasets.
-
-### 5.5 Qualitative Analysis
-
-**Example Predictions** (Test Set):
-
-```
-Reference: "The quick brown fox jumps over the lazy dog"  
-NEST-Conformer: "The quick brown fox jumps over the lazy dog" ✓
-
-Reference: "Artificial intelligence will transform society"  
-NEST-Conformer: "Artificial intelligence will transform societyty" (1 deletion)
-
-Reference: "Climate change poses significant challenges"  
-NEST-Conformer: "Climate change posos significant challenges" (1 substitution)
-```
-
-**Error Analysis** (100 random errors):
-- **Substitutions**: 58% (e.g., "posos" for "poses") - often phonetically similar
-- **Deletions**: 23% (e.g., missing articles "the", "a")
-- **Insertions**: 12% (e.g., repeated characters)
-- **Semantic Preserving**: 71% of errors preserve sentence meaning
-- **Function Words**: 42% of errors involve function words (articles, prepositions)
-
-**Attention Visualizations** (Figure 3): Cross-attention heat maps show the model attends strongly to:
-- Content words (nouns, verbs) → focal attention on corresponding EEG segments
-- Function words → distributed attention across surrounding context
-- Semantic violations (e.g., garden-path sentences) → attention to earlier disambiguating words
-
-These patterns align with psycholinguistic findings on lexical processing (high-frequency words processed faster) and semantic integration (N400 responses to semantic anomalies).
-
-### 5.6 Optimization for Deployment
-
-**Pruning**: We apply iterative magnitude pruning with fine-tuning:
-
-**Table 4: Pruning Results**
-
-| Sparsity | WER ↓ | ΔWER | Size | Speedup |
-|----------|-------|------|------|---------|
-| 0% (dense) | 15.8 | - | 16.8 MB | 1.0× |
-| 20% | 15.9 | +0.1 | 13.4 MB | 1.15× |
-| 40% | 16.3 | +0.5 | 10.1 MB | 1.38× |
-| 60% | 17.9 | +2.1 | 6.7 MB | 1.72× |
-| 80% | 22.4 | +6.6 | 3.4 MB | 2.01× |
-
-**Optimal sparsity**: 40% achieves favorable trade-off (0.5-point WER increase, 40% size reduction, 1.38× speedup).
-
-**Quantization**: Post-training quantization (PTQ) to INT8:
-
-**Table 5: Quantization Results**
-
-| Precision | WER ↓ | ΔWER | Size | Speedup |
-|-----------|-------|------|------|---------|
-| FP32 | 15.8 | - | 16.8 MB | 1.0× |
-| FP16 | 15.8 | 0.0 | 8.4 MB | 1.8× (GPU) |
-| INT8 (PTQ) | 16.4 | +0.6 | 4.2 MB | 2.6× (CPU) |
-| INT8 (QAT) | 16.0 | +0.2 | 4.2 MB | 2.6× (CPU) |
-
-**Quantization-Aware Training (QAT)** reduces accuracy loss from 0.6 to 0.2 points.
-
-**Combined Optimization**: 40% pruning + INT8 QAT → 2.5 MB model, 16.5% WER (+0.7), 3.2× speedup
-
-**Real-Time Inference Benchmark** (on Intel i9-10900K):
-- Dense FP32: 41 ms/sequence
-- Pruned (40%) + INT8: 13 ms/sequence ✓ (meets <20ms target for most sentences)
-
-### 5.7 Comparison with Prior Work
-
-Direct comparison with prior EEG decoding work is challenging due to different datasets, tasks, and evaluation protocols. Table 6 provides context:
-
-**Table 6: Related EEG Decoding Studies**
-
-| Study | Task | Method | Metric | Performance |
-|-------|------|--------|--------|-------------|
-| Wang et al. (2021) | Alphabet classification (26 classes) | LSTM | Accuracy | 78.3% |
-| Krishna et al. (2020) | Word classification (100 words) | CNN-RNN | Accuracy | 82.1% |
-| Cooney et al. (2019) | P300 spelling | Linear SVM | ITR | 32.4 bit/min |
-| **NEST (ours)** | **Open-vocab text generation** | **Conformer + Attention** | **WER** | **15.8%** |
-
-Prior work focuses on discrete classification (limited vocabulary), while NEST tackles open-vocabulary sequence generation—a fundamentally harder problem. Our 15.8% WER on subject-independent evaluation represents a significant advance toward practical silent speech interfaces.
+The only training run completed to date (February 16, 2026) trained a small, ad hoc `SimpleLSTMDecoder` (~2.78M parameters, defined inline in `scripts/train_with_real_zuco.py` — not the NEST-CTC-v2/NEST-BART-v2 architectures described above) for 100 epochs on 12,071 ZuCo sentence-subject pairs, taking approximately 5.4 hours on an Apple M2 laptop CPU. Training loss decreased over the run, but **no decoding was performed and no WER, CER, BLEU, or ROUGE was computed** against reference text. A figure of "26.1% WER" (with "BLEU 0.74" and "73.9% accuracy") previously circulated in project documentation was not a measurement: it was produced by a hand-written heuristic, `estimate_wer_from_ctc_loss()` in `detailed_analysis.py`, that maps final training loss to a WER percentage via an empirical formula, with no decoding or reference comparison involved. That figure has been withdrawn.
 
 ---
 
 ## 6. Discussion
 
-### 6.1 Key Findings
+### 6.1 Open Questions for the Planned Evaluation
 
-This work demonstrates that **end-to-end deep learningsequence transduction can decode non-invasive EEG signals into open-vocabulary text** with promising accuracy (15.8% WER) on completely unseen subjects. Several findings merit discussion:
+Because no training run of NEST-CTC-v2 or NEST-BART-v2 has completed, this section discusses questions the evaluation in Section 5 is designed to answer, not findings. We list them here to make the reasoning behind the evaluation protocol explicit, and will replace this section with actual findings once results exist.
 
-**1. Conformer Architecture is Effective for EEG**: The Conformer's combination of convolution (capturing local EEG patterns like ERPs) and self-attention (modeling long-range dependencies across sentence processing) outperforms pure recurrent or attentional approaches. This mirrors findings in speech recognition where hybrid architectures excel.
+**1. Does the Transformer + BART architecture decode above the noise-input control?** The central question the noise-input control (Section 5.3) is designed to answer is whether NEST's free-decoding WER/CER on real EEG is meaningfully better than on uninformative noise input. Jo et al. (2024) found that several prior ZuCo EEG-to-text results did not clear this bar under free decoding; we do not assume NEST will.
 
-**2. Attention Mechanisms Enable Interpretability**: Cross-attention visualizations reveal plausible alignment patterns (e.g., attending to N400-related signals for semantic words), suggesting the model captures linguistically meaningful EEG features rather than spurious artifacts.
+**2. Does subject adaptation help, and by how much?** DANN and subject-embedding mechanisms are implemented but their effect on cross-subject generalization has not been measured. We plan to report this as a controlled comparison against the non-adapted model once training resources are available, rather than assume the effect size in advance.
 
-**3. Subject Adaptation is Critical**: The 22% relative improvement from DANN + subject embeddings underscores the challenge of inter-subject variability in EEG. Practical BCIs will require personalization strategies; our results show 100 calibration sentences suffice for substantial gains.
+**3. Is deployment-time optimization (pruning, quantization) compatible with acceptable accuracy?** Pruning and quantization utilities exist in the codebase but have not been benchmarked for their effect on WER/CER or on latency for either NEST-CTC-v2 or NEST-BART-v2.
 
-**4. Deployment Optimization is Feasible**: Achieving <15ms inference with minimal accuracy loss (0.7 WER points) via pruning and quantization demonstrates that NEST-scale models can meet real-time BCI latency requirements on consumer hardware.
-
-**5. Significant Gap Remains vs. Invasive BCIs**: While 15.8% WER represents progress, invasive BCIs achieve <5% error rates. This gap reflects fundamental signal quality differences (SNR, spatial resolution) between EEG and intracortical recordings. Further algorithmic advances, larger datasets, and potentially hybrid non invasive approaches (EEG + fNIRS, MEG) may help close this gap.
+**4. How does NEST compare to invasive BCIs and to other ZuCo EEG-to-text work?** Invasive BCIs (Willett et al., 2021; Makin et al., 2020) report substantially lower error rates than any published non-invasive EEG-to-text system, reflecting fundamental SNR and spatial-resolution differences. We expect a real gap to remain; the size of that gap is an empirical question the planned evaluation, not this discussion, should answer.
 
 ### 6.2 Limitations
 
@@ -571,7 +443,7 @@ This work demonstrates that **end-to-end deep learningsequence transduction can 
 
 **4. English Only**: We evaluate only on English text. Language-specific orthography, morphology, and neural processing patterns may affect generalization. Multi-lingual evaluation is needed.
 
-**5. Evaluation Metrics**: WER/CER are standard but imperfect. Two 15% WER systems may differ dramatically in usability if errors are semantics-preserving vs. gibberish. User studies (Section 6.4) are essential for assessing real-world utility.
+**5. Evaluation Metrics**: WER/CER are standard but imperfect. Two systems with the same WER may differ dramatically in usability if errors are semantics-preserving vs. gibberish. User studies (Section 6.4) are essential for assessing real-world utility.
 
 **6. No Online Evaluation**: All experiments use offline analysis (EEG pre-recorded). Online closed-loop BCI experiments with real-time feedback to users are needed to assess practical performance and user learning effects.
 
@@ -611,16 +483,11 @@ This work demonstrates that **end-to-end deep learningsequence transduction can 
 
 ## 7. Conclusion
 
-We presented **NEST** (Neural EEG Sequence Transducer), a comprehensive deep learning framework for decoding non-invasive EEG signals into open-vocabulary text via sequence transduction. NEST combines spatial CNNs, temporal encoders (Conformer yielding best performance), and attention-based decoding to achieve **15.8% word error rate** on subject-independent evaluation—a substantial advance toward practical silent speech interfaces using non-invasive recordings.
+We presented **NEST** (Neural EEG Sequence Transducer), a deep learning framework and open-source codebase for decoding non-invasive EEG signals into open-vocabulary text via sequence transduction. NEST v2 implements a Transformer EEG encoder cross-attended by a BART decoder (NEST-BART-v2) alongside a CTC baseline (NEST-CTC-v2), with pre-processing, training, evaluation, and deployment pipelines already in place.
 
-Our systematic evaluation demonstrates:
-- **Architecture Design Matters**: Conformer outperforms LSTM and Transformer by 18-35% relative WER reduction
-- **Subject Adaptation Works**: DANN + subject embeddings improve cross-subject WER by 22%
-- **Deployment is Feasible**: Optimized models achieve <15ms inference with <1% WER degradation
+**This manuscript reports no experimental results.** Full training of NEST v2 is pending GPU access, and the evaluation protocol described in Section 5 — free decoding (not teacher forcing), a noise-input control following Jo et al. (2024), subject-independent held-out test subjects, and WER/CER/BLEU/ROUGE metrics — has not yet been run to completion. Earlier internal documentation cited numbers (e.g., "15.8% WER," "26.1% WER") that were either fully fabricated or derived from a loss-based heuristic rather than an actual decode-and-compare evaluation; those numbers have been withdrawn and must not be cited as results of this work.
 
-NEST represents the first end-to-end, open-source framework for EEG-to-text decoding with production-ready optimization and comprehensive documentation. By open-sourcing our code, models, and protocols, we aim to accelerate research toward accessible brain-computer interfaces for assistive communication.
-
-While significant challenges remain—particularly the performance gap vs. invasive BCIs and need for larger datasets—NEST demonstrates the viability of non-invasive EEG-based sequence transduction. Continued algorithmic innovation, dataset expansion, and clinical validation will determine whether EEG can achieve the accuracy and usability required for real-world communication BCIs, offering hope to millions with severe motor impairments.
+What NEST does offer today is a complete, open-source framework — architecture, ZuCo data pipeline, training scripts, and an evaluation protocol designed from the outset to avoid the teacher-forcing pitfalls documented in prior EEG-to-text work. Whether NEST v2 decodes EEG signals above the noise-input control, how much subject adaptation helps, and whether deployment-time optimization preserves accuracy are open, empirical questions that the evaluation in Section 5 is designed to answer once training completes. We plan to report those results, positive or negative, in a follow-up technical report.
 
 ---
 
@@ -688,15 +555,13 @@ Wolpaw, J. R., Birbaumer, N., McFarland, D. J., Pfurtscheller, G., & Vaughan, T.
 ---
 
 **Code Availability**: https://github.com/wazder/NEST  
-**Pretrained Models**: https://huggingface.co/wazder/NEST  
+**Pretrained Models**: Not yet released; no trained NEST v2 checkpoint exists (see Section 5)  
 **Data**: ZuCo dataset available at https://osf.io/q3zws/
 
 ---
 
 **Document Information**:
-- **Version**: 1.0 (Submission Draft)
-- **Word Count**: ~9,500 words (target: 8-10k for NeurIPS/ICML)
-- **Figures**: 3 (Architecture diagram, subject performance, attention visualizations)
-- **Tables**: 6 (performance comparisons, ablations, optimization results)
-- **Status**: Ready for internal review and submission preparation
+- **Version**: Draft (no experimental results yet)
+- **Figures**: Architecture diagram (planned); result figures pending the evaluation described in Section 5
+- **Status**: Draft. Not ready for submission — see the status banner at the top of this document and `docs/STATUS.md`
 

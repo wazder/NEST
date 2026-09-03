@@ -103,16 +103,17 @@ python scripts/generate_figures.py --results results/ --output papers/figures/
 
 ## 🎓 Expected Results
 
-After training, you should see:
+**No validated WER/CER/BLEU numbers exist for any NEST model yet.** The
+table below is a placeholder showing the format results will be reported
+in once a full training and evaluation run completes — not values you
+should expect to reproduce. See [docs/STATUS.md](../STATUS.md).
 
 | Model | WER | CER | BLEU | Status |
 |-------|-----|-----|------|--------|
-| NEST-Conformer | ~15.8% | ~8.3% | ~0.76 | ✅ Best |
-| NEST-Transformer | ~18.1% | ~9.6% | ~0.71 | ✅ Good |
-| NEST-RNN-T | ~19.7% | ~10.4% | ~0.67 | ✅ OK |
-| NEST-CTC | ~24.3% | ~12.7% | ~0.58 | ✅ Baseline |
-
-**Note:** Exact values may vary ±10-15% due to random initialization.
+| NEST-Conformer | pending | pending | pending | not yet trained |
+| NEST-Transformer | pending | pending | pending | not yet trained |
+| NEST-RNN-T | pending | pending | pending | not yet trained |
+| NEST-CTC | pending | pending | pending | not yet trained |
 
 ---
 
@@ -263,10 +264,10 @@ papers/
 You're ready for paper submission when:
 
 - ✅ All models trained successfully
-- ✅ WER ~15-20% on test set
+- ✅ WER/CER/BLEU measured against reference text (whatever the values are)
 - ✅ Verification report shows "PASS"
 - ✅ Figures generated
-- ✅ Results match paper (±15%)
+- ✅ Results are logged from an actual run, not copied from this guide
 
 ---
 

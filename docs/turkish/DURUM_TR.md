@@ -1,5 +1,7 @@
 # NEST Proje Durumu - Türkçe Özet
 
+> **Şubat 2026 tarihli arşiv notu.** Aşağıdaki WER/CER/BLEU rakamları sentetik (yapay) üretilmiş veriden ya da loss tabanlı bir tahminden gelmektedir ve geçerli sonuç sayılmaz. Bkz. [docs/STATUS.md](../STATUS.md) (İngilizce).
+
 ## 🎉 Gerçek ZuCo Verisiyle Eğitim Başarıyla Tamamlandı!
 
 **Tarih**: 16 Şubat 2026  

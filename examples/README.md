@@ -126,6 +126,10 @@ Modify these files to experiment with different settings.
 
 ## Expected Outputs
 
+The outputs below illustrate script output *format* only. The specific numbers
+shown are placeholders, not measured NEST results — no validated WER/CER/BLEU
+exists yet. See [docs/STATUS.md](../docs/STATUS.md).
+
 ### 01_basic_training.py
 
 **Output:**
@@ -143,11 +147,11 @@ Training...
 Epoch 1/50 - Train Loss: 3.5421, Val Loss: 3.1234
 Epoch 2/50 - Train Loss: 2.9876, Val Loss: 2.7543
 ...
-Best validation WER: 15.23%
+Best validation WER: <measured value>
 
 Test Results:
-Test WER: 16.45%
-Test CER: 8.32%
+Test WER: <measured value>
+Test CER: <measured value>
 ```
 
 **Files created:**

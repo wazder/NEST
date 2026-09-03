@@ -1,5 +1,7 @@
 # 🎉 NEST Projesi - TAM HAZIR!
 
+> **Şubat 2026 tarihli arşiv notu.** Aşağıdaki WER/CER/BLEU rakamları sentetik (yapay) üretilmiş veriden ya da loss tabanlı bir tahminden gelmektedir ve geçerli sonuç sayılmaz. Bkz. [docs/STATUS.md](../STATUS.md) (İngilizce).
+
 **Tarih:** 15 Şubat 2026  
 **Durum:** TÜM SİSTEM HAZIR VE ÇALIŞIYOR ✅  
 **Son Güncelleme:** Az önce (Pipeline tamamlandı)

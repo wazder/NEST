@@ -1,5 +1,7 @@
 # Phase 1 Summary: Literature Review & Foundation
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](../STATUS.md).
+
 ## Overview
 
 Phase 1 establishes the theoretical foundation for the NEST (Neural EEG Sequence Transducer) project through comprehensive literature review covering sequence transduction models, EEG-to-text decoding approaches, attention mechanisms, silent speech interfaces, and evaluation benchmarks.

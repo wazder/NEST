@@ -1,5 +1,7 @@
 # Phase 3 Summary: Model Architecture Development
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](../STATUS.md).
+
 ## Overview
 
 Phase 3 implements the core neural architectures for NEST (Neural EEG Sequence Transducer), providing multiple model variants for EEG-to-text sequence transduction. This phase delivers production-ready implementations of spatial CNNs, temporal encoders, attention mechanisms, and complete end-to-end NEST architectures.
@@ -294,7 +296,7 @@ Total: ~4,600 lines of production code
 | NEST_Transformer_T | 4.5M | 12.4 | 65 | 16-19% |
 | NEST_Attention | 3.2M | 7.8 | 95 | 17-20% |
 
-*Estimates based on similar architectures in speech recognition*
+*All Latency and WER (est.) figures in this table are estimates based on similar architectures in speech recognition — they are not measured values for NEST. See [docs/STATUS.md](../STATUS.md).*
 
 ## Integration Points
 

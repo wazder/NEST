@@ -20,7 +20,7 @@ NEST (Neural EEG Sequence Transducer) is a deep learning framework for decoding 
 | `STRUCTURE.md` | Detailed project structure |
 
 ## Latest Results (Feb 16, 2026)
-- WER: 26.1%, BLEU: 0.74, Accuracy: 73.9%
+- No validated benchmark yet; see docs/STATUS.md. Never add performance numbers to docs unless they come from a logged run.
 - Training: 12,071 samples, 100 epochs, 5.4 hours
 
 ## Development Guidelines

@@ -1,5 +1,7 @@
 # 🟠 DOCUMENTATION ISSUES
 
+> **Archived note from February 2026.** This document uses "WER: 26.1%" as an example value. That figure came from a loss-based heuristic (`estimate_wer_from_ctc_loss()` in `detailed_analysis.py`), not a decode-and-compare measurement, and is not a valid result. See [docs/STATUS.md](../docs/STATUS.md).
+
 Issues found in documentation files (`.md` files in `/docs` and root directory).
 
 ## 1. Broken Internal Links & Missing Files

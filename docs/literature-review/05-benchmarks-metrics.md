@@ -585,12 +585,14 @@ d = (Mean_1 - Mean_2) / Pooled_SD
 
 ### State-of-the-Art (SOTA) Table
 
-**Format:**
+**Format** (template only — the NEST rows are placeholders, not measured
+results; no NEST model has completed training and evaluation yet, see
+[../STATUS.md](../STATUS.md)):
 | Model | Dataset | Subjects | WER (%) | BLEU | RTF | Subject-Indep? |
 |-------|---------|----------|---------|------|-----|----------------|
 | Sun et al. (2021) | ZuCo 1.0 | 12 | 45 | 0.38 | 1.2 | No |
-| **NEST (RNN-T)** | ZuCo 2.0 | 18 | **35** | **0.52** | **0.6** | **Yes** |
-| **NEST (Conf-T)** | ZuCo 2.0 | 18 | **32** | **0.56** | **0.8** | **Yes** |
+| **NEST (RNN-T)** | ZuCo 2.0 | 18 | **pending** | **pending** | **pending** | **Yes** |
+| **NEST (Conf-T)** | ZuCo 2.0 | 18 | **pending** | **pending** | **pending** | **Yes** |
 
 **Include:**
 - Dataset version (ZuCo 1.0 vs. 2.0 are different)

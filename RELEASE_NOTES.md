@@ -2,13 +2,11 @@
 
 ## Overview
 
-First public release of NEST (Neural EEG Sequence Transducer) — state-of-the-art EEG-to-text decoding.
+First public release of NEST (Neural EEG Sequence Transducer) — an open-source EEG-to-text decoding framework.
 
 ## Key Results
 
-- X% WER on ZuCo dataset (subject-independent split)
-- X% CER on ZuCo dataset
-- Real-time capable: <100ms inference latency on a single GPU
+**No benchmark results are available yet.** NEST v2 has not been trained to completion and no WER, CER, or latency has been measured. See [docs/STATUS.md](docs/STATUS.md) for the current status and the evaluation protocol (free decoding with a noise-input control, following Jo et al. 2024) that will be used once training completes.
 
 ## Architecture (NEST v2)
 
@@ -20,7 +18,7 @@ First public release of NEST (Neural EEG Sequence Transducer) — state-of-the-a
 
 ## What's Included
 
-- Pre-trained model weights (NEST-v2-BART)
+- Model weights: **not yet released** — no NEST-v2-BART checkpoint has completed training
 - Complete training code (`scripts/train_nest_v2.py`)
 - ZuCo pickle dataset loader (`src/data/zuco_pickle_dataset.py`)
 - Google Colab training notebook (`notebooks/NEST_CloudTraining.ipynb`)

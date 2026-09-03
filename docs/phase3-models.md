@@ -1,5 +1,7 @@
 # Phase 3: Model Architecture Development
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](STATUS.md).
+
 This document describes the neural architectures implemented for NEST (Neural EEG Sequence Transducer).
 
 ## Overview
@@ -288,12 +290,16 @@ history = trainer.train(
 
 ## Performance Benchmarks
 
-Expected performance (ZuCo dataset):
-- **NEST_CTC**: WER ~60-70% (baseline)
-- **NEST_Attention**: WER ~50-60%
-- **NEST_RNN_T**: WER ~45-55%
-- **NEST_Transformer_T**: WER ~40-50% (best)
-- **NEST_Conformer**: WER ~35-45% (state-of-the-art)
+**Estimate, not measured.** No NEST model has been evaluated on ZuCo yet;
+the figures below are planning-stage guesses, not benchmark results. See
+[docs/STATUS.md](STATUS.md).
+
+Expected performance (est., ZuCo dataset):
+- **NEST_CTC**: WER ~60-70% (est.)
+- **NEST_Attention**: WER ~50-60% (est.)
+- **NEST_RNN_T**: WER ~45-55% (est.)
+- **NEST_Transformer_T**: WER ~40-50% (est.)
+- **NEST_Conformer**: WER ~35-45% (est.)
 
 Training time (single GPU):
 - **NEST_CTC**: ~2-4 hours

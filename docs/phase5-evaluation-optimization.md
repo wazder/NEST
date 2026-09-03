@@ -1,5 +1,7 @@
 # Phase 5: Evaluation & Optimization
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](STATUS.md).
+
 This document describes the evaluation, optimization, and deployment utilities implemented in Phase 5 of the NEST project.
 
 ## Overview

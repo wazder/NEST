@@ -5,7 +5,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![arXiv](https://img.shields.io/badge/arXiv-2026-b31b1b.svg)](papers/NEST_manuscript.md)
+[![preprint: in preparation](https://img.shields.io/badge/preprint-in%20preparation-lightgrey.svg)](papers/NEST_manuscript.md)
 
 **Open-Vocabulary EEG-to-Text Decoding with Deep Learning**
 
@@ -16,6 +16,14 @@
 </div>
 
 ---
+
+## Project status (September 2026)
+
+- **Architecture and pipeline**: implemented. NEST v2 (Transformer EEG encoder + BART decoder, plus a CTC baseline) is defined in `src/models/nest_v2.py`, with full preprocessing, training, and evaluation code in `scripts/train_nest_v2.py`.
+- **Dataset**: ZuCo is integrated (`src/data/zuco_pickle_dataset.py`), with a subject-independent split (8 train / 2 val / 2 test subjects).
+- **Benchmark**: **no validated WER/CER/BLEU result exists yet.** The only completed training run so far trained a small, ad hoc LSTM smoke-test model, not NEST v2, and no decoding was ever compared against reference text. A previously circulated "26.1% WER" figure was a loss-based estimate, not a measurement, and has been withdrawn. See [docs/STATUS.md](docs/STATUS.md) for the full picture.
+- **Full NEST v2 training**: pending GPU access (the codebase is ready; training has not been run to completion on the target architecture).
+- **Evaluation commitment**: results will be reported under free autoregressive decoding (no teacher forcing; the current `generate()` is greedy, beam search is planned), alongside a noise-input control following Jo et al. (2024, *Are EEG-to-Text Models Working?*, arXiv:2405.06459), on held-out subjects never seen during training.
 
 ## Overview
 
@@ -76,7 +84,7 @@ BART Decoder (facebook/bart-base)
   First 4 layers frozen, last 2 + cross-attention fine-tuned
          |
          v
-Text output (beam search, beam_size=4)
+Text output (free autoregressive decoding; greedy today, beam search planned)
 ```
 
 | Component | Config |

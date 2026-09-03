@@ -1,5 +1,7 @@
 # Phase 2 Implementation Summary
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](../STATUS.md).
+
 ## Completed Tasks
 
 ### 1. Directory Structure ✓

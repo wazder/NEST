@@ -1,5 +1,10 @@
 # NEST Research Paper Outline
 
+> **No validated results exist yet.** This is a planning outline: every
+> number in the Results/Discussion/Conclusion sections below is a
+> placeholder illustrating the format and structure results will take, not
+> a measurement. See [STATUS.md](STATUS.md) for what is actually verified.
+
 Working outline for research paper submission to BCI/AI conferences (NeurIPS, EMNLP, IEEE EMBC).
 
 ## Title Options
@@ -21,7 +26,11 @@ Working outline for research paper submission to BCI/AI conferences (NeurIPS, EM
 
 **Methods**: NEST employs a hybrid architecture combining spatial CNNs for multi-channel feature extraction, temporal encoders (LSTM/Transformer/Conformer) for sequential modeling, and attention-based decoders for text generation. We evaluate multiple transducer variants (RNN-T, Transformer-T, CTC) on the ZuCo reading comprehension dataset (12 subjects, 9,000 sentences). Subject-independent evaluation ensures generalization to unseen users.
 
-**Results**: NEST-Attention achieves 16.5% word error rate (WER) and 8.3% character error rate (CER) on held-out subjects, outperforming CTC baselines by 2%. The Conformer variant reaches 15.8% WER. Subject adaptation techniques (DANN, embeddings) improve cross-subject performance by 14%. Model optimization via pruning and quantization enables real-time inference (<100ms) with minimal accuracy loss.
+**Results**: *[pending — no NEST variant has completed training and evaluation
+yet. This paragraph will report free-decoding WER/CER on held-out subjects,
+the effect of subject adaptation, and inference latency once a full training
+run completes. No numbers should be inserted here until they come from a
+logged, decode-and-compare evaluation.]*
 
 **Conclusions**: NEST demonstrates the feasibility of open-vocabulary EEG-to-text decoding using sequence transduction, advancing toward practical silent speech interfaces. Code and pretrained models are available at: https://github.com/wazder/NEST
 
@@ -360,25 +369,28 @@ L_RNNT = -log sum_{A} P(y, A | x)
 
 ## 5. Results (4-5 pages)
 
+**All tables and figures in this section are pending.** No NEST variant has
+completed a full training and free-decoding evaluation run. The tables below
+show the format results will be reported in, not measured values — every
+cell must be filled from a logged, decode-and-compare run before this
+section is drafted for submission.
+
 ### 5.1 Main Results
 
 **Table 1: Performance of NEST variants on ZuCo test set**
 
 | Model | WER (%) ↓ | CER (%) ↓ | BLEU ↑ | Latency (ms) ↓ | Params (M) |
 |-------|-----------|-----------|--------|----------------|------------|
-| CTC-LSTM (baseline) | 22.3 | 11.2 | 0.61 | 10 | 2.0 |
-| Seq2seq-LSTM | 19.8 | 9.8 | 0.65 | 14 | 2.3 |
-| Transformer | 18.2 | 9.1 | 0.68 | 16 | 2.8 |
-| **NEST-RNN-T** | 17.2 | 8.9 | 0.69 | 18 | 3.2 |
-| **NEST-Transformer-T** | 16.8 | 8.5 | 0.71 | 19 | 3.5 |
-| **NEST-Attention** | **16.5** | **8.3** | **0.72** | 15 | 2.5 |
-| **NEST-Conformer** | **15.8** | **7.8** | **0.75** | 22 | 4.1 |
-| **NEST-CTC** | 18.5 | 9.5 | 0.66 | 12 | 2.1 |
+| CTC-LSTM (baseline) | pending | pending | pending | pending | 2.0 |
+| Seq2seq-LSTM | pending | pending | pending | pending | 2.3 |
+| Transformer | pending | pending | pending | pending | 2.8 |
+| **NEST-RNN-T** | pending | pending | pending | pending | 3.2 |
+| **NEST-Transformer-T** | pending | pending | pending | pending | 3.5 |
+| **NEST-Attention** | pending | pending | pending | pending | 2.5 |
+| **NEST-Conformer** | pending | pending | pending | pending | 4.1 |
+| **NEST-CTC** | pending | pending | pending | pending | 2.1 |
 
-**Key Findings**:
-- NEST-Conformer achieves best accuracy (15.8% WER)
-- NEST-Attention offers best accuracy/speed trade-off
-- All NEST variants outperform baselines
+**Key Findings**: *pending — to be written once results exist.*
 
 ### 5.2 Ablation Studies
 
@@ -386,20 +398,17 @@ L_RNNT = -log sum_{A} P(y, A | x)
 
 | Configuration | WER (%) | Δ WER |
 |---------------|---------|-------|
-| Full model | 16.5 | - |
-| - Cross-attention (concat instead) | 18.2 | +1.7 |
-| - Conformer encoder (Transformer) | 17.1 | +0.6 |
-| - Data augmentation | 19.3 | +2.8 |
-| - ICA preprocessing | 20.1 | +3.6 |
-| - Subject-independent split (random) | 14.2 | -2.3* |
+| Full model | pending | - |
+| - Cross-attention (concat instead) | pending | pending |
+| - Conformer encoder (Transformer) | pending | pending |
+| - Data augmentation | pending | pending |
+| - ICA preprocessing | pending | pending |
+| - Subject-independent split (random) | pending | pending* |
 
-*Lower WER because train/test subjects overlap (overly optimistic)
+*Expect a lower WER here because train/test subjects overlap (overly
+optimistic) — a hypothesis to confirm, not yet a finding.
 
-**Key Findings**:
-- Cross-attention critical (+1.7% WER without)
-- Data augmentation important (+2.8% WER without)
-- ICA preprocessing essential (+3.6% WER without)
-- Subject-independent evaluation necessary
+**Key Findings**: *pending — to be written once ablation runs complete.*
 
 ### 5.3 Subject Adaptation Results
 
@@ -407,16 +416,14 @@ L_RNNT = -log sum_{A} P(y, A | x)
 
 | Method | Cross-Subject WER (%) | Few-Shot WER (%) | Improvement |
 |--------|----------------------|------------------|-------------|
-| No adaptation | 16.5 | - | - |
-| Subject embeddings | 15.2 | 14.1 | 14% |
-| DANN | 14.8 | - | 10% |
-| Fine-tuning (50 samples) | - | 13.5 | 18% |
-| Fine-tuning (100 samples) | - | 12.8 | 22% |
+| No adaptation | pending | - | - |
+| Subject embeddings | pending | pending | pending |
+| DANN | pending | - | pending |
+| Fine-tuning (50 samples) | - | pending | pending |
+| Fine-tuning (100 samples) | - | pending | pending |
 
-**Key Findings**:
-- Subject adaptation improves performance by 10-22%
-- Few-shot fine-tuning most effective but requires target data
-- DANN enables zero-shot cross-subject transfer
+**Key Findings**: *pending — to be written once subject-adaptation runs
+complete.*
 
 ### 5.4 Optimization Results
 
@@ -424,27 +431,26 @@ L_RNNT = -log sum_{A} P(y, A | x)
 
 | Model | Size (MB) | WER (%) | Latency (ms) | Speedup |
 |-------|-----------|---------|--------------|---------|
-| NEST-Attention (base) | 18.5 | 16.5 | 15 | 1.0x |
-| + Magnitude pruning (50%) | 18.5 | 17.2 | 10 | 1.5x |
-| + Structured pruning (30%) | 12.9 | 16.9 | 11 | 1.4x |
-| + Dynamic quantization | 4.6 | 16.8 | 13 | 1.2x |
-| + Static quantization | 4.6 | 17.0 | 11 | 1.4x |
-| + Pruning (40%) + Quantization | 4.6 | 17.5 | 8 | 1.9x |
+| NEST-Attention (base) | pending | pending | pending | 1.0x |
+| + Magnitude pruning (50%) | pending | pending | pending | pending |
+| + Structured pruning (30%) | pending | pending | pending | pending |
+| + Dynamic quantization | pending | pending | pending | pending |
+| + Static quantization | pending | pending | pending | pending |
+| + Pruning (40%) + Quantization | pending | pending | pending | pending |
 
-**Key Findings**:
-- 4x size reduction via quantization (minimal accuracy loss)
-- 1.9x speedup via pruning + quantization
-- Enables deployment on edge devices
+**Key Findings**: *pending — pruning and quantization have not been
+benchmarked against a trained NEST checkpoint yet.*
 
 ### 5.5 Beam Search Analysis
 
 **Figure 1: WER vs Beam Size**
-- Beam size 1 (greedy): 18.2% WER
-- Beam size 5: 16.5% WER
-- Beam size 10: 16.3% WER
-- Beam size 20: 16.3% WER (diminishing returns)
+- Beam size 1 (greedy): pending
+- Beam size 5: pending
+- Beam size 10: pending
+- Beam size 20: pending
 
-**Recommendation**: Beam size 5 for best speed/accuracy trade-off
+**Recommendation**: *pending — to be determined from measured WER at each
+beam size.*
 
 ### 5.6 Error Analysis
 
@@ -452,31 +458,37 @@ L_RNNT = -log sum_{A} P(y, A | x)
 
 | Error Type | Percentage | Example |
 |------------|------------|---------|
-| Substitution | 65% | "read" → "red" |
-| Deletion | 20% | "the quick fox" → "the fox" |
-| Insertion | 15% | "hello" → "hello there" |
+| Substitution | pending | "read" → "red" |
+| Deletion | pending | "the quick fox" → "the fox" |
+| Insertion | pending | "hello" → "hello there" |
 
-**Common Errors**:
-- Homophones (to/too, their/there)
-- Function words (the, a, is)
-- Word boundaries (e.g., "cannot" vs "can not")
+The example errors above are illustrative of the error *categories* to be
+tallied, not observed NEST outputs.
+
+**Common Errors**: *pending — to be identified from actual decoded output
+once evaluation runs complete.*
 
 ### 5.7 Qualitative Examples
 
-**Example 1: Successful Decoding**
+**No decoding has been run yet, so no real qualitative examples exist.** The
+examples below illustrate the format qualitative examples will take in the
+final paper; the reference/predicted pairs and WER values are illustrative,
+not actual NEST decodes.
+
+**Example 1 (illustrative format): Successful Decoding**
 - Reference: "The quick brown fox jumps over the lazy dog"
-- Predicted: "The quick brown fox jumps over the lazy dog"
-- WER: 0%
+- Predicted: *[to be filled from an actual decode]*
+- WER: *[measured]*
 
-**Example 2: Moderate Errors**
+**Example 2 (illustrative format): Moderate Errors**
 - Reference: "Machine learning is transforming healthcare"
-- Predicted: "Machine learning is transforming health care"
-- WER: 11% (1 error: healthcare → "health care")
+- Predicted: *[to be filled from an actual decode]*
+- WER: *[measured]*
 
-**Example 3: Challenging Case**
+**Example 3 (illustrative format): Challenging Case**
 - Reference: "The researcher analyzed the electroencephalography data"
-- Predicted: "The researcher analyzed the eeg data"
-- WER: 22% (2 errors: "electroencephalography" → "eeg")
+- Predicted: *[to be filled from an actual decode]*
+- WER: *[measured]*
 
 ---
 
@@ -484,8 +496,8 @@ L_RNNT = -log sum_{A} P(y, A | x)
 
 ### 6.1 Key Achievements
 - First comprehensive sequence transducer framework for EEG-to-text
-- 15.8% WER on subject-independent evaluation (NEST-Conformer)
-- Real-time inference capability (<20ms latency)
+- WER on subject-independent evaluation: *pending — not yet measured*
+- Real-time inference capability: *pending — latency not yet benchmarked*
 - Open-source release for reproducibility
 
 ### 6.2 Comparison with Prior Work
@@ -496,18 +508,19 @@ L_RNNT = -log sum_{A} P(y, A | x)
 | Makin et al. (2020) | ECoG | Speech | 50 words | ~45% WER |
 | Wang et al. (2021) | EEG | Alphabet | 26 chars | 78% accuracy |
 | Krishna et al. (2020) | EEG | Imagined speech | 10 words | 82% accuracy |
-| **NEST (ours)** | **EEG** | **Reading** | **Open vocab** | **15.8% WER** |
+| **NEST (ours)** | **EEG** | **Reading** | **Open vocab** | **pending — not yet measured** |
 
 **Observations**:
 - Invasive methods (ECoG) achieve lower error rates
 - Our approach enables open vocabulary (not limited to predefined set)
-- First EEG-based system approaching practical WER (<20%)
+- Whether NEST approaches practical WER (<20%) is an open question the
+  planned evaluation, not this discussion, should answer
 
-### 6.3 Architectural Insights
-- Conformer encoder superior for sequential EEG data
-- Cross-attention crucial for alignment
-- Data augmentation essential due to limited samples
-- Subject adaptation necessary for practical deployment
+### 6.3 Architectural Insights (hypotheses pending confirmation by results)
+- Conformer encoder expected to suit sequential EEG data well
+- Cross-attention expected to matter for alignment
+- Data augmentation expected to help given limited samples
+- Subject adaptation expected to matter for practical deployment
 
 ### 6.4 Limitations
 
@@ -518,9 +531,9 @@ L_RNNT = -log sum_{A} P(y, A | x)
 - Controlled lab environment
 
 #### 6.4.2 Performance Gaps
-- WER still too high for practical AAC (target <10%)
-- Large variance across subjects (12-25%)
-- Struggles with rare/technical vocabulary
+- No WER has been measured yet; target for practical AAC is <10%
+- Per-subject variance: pending — not yet measured
+- Expected to struggle with rare/technical vocabulary (to be confirmed)
 - Requires clean EEG (sensitive to artifacts)
 
 #### 6.4.3 Generalization Challenges
@@ -537,8 +550,8 @@ L_RNNT = -log sum_{A} P(y, A | x)
 - Battery life and portability challenges
 
 #### 6.5.2 User Experience
-- 15ms latency acceptable for most applications
-- Error correction mechanisms needed (>15% WER)
+- Latency target: acceptable for most applications; not yet benchmarked
+- Error correction mechanisms may be needed depending on measured WER
 - Learning curve for users
 - Privacy and security concerns (brain data)
 
@@ -580,9 +593,9 @@ We presented NEST, a comprehensive deep learning framework for EEG-to-text decod
 4. Multiple decoder architectures (RNN-T, Transformer-T, CTC)
 
 ### 7.2 Key Results
-- **15.8% WER** on subject-independent evaluation (NEST-Conformer)
-- **10-22% improvement** via subject adaptation techniques
-- **Real-time inference** (<20ms) with optimized models
+- WER on subject-independent evaluation: *pending — not yet measured*
+- Improvement via subject adaptation techniques: *pending — not yet measured*
+- Inference latency: *pending — not yet benchmarked*
 - **First open-source** comprehensive EEG-to-text framework
 
 ### 7.3 Impact

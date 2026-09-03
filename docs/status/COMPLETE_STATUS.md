@@ -1,5 +1,7 @@
 # 🎯 NEST Project - Complete Status Summary
 
+> **Archived note from February 2026.** Any WER/CER/BLEU numbers below come from synthetic generated data or from a loss-based estimate and are not valid results. See [docs/STATUS.md](../STATUS.md).
+
 **Date**: February 16, 2026  
 **Project**: Neural EEG Sequence Transducer (NEST)  
 **Target**: IEEE EMBC 2026 (Deadline: March 15, 2026)

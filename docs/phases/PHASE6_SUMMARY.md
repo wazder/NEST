@@ -1,5 +1,7 @@
 # Phase 6 Summary: Documentation & Dissemination
 
+> **Archived note from February 2026.** Any WER/CER/BLEU numbers below come from synthetic generated data or from a loss-based estimate and are not valid results. See [docs/STATUS.md](../STATUS.md).
+
 ## Overview
 
 Phase 6 completes the NEST project by providing comprehensive documentation, reproducible examples, and preparation for research dissemination. This phase transforms the research codebase into a production-ready, well-documented framework suitable for academic publication and open-source release.

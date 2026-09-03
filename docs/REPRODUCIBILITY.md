@@ -1,6 +1,12 @@
 # Reproducibility Guide
 
-This guide helps reproduce all results presented in the NEST framework.
+> **No validated results exist yet.** The numbers below (WER, CER, BLEU,
+> latency) are illustrative placeholders showing the format results will take,
+> not measurements from a completed run. See [STATUS.md](STATUS.md) for what
+> is actually verified.
+
+This guide walks through setting up and running the NEST training/evaluation
+pipeline.
 
 ## Quick Start
 
@@ -124,11 +130,11 @@ python examples/01_basic_training.py \
     --output checkpoints/nest_attention/ \
     --seed 42
 
-# Expected results:
-# Validation WER: ~15.1%
-# Test WER: ~16.5%
-# Test CER: ~8.3%
-# Training time: ~2 hours (GPU)
+# Expected results: pending — no validated numbers exist yet.
+# Validation WER: <measured value>
+# Test WER: <measured value>
+# Test CER: <measured value>
+# Training time: unmeasured (estimate: a few hours on GPU)
 ```
 
 ### Train All Model Variants
@@ -170,8 +176,8 @@ python examples/02_subject_adaptation.py \
     --output results/subject_adaptation \
     --seed 42
 
-# Expected improvements:
-# Cross-subject WER: 16.5% → 14.2%
+# Expected improvements: pending — effect of subject adaptation on WER
+# has not been measured yet.
 ```
 
 ### Phase 5: Optimization
@@ -182,9 +188,8 @@ python examples/03_optimization.py \
     --checkpoint checkpoints/nest_attention/best_model.pt \
     --output results/optimization
 
-# Expected results:
-# Magnitude Pruning (50%): 1.46x speedup, WER +1.2%
-# Dynamic Quantization: 4x size reduction, WER +0.5%
+# Expected results: pending — pruning and quantization have not been
+# benchmarked against a trained NEST checkpoint yet.
 ```
 
 ## Benchmarking
@@ -207,12 +212,15 @@ python scripts/generate_report.py \
 
 ### Expected Benchmark Results
 
+No validated benchmark results exist yet. Once a full training and evaluation
+run completes, results will be reported here in this format:
+
 | Model | WER (%) | CER (%) | BLEU | Latency (ms) | Parameters |
 |-------|---------|---------|------|--------------|------------|
-| NEST-Attention | 16.5 | 8.3 | 0.72 | 15 | 2.5M |
-| NEST-RNN-T | 17.2 | 8.9 | 0.69 | 18 | 3.2M |
-| NEST-Conformer | 15.8 | 7.8 | 0.75 | 22 | 4.1M |
-| NEST-CTC | 18.5 | 9.5 | 0.66 | 12 | 2.1M |
+| NEST-Attention | pending | pending | pending | pending | 2.5M |
+| NEST-RNN-T | pending | pending | pending | pending | 3.2M |
+| NEST-Conformer | pending | pending | pending | pending | 4.1M |
+| NEST-CTC | pending | pending | pending | pending | 2.1M |
 
 ## Random Seed Management
 
@@ -350,9 +358,8 @@ Total computational budget: ~$30 for all models
 
 ### Inference Time
 
-- **CPU**: ~15 ms per sample (Intel i7)
-- **GPU**: ~5 ms per sample (V100)
-- **Optimized (quantized)**: ~8 ms per sample (CPU)
+No latency benchmark has been measured yet. Once measured, figures will be
+reported here for CPU, GPU, and optimized (quantized) inference.
 
 ## Reproducibility Checklist
 
@@ -377,12 +384,13 @@ When reporting NEST results in your work:
 5. **Timing**: Report training and inference time
 6. **Code version**: Mention git commit hash or release version
 
-Example:
+Example (template — fill in actual measured values, do not reuse these
+placeholder numbers):
 ```
-NEST-Attention achieves 16.5 ± 0.8% WER (mean ± std over 3 seeds) 
+[Model] achieves XX.X ± X.X% WER (mean ± std over 3 seeds)
 on ZuCo test set, evaluated in subject-independent setting.
-Training: 2 hours on NVIDIA V100. Inference: 15ms/sample on CPU.
-Code: github.com/wazder/NEST v1.0.0 (commit abc123).
+Training: X hours on [GPU]. Inference: Xms/sample on [device].
+Code: github.com/wazder/NEST vX.Y.Z (commit <hash>).
 ```
 
 ## Artifact Storage

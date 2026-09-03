@@ -1,6 +1,10 @@
 # Training NEST Models on ZuCo Dataset
 
-This guide provides step-by-step instructions for training NEST models on the ZuCo dataset and reproducing the results from the research paper.
+> **No validated results exist yet.** The WER/CER/BLEU/latency numbers below
+> are illustrative placeholders showing output format, not measurements from
+> a completed run. See [STATUS.md](STATUS.md) for what is actually verified.
+
+This guide provides step-by-step instructions for training NEST models on the ZuCo dataset.
 
 ## Quick Start
 
@@ -72,10 +76,10 @@ Edit `configs/model.yaml` to customize training:
 ```yaml
 # Model Architecture
 model_variants:
-  - nest_attention      # Best performance
-  - nest_conformer      # State-of-the-art
-  - nest_rnn_t          # Streaming capable
-  - nest_ctc            # Fastest inference
+  - nest_attention      # attention-based decoder (performance unmeasured)
+  - nest_conformer      # Conformer encoder (performance unmeasured)
+  - nest_rnn_t          # streaming-capable (RNN-Transducer)
+  - nest_ctc            # CTC-based (inference speed unmeasured)
 
 # Training Hyperparameters
 batch_size: 16
@@ -181,13 +185,13 @@ python scripts/benchmark_all.py \
     --output results/benchmark/
 ```
 
-Generates comparison table:
+Generates a comparison table in this format (no validated numbers exist yet):
 ```
-| Model           | WER   | CER  | BLEU | Inference (ms) |
-|-----------------|-------|------|------|----------------|
-| nest_conformer  | 15.8% | 8.3% | 0.76 | 18.2           |
-| nest_transformer| 18.1% | 9.6% | 0.71 | 16.5           |
-| nest_rnn_t      | 19.7% | 10.4%| 0.67 | 22.1           |
+| Model           | WER     | CER     | BLEU    | Inference (ms) |
+|-----------------|---------|---------|---------|----------------|
+| nest_conformer  | pending | pending | pending | pending        |
+| nest_transformer| pending | pending | pending | pending        |
+| nest_rnn_t      | pending | pending | pending | pending        |
 ```
 
 ## Subject Adaptation
@@ -241,20 +245,21 @@ python scripts/optimize_for_deployment.py \
     --output results/optimized_models/
 ```
 
-Result:
-- Original: 16.8 MB, 41 ms inference, 15.8% WER
-- Optimized: 2.5 MB, 13 ms inference, 16.5% WER
+Result: pending — model size can be measured directly from the checkpoint
+file, but inference time and WER before/after optimization have not been
+benchmarked yet.
 
 ## Expected Results
 
-Reproducing the paper results should yield approximately:
+No paper results exist yet to reproduce. Once a full training and evaluation
+run completes, results will be reported here in this format:
 
-| Metric | Expected Value | Variance |
-|--------|----------------|----------|
-| WER    | 15.8%          | ±1.2%    |
-| CER    | 8.3%           | ±0.8%    |
-| BLEU   | 0.76           | ±0.03    |
-| Inference | 18 ms       | ±3 ms    |
+| Metric | Value | Variance |
+|--------|-------|----------|
+| WER    | pending | pending |
+| CER    | pending | pending |
+| BLEU   | pending | pending |
+| Inference | pending | pending |
 
 **Note**: Results may vary slightly due to:
 - Hardware differences

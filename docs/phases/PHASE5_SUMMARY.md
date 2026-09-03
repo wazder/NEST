@@ -1,5 +1,7 @@
 # Phase 5 Summary: Evaluation & Optimization
 
+> **Archived note from February 2026.** Any WER/CER/BLEU numbers below come from synthetic generated data or from a loss-based estimate and are not valid results. See [docs/STATUS.md](../STATUS.md).
+
 ## Overview
 
 Phase 5 completes the NEST project by providing comprehensive tools for evaluation, optimization, and deployment. This phase transforms research models into production-ready systems with significant performance improvements.

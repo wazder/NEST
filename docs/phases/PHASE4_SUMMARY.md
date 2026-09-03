@@ -1,5 +1,7 @@
 # Phase 4 Summary: Advanced Features & Robustness
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](../STATUS.md).
+
 ## Overview
 Phase 4 successfully implemented advanced features and robustness techniques to enhance NEST's performance, generalization, and real-world applicability.
 
@@ -111,7 +113,9 @@ Added to `requirements.txt`:
 
 ### Expected Improvements (compared to base Phase 3 models)
 
-| Technique | Metric Improvement | Use Case |
+*All figures below are estimates carried over from planning documents, not measured results — no NEST model has been benchmarked on any of these techniques. See [docs/STATUS.md](../STATUS.md).*
+
+| Technique | Metric Improvement (est.) | Use Case |
 |-----------|-------------------|----------|
 | Subject Embedding | 2-5% WER ↓ | Per-subject adaptation |
 | DANN | 3-7% WER ↓ | Cross-subject generalization |

@@ -2,6 +2,16 @@
 """
 Detailed performance analysis of NEST training results.
 Compares with literature baselines and IEEE EMBC standards.
+
+WARNING: estimate_wer_from_ctc_loss() below is a heuristic, not a measurement.
+It maps a final CTC training loss value to a WER percentage using an empirical
+formula, with no decoding and no comparison against reference text. It must
+not be reported as a result, benchmark, or evaluation metric. The only way to
+obtain a real WER is to decode text and compute Levenshtein distance against
+reference sentences, as done in scripts/train_nest_v2.py (eval_bart/eval_ctc).
+See docs/STATUS.md for the status of NEST's actual (nonexistent) benchmark
+results and the origin of the withdrawn "26.1% WER" figure this script once
+produced.
 """
 
 import json

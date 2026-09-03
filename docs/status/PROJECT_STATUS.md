@@ -1,5 +1,7 @@
 # NEST Project Status Report
 
+> **Archived note from February 2026.** Any WER/CER/BLEU numbers below come from synthetic generated data or from a loss-based estimate and are not valid results. See [docs/STATUS.md](../STATUS.md).
+
 **Last Updated**: February 15, 2026  
 **Version**: 2.0.0 - PRODUCTION READY 🎯  
 **Overall Quality Score**: 95.2/100

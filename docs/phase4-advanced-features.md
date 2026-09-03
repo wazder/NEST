@@ -1,5 +1,7 @@
 # Phase 4: Advanced Model Features & Robustness
 
+> **Archived note from February 2026.** Any WER/CER/BLEU or latency numbers in this file are estimates or synthetic-data outputs, not validated results. See [docs/STATUS.md](STATUS.md).
+
 This document describes the advanced features and robustness techniques implemented in Phase 4 for NEST.
 
 ## Overview
@@ -531,9 +533,10 @@ def decode_with_lm(model, eeg_data, max_length=50):
 
 ## Performance Improvements
 
-Expected improvements from Phase 4 techniques:
+Expected improvements from Phase 4 techniques (estimates, not measured — no
+NEST model has been benchmarked with these techniques):
 
-| Technique | WER Reduction | Notes |
+| Technique | WER Reduction (est.) | Notes |
 |-----------|---------------|-------|
 | Subject Embedding | 2-5% | Per-subject adaptation |
 | DANN | 3-7% | Cross-subject generalization |
@@ -544,7 +547,7 @@ Expected improvements from Phase 4 techniques:
 | Advanced Attention | 1-3% | Better sequence modeling |
 | BPE Tokenization | 2-5% | Handles rare words |
 
-**Combined Effect:** 15-30% WER reduction over base models
+**Combined Effect (est.):** 15-30% WER reduction over base models
 
 ## Best Practices
 

@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Comprehensive test suite with 350+ unit tests and 40+ integration tests
+- 80 test functions across 5 files (suite currently failing to import; see Known issues)
 - CI/CD pipeline with GitHub Actions (multi-platform, multi-Python version)
 - Pre-commit hooks for code quality (black, isort, flake8, mypy, bandit)
 - Makefile for common development tasks
@@ -18,12 +18,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Development dependencies separated in requirements-dev.txt
 
 ### Changed
-- Enhanced README with badges, test coverage info, and quality metrics
+- Enhanced README with badges and project status
 - Updated CONTRIBUTING.md with detailed guidelines
 - Improved documentation structure
 
 ### Fixed
 - N/A (initial comprehensive testing release)
+
+### Known issues
+- Test suite (80 test functions across 5 files) is broken by code/test drift and currently fails to import; it does not pass
+- `pyproject.toml` has no `[project]`/`[build-system]` table, so `pip install -e .` fails and there is no installable `nest-eeg` package
+- No trained checkpoint exists for any NEST model, including NEST v2
+- No validated benchmark (WER/CER/BLEU) exists; see `docs/STATUS.md`
 
 ## [1.0.0] - 2026-02-15
 
@@ -101,10 +107,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Total Code**: 13,111+ lines across 41 Python files
 - **Documentation**: 8,471+ lines across 24 markdown files
-- **Tests**: 350+ unit tests, 40+ integration tests
+- **Tests**: 80 test functions across 5 files (suite currently failing to import; does not pass)
 - **Examples**: 4 complete workflow examples
 - **Phases Completed**: 6/6 (100%)
-- **Quality Score**: 86.7/100
 
 ## Migration Guide
 

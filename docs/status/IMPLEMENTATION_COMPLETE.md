@@ -1,5 +1,7 @@
 # NEST: Implementation Completion Summary
 
+> **Archived note from February 2026.** Any WER/CER/BLEU numbers below come from synthetic generated data or from a loss-based estimate and are not valid results. See [docs/STATUS.md](../STATUS.md).
+
 **Date**: February 15, 2026  
 **Status**: ✅ **COMPLETE - Ready for Real Data Training and Submission**
 
