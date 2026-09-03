@@ -3,268 +3,238 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="About NEST - Neural EEG Sequence Transducer. Learn about the architecture, methodology, and team behind the project.">
-  <title>About - NEST</title>
+  <title>Company - NEST</title>
+  <meta name="description" content="NEST started as a university project at Istanbul Commerce University and is becoming a company. Mission, timeline, principles, team and how to reach us.">
+  <link rel="canonical" href="https://nest-eeg.org/pages/about.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NEST">
+  <meta property="og:title" content="Company - NEST">
+  <meta property="og:description" content="From a university project to a company: mission, timeline, principles, team and contact.">
+  <meta property="og:url" content="https://nest-eeg.org/pages/about.html">
+  <meta property="og:image" content="https://nest-eeg.org/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Company - NEST">
+  <meta name="twitter:description" content="From a university project to a company: mission, timeline, principles, team and contact.">
+  <meta name="twitter:image" content="https://nest-eeg.org/og.png">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css?v=2">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='68' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='44' fill='white'>N</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css?v=3">
 </head>
 <body>
 
-  <header class="header">
-    <div class="header-inner">
-      <a href="../index.html" class="logo">NEST</a>
-      <nav class="nav">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="demo.html" class="nav-link">Demo</a>
-        <a href="docs.html" class="nav-link">Docs</a>
-        <a href="about.html" class="nav-link active">About</a>
-        <a href="research.html" class="nav-link">Research</a>
-        <a href="download.html" class="nav-link">Download</a>
-      </nav>
-      <a href="docs.html" class="btn btn-primary">Get Started</a>
-      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
+<header class="header">
+  <div class="container header-inner">
+    <a href="../index.html" class="brand" aria-label="NEST home">
+      <svg viewBox="0 0 100 100" aria-hidden="true" fill="currentColor"><rect x="12" y="8" width="13" height="84"/><rect x="75" y="8" width="13" height="84"/><polyline points="18.50,14.00 34.25,32.00 43.70,20.80 53.15,69.60 62.60,64.40 81.50,86.00" fill="none" stroke="currentColor" stroke-width="13" stroke-linejoin="miter" stroke-miterlimit="2.2"/></svg>
+      NEST
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="technology.html">Technology</a>
+      <a href="research.html">Research</a>
+      <a href="demo.html">Demo</a>
+      <a href="docs.html">Docs</a>
+      <a href="about.html" class="active">Company</a>
+    </nav>
+    <div class="row">
+      <button class="icon-btn theme-toggle" aria-label="Toggle theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <a href="https://github.com/wazder/nest" class="btn solid sm hide-sm" target="_blank" rel="noopener">GitHub</a>
+      <button class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
-    <nav class="mobile-nav" id="mobile-nav">
-      <a href="../index.html" class="nav-link">Home</a>
-      <a href="demo.html" class="nav-link">Demo</a>
-      <a href="docs.html" class="nav-link">Docs</a>
-      <a href="about.html" class="nav-link active">About</a>
-      <a href="research.html" class="nav-link">Research</a>
-      <a href="download.html" class="nav-link">Download</a>
-      <a href="docs.html" class="btn btn-primary">Get Started</a>
-    </nav>
-  </header>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
+    <a href="technology.html">Technology</a>
+    <a href="research.html">Research</a>
+    <a href="demo.html">Demo</a>
+    <a href="docs.html">Docs</a>
+    <a href="about.html" class="active">Company</a>
+    <a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</header>
 
-  <main>
+<main>
 
-    <!-- Hero -->
-    <section class="section" style="padding-top: 160px; text-align: center;">
-      <span class="label reveal">ABOUT THE PROJECT</span>
-      <h1 class="reveal animate-delay-100" style="margin-top: 20px; margin-bottom: 24px;">From Brain to Text</h1>
-      <p class="hero-subtitle reveal animate-delay-200" style="margin: 0 auto;">
-        NEST uses a transformer-based encoder-decoder architecture to decode EEG signals into
-        natural language. Here is a complete overview of our pipeline, model, and research context.
-      </p>
-    </section>
+  <!-- PAGE HEAD -->
+  <section class="page-head">
+    <div class="container">
+      <p class="label reveal">Company</p>
+      <h1 class="reveal">From a university project to a company</h1>
+      <p class="reveal">NEST started as a reading list and an architecture sketch at Istanbul Commerce University in February 2026. Seven months later it is a working codebase, one withdrawn number, and a decision to incorporate. Here is the mission, the timeline, the people and how to reach us.</p>
+    </div>
+  </section>
 
-    <!-- Mission -->
-    <section class="section section-alt">
-      <div style="max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;">
-        <div class="reveal">
-          <span class="label" style="display: inline-block; margin-bottom: 16px;">MISSION</span>
-          <h2 style="margin-bottom: 20px;">Why We Built NEST</h2>
-          <p style="color: var(--text-secondary); line-height: 1.8; font-size: 16px; margin-bottom: 16px;">
-            Brain-computer interfaces hold transformative potential for people with motor or speech disabilities, for scientific research into cognition, and for the future of human-computer interaction.
-          </p>
-          <p style="color: var(--text-secondary); line-height: 1.8; font-size: 16px; margin-bottom: 16px;">
-            Existing approaches require invasive surgery, proprietary hardware, or closed-source implementations. NEST is our answer: a fully open, non-invasive, reproducible framework that researchers and engineers can build on.
-          </p>
-          <p style="color: var(--text-secondary); line-height: 1.8; font-size: 16px;">
-            By publishing weights, datasets, and complete training code under an MIT license, we aim to accelerate the entire field of EEG-based BCI research.
-          </p>
+  <!-- MISSION -->
+  <section class="section low">
+    <div class="container narrow">
+      <div class="section-head reveal">
+        <p class="label">Mission</p>
+        <h2>Two things worth building</h2>
+      </div>
+      <p class="reveal">Give people who cannot speak or type a non-invasive path to open text: no surgery, no fixed phrase set, a decoding layer that runs on any research-grade EEG system. And give the field a benchmark it can trust, in an area where published scores have repeatedly turned out to reward the wrong thing once someone checked them properly, including a number NEST itself had to withdraw.</p>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Story</p>
+        <h2>Seven months, in order</h2>
+      </div>
+      <div class="timeline reveal">
+        <div class="tl"><div class="when">Feb 2026</div><div class="what"><b>Project starts</b>NEST begins at Istanbul Commerce University with two faculty advisors: literature review of EEG-to-text work and the first architecture design.</div></div>
+        <div class="tl"><div class="when">Feb 2026</div><div class="what"><b>First training run</b>The ZuCo corpus is integrated. An ad hoc LSTM decoder trains for 100 epochs on 12,071 real samples; loss decreases. A word error rate estimated from that loss, not from decoding, is published, then withdrawn.</div></div>
+        <div class="tl"><div class="when">Feb-Apr 2026</div><div class="what"><b>v2 and honest evaluation</b>A new transformer architecture, NEST v2; an evaluation path built around free decoding instead of teacher forcing; this website.</div></div>
+        <div class="tl"><div class="when">Sept 2026</div><div class="what"><b>Decision to incorporate</b>Decision to form a company. Applying to Hasat 2026 (Teknopark Istanbul), deadline 21 September 2026.</div></div>
+        <div class="tl"><div class="when">Q4 2026</div><div class="what"><b>Planned: validated benchmark</b>GPU training of v2 through to completion, with a free-decoding word error rate reported next to a noise-input control.</div></div>
+        <div class="tl"><div class="when">2027</div><div class="what"><b>Planned: corpus, incorporation, pilots</b>An ethics-approved Turkish reading corpus, formal incorporation, and the first research pilots.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section class="section low bordered">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Principles</p>
+        <h2>What we will not compromise on</h2>
+      </div>
+      <div class="grid four">
+        <div class="card reveal">
+          <h3>Measure before claiming</h3>
+          <p>A February 2026 estimate had to be withdrawn once the team compared it against real decoding, so nothing ships now until it has been decoded, not inferred from a loss curve.</p>
         </div>
-        <div class="reveal reveal-delay-2">
-          <div style="background: var(--glass-bg); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid var(--glass-border-subtle); border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 20px; box-shadow: var(--glass-inset);">
-            <div style="display: flex; align-items: center; gap: 16px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(139,92,246,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: #8B5CF6;"><i class="ph-bold ph-flask"></i></div>
-              <div>
-                <div style="font-size: 14px; font-weight: 600; margin-bottom: 2px;">Open Research</div>
-                <div style="font-size: 13px; color: var(--text-muted);">Full codebase, checkpoints, and training scripts publicly available</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(99,102,241,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: #6366F1;"><i class="ph-bold ph-arrows-counter-clockwise"></i></div>
-              <div>
-                <div style="font-size: 14px; font-weight: 600; margin-bottom: 2px;">Reproducible Results</div>
-                <div style="font-size: 13px; color: var(--text-muted);">Deterministic evaluation with fixed random seeds and released test splits</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(16,185,129,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: #10B981;"><i class="ph-bold ph-chart-bar"></i></div>
-              <div>
-                <div style="font-size: 14px; font-weight: 600; margin-bottom: 2px;">Benchmark Standard</div>
-                <div style="font-size: 13px; color: var(--text-muted);">Evaluated on ZuCo &mdash; the most comprehensive EEG reading dataset available</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(168,85,247,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: #A855F7;"><i class="ph-bold ph-globe"></i></div>
-              <div>
-                <div style="font-size: 14px; font-weight: 600; margin-bottom: 2px;">Community Driven</div>
-                <div style="font-size: 13px; color: var(--text-muted);">MIT licensed, contributions welcome from the global research community</div>
-              </div>
-            </div>
+        <div class="card reveal">
+          <h3>Open by default</h3>
+          <p>Code, data loaders and evaluation scripts are public, so any claim on this site can be checked instead of taken on faith.</p>
+        </div>
+        <div class="card reveal">
+          <h3>Hardware-agnostic</h3>
+          <p>NEST is a software layer, not a headset, so any research-grade EEG system that can output word-aligned frequency-band features is a valid input.</p>
+        </div>
+        <div class="card reveal">
+          <h3>Research tool first, clinical product later</h3>
+          <p>Making no diagnostic or therapeutic claim keeps NEST outside FDA, EU MDR and Turkish TITCK device scope today, and a future assistive product would take the CE/MDR path deliberately, not by accident.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section" id="team">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Team</p>
+        <h2>Who is behind it</h2>
+        <p>One founder, and two faculty advisors whose names are not yet public.</p>
+      </div>
+      <div class="grid three">
+        <div class="person reveal">
+          <div class="name">Hasan Tatar</div>
+          <div class="role">Founder</div>
+          <p>Machine learning and software. Computer Engineering, Istanbul Commerce University. First author of an IEEE SIU 2026 paper on cross-lingual evaluation of vision-language-action models (<a class="link" href="https://ieeexplore.ieee.org/document/11636432" target="_blank" rel="noopener">IEEE Xplore 11636432</a>). Founder of CamelLayer.</p>
+          <div class="row mt-3">
+            <a class="link small" href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="link small" href="https://github.com/wazder" target="_blank" rel="noopener">GitHub</a>
           </div>
         </div>
+        <div class="person reveal">
+          <span class="badge">To be added</span>
+          <div class="name mt-2">[Faculty advisor, name to be added]</div>
+          <div class="role">Academic advisor, Istanbul Commerce University</div>
+          <p>Responsible for signal processing and deep learning.</p>
+        </div>
+        <div class="person reveal">
+          <span class="badge">To be added</span>
+          <div class="name mt-2">[Faculty advisor, name to be added]</div>
+          <div class="role">Academic advisor, Istanbul Commerce University</div>
+          <p>Responsible for ethics approval, the data collection protocol, and clinical collaborations.</p>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Architecture Pipeline -->
-    <section class="section">
-      <div class="section-header">
-        <span class="label">PIPELINE</span>
-        <h2>End-to-End Architecture</h2>
-        <p>NEST transforms raw EEG recordings into natural language through a four-stage pipeline designed for accuracy and speed.</p>
+  <!-- ECOSYSTEM -->
+  <section class="section low bordered">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Ecosystem</p>
+        <h2>Who NEST works with</h2>
       </div>
-      <div class="steps-container">
-        <div class="step-card reveal">
-          <span class="step-number">01</span>
-          <div class="step-icon"><i class="ph-bold ph-broadcast"></i></div>
-          <h5 class="step-title">EEG Input</h5>
-          <p class="step-desc">105-channel EEG at 500Hz. Captured during natural reading with standard research-grade headset.</p>
+      <div class="grid two">
+        <div class="card reveal">
+          <h3>Istanbul Commerce University</h3>
+          <p>Home institution. Planned ethics board review, participant recruitment and EEG recording collaboration for the Turkish reading corpus.</p>
         </div>
-        <div class="step-connector">
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+        <div class="card reveal">
+          <h3>Teknopark Istanbul Cube incubator</h3>
+          <p>Planned incorporation venue.</p>
         </div>
-        <div class="step-card reveal reveal-delay-1">
-          <span class="step-number">02</span>
-          <div class="step-icon"><i class="ph-bold ph-funnel"></i></div>
-          <h5 class="step-title">Preprocessing</h5>
-          <p class="step-desc">Bandpass filtering (0.5&ndash;100Hz), artifact removal via ICA, epoch extraction aligned to word onsets.</p>
+        <div class="card reveal">
+          <h3>TUBITAK BiGG</h3>
+          <p>Planned grant application.</p>
         </div>
-        <div class="step-connector reveal reveal-delay-2">
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
-        </div>
-        <div class="step-card reveal reveal-delay-2">
-          <span class="step-number">03</span>
-          <div class="step-icon"><i class="ph-bold ph-brain"></i></div>
-          <h5 class="step-title">Transformer</h5>
-          <p class="step-desc">6-layer EEG encoder with 8-head attention. Cross-attention decoder generates word-level text tokens.</p>
-        </div>
-        <div class="step-connector reveal reveal-delay-3">
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
-        </div>
-        <div class="step-card reveal reveal-delay-3">
-          <span class="step-number">04</span>
-          <div class="step-icon"><i class="ph-bold ph-article"></i></div>
-          <h5 class="step-title">Text Output</h5>
-          <p class="step-desc">Natural language text decoded from brain signals, ready for NLP downstream tasks.</p>
+        <div class="card reveal">
+          <h3>Hasat 2026</h3>
+          <p>Application in preparation, September 2026, Biotechnology and Health track, hosted by Teknopark Istanbul.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Model Architecture Details -->
-    <section class="section section-alt">
-      <div class="section-header">
-        <span class="label" style="color: var(--accent-indigo);">MODEL</span>
-        <h2>Architecture Details</h2>
-        <p>The NEST model is built on a standard transformer architecture adapted for the unique structure of EEG time-series data.</p>
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="container narrow">
+      <div class="section-head reveal">
+        <p class="label">Contact</p>
+        <h2>Reach us</h2>
+        <p>No mailing list and no support email yet. Use GitHub for anything code- or research-related, and LinkedIn for everything else.</p>
       </div>
-      <div class="features-grid" style="max-width: 1000px; margin: 0 auto;">
-        <div class="feature-card reveal">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-wave-sine"></i></div>
-          <h5 class="feature-title">EEG Encoder</h5>
-          <p class="feature-desc">
-            <strong style="color: var(--text-primary);">6 Transformer Layers</strong><br>
-            512 hidden dimensions, 8 multi-head attention layers. Processes temporal and spatial EEG patterns into a rich latent representation.
-          </p>
-        </div>
-        <div class="feature-card reveal reveal-delay-1">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-arrows-left-right"></i></div>
-          <h5 class="feature-title">Cross-Attention Bridge</h5>
-          <p class="feature-desc">
-            <strong style="color: var(--text-primary);">8 Attention Heads</strong><br>
-            Learns alignment between EEG feature sequences and text token positions. Enables the decoder to selectively attend to relevant brain patterns.
-          </p>
-        </div>
-        <div class="feature-card reveal reveal-delay-2">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-text-t"></i></div>
-          <h5 class="feature-title">Text Decoder</h5>
-          <p class="feature-desc">
-            <strong style="color: var(--text-primary);">6 Transformer Layers</strong><br>
-            50,000 vocabulary size. Autoregressive generation with beam search decoding and length normalization.
-          </p>
-        </div>
+      <div class="btn-row reveal">
+        <a href="https://github.com/wazder/nest/issues" class="btn outline" target="_blank" rel="noopener">GitHub Issues</a>
+        <a href="https://github.com/wazder/nest/discussions" class="btn outline" target="_blank" rel="noopener">GitHub Discussions</a>
+        <a href="https://www.linkedin.com/in/wazder/" class="btn outline" target="_blank" rel="noopener">LinkedIn</a>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Training Details -->
-    <section class="section">
-      <div class="section-header">
-        <span class="label" style="color: var(--accent-teal);">TRAINING</span>
-        <h2>Training Details</h2>
-        <p>Trained on the ZuCo dataset with 12 subjects, 400+ natural reading sentences, and 100 epochs of supervised learning.</p>
+  <!-- CTA -->
+  <section class="section low bordered">
+    <div class="container center">
+      <h2 class="upper reveal">Watch the company take shape</h2>
+      <p class="mt-2 reveal">Star the repository for the Q4 2026 benchmark, or reach out on LinkedIn.</p>
+      <div class="btn-row mt-4 reveal" style="justify-content:center">
+        <a href="https://github.com/wazder/nest" class="btn solid" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/wazder/" class="btn outline" target="_blank" rel="noopener">LinkedIn</a>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 900px; margin: 0 auto 48px;">
-        <div class="feature-card reveal" style="text-align: center; padding: 28px 20px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-purple); margin-bottom: 8px;" data-target="12071" data-suffix="">12,071</div>
-          <div style="font-size: 13px; color: var(--text-secondary);">Training Samples</div>
-        </div>
-        <div class="feature-card reveal reveal-delay-1" style="text-align: center; padding: 28px 20px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-indigo); margin-bottom: 8px;" data-target="100" data-suffix="">100</div>
-          <div style="font-size: 13px; color: var(--text-secondary);">Epochs</div>
-        </div>
-        <div class="feature-card reveal reveal-delay-2" style="text-align: center; padding: 28px 20px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-violet); margin-bottom: 8px;">5.4h</div>
-          <div style="font-size: 13px; color: var(--text-secondary);">Training Time</div>
-        </div>
-        <div class="feature-card reveal reveal-delay-3" style="text-align: center; padding: 28px 20px;">
-          <div style="font-size: 32px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-teal); margin-bottom: 8px;" data-target="32" data-suffix="">32</div>
-          <div style="font-size: 13px; color: var(--text-secondary);">Batch Size</div>
-        </div>
-      </div>
-      <div style="max-width: 640px; margin: 0 auto; background: rgba(139, 92, 246, 0.07); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 16px; padding: 24px 32px; display: flex; align-items: center; gap: 20px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);" class="reveal">
-        <div style="font-size: 36px; flex-shrink: 0; color: var(--accent-purple); display: flex; align-items: center;"><i class="ph-bold ph-database"></i></div>
-        <div>
-          <div style="font-size: 16px; font-weight: 600; margin-bottom: 6px;">ZuCo Dataset</div>
-          <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">12 subjects reading natural English text (newspapers, Wikipedia) while 105-channel EEG is recorded at 500Hz. The gold standard benchmark for EEG-to-text research.</div>
-        </div>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Hardware & Requirements -->
-    <section class="section section-alt">
-      <div class="section-header">
-        <span class="label">REQUIREMENTS</span>
-        <h2>Hardware &amp; Software</h2>
-        <p>NEST is designed to run on standard research hardware. No exotic setups required.</p>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 800px; margin: 0 auto;">
-        <div class="feature-card reveal">
-          <h5 class="feature-title" style="margin-bottom: 16px;">Minimum Requirements</h5>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-teal);">&#x2713;</span> Python 3.9+</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-teal);">&#x2713;</span> PyTorch 2.0+</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-teal);">&#x2713;</span> 8GB RAM</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-teal);">&#x2713;</span> CPU-only inference (slow)</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-teal);">&#x2713;</span> 10GB disk space</li>
-          </ul>
-        </div>
-        <div class="feature-card reveal reveal-delay-1">
-          <h5 class="feature-title" style="margin-bottom: 16px;">Recommended for Training</h5>
-          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-purple);">&#x2605;</span> NVIDIA GPU (RTX 3080+)</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-purple);">&#x2605;</span> CUDA 11.8+</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-purple);">&#x2605;</span> 16GB+ GPU VRAM</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-purple);">&#x2605;</span> 32GB System RAM</li>
-            <li style="font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;"><span style="color: var(--accent-purple);">&#x2605;</span> 50GB disk space</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+</main>
 
-    <!-- CTA -->
-    <section class="section text-center cta-section">
-      <span class="label" style="color: var(--accent-teal); display: inline-block; margin-bottom: 20px;">READY TO EXPLORE?</span>
-      <h2 style="margin-bottom: 16px;">Start Your BCI Research</h2>
-      <p style="color: var(--text-secondary); max-width: 480px; margin: 0 auto 40px; font-size: 16px;">Dive into the demo, read the research paper, or clone the repo and start training your own models.</p>
-      <div class="hero-buttons" style="justify-content: center;">
-        <a href="demo.html" class="btn btn-primary btn-lg">Try Demo</a>
-        <a href="research.html" class="btn btn-secondary btn-lg">Read Paper</a>
-        <a href="docs.html" class="btn btn-outline btn-lg">Documentation</a>
-      </div>
-    </section>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <div class="brand">NEST</div>
+      <p class="mt-2">Open, hardware-agnostic EEG-to-text decoding. A research project from Istanbul Commerce University becoming a company.</p>
+      <p class="copy-line">&copy; 2026 NEST &middot; Open source</p>
+    </div>
+    <div class="footer-cols">
+      <div><h5>Project</h5><ul><li><a href="technology.html">Technology</a></li><li><a href="research.html">Research</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Docs</a></li><li><a href="download.html">Models</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="about.html#team">Team</a></li><li><a href="contributing.html">Contributing</a></li></ul></div>
+      <div><h5>Connect</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Discussions</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+    </div>
+  </div>
+</footer>
 
-  </main>
-
-  <div id="site-footer"></div>
-
-  <script src="../js/main.js?v=2"></script>
-  <script src="../js/footer.js?v=2"></script>
+<script src="../js/site.js?v=3"></script>
 </body>
 </html>

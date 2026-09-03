@@ -3,252 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NEST Research Paper - Neural EEG-to-Text Decoding using Transformer Architecture">
   <title>Research - NEST</title>
+  <meta name="description" content="The EEG-to-text literature, the 2024-2026 critique of teacher-forced evaluation, and the free-decoding protocol NEST commits to before it publishes a number.">
+  <link rel="canonical" href="https://nest-eeg.org/pages/research.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="NEST">
+  <meta property="og:title" content="Research - NEST">
+  <meta property="og:description" content="The literature, the critique, and our evaluation protocol.">
+  <meta property="og:url" content="https://nest-eeg.org/pages/research.html">
+  <meta property="og:image" content="https://nest-eeg.org/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Research - NEST">
+  <meta name="twitter:description" content="The literature, the critique, and our evaluation protocol.">
+  <meta name="twitter:image" content="https://nest-eeg.org/og.png">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css?v=2">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238B5CF6'/><text x='50' y='68' text-anchor='middle' font-family='monospace' font-weight='bold' font-size='44' fill='white'>N</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css?v=3">
 </head>
 <body>
 
-  <header class="header">
-    <div class="header-inner">
-      <a href="../index.html" class="logo">NEST</a>
-      <nav class="nav">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="demo.html" class="nav-link">Demo</a>
-        <a href="docs.html" class="nav-link">Docs</a>
-        <a href="about.html" class="nav-link">About</a>
-        <a href="research.html" class="nav-link active">Research</a>
-        <a href="download.html" class="nav-link">Download</a>
-      </nav>
-      <a href="docs.html" class="btn btn-primary">Get Started</a>
-      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
+<header class="header">
+  <div class="container header-inner">
+    <a href="../index.html" class="brand" aria-label="NEST home">
+      <svg viewBox="0 0 100 100" aria-hidden="true" fill="currentColor"><rect x="12" y="8" width="13" height="84"/><rect x="75" y="8" width="13" height="84"/><polyline points="18.50,14.00 34.25,32.00 43.70,20.80 53.15,69.60 62.60,64.40 81.50,86.00" fill="none" stroke="currentColor" stroke-width="13" stroke-linejoin="miter" stroke-miterlimit="2.2"/></svg>
+      NEST
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="technology.html">Technology</a>
+      <a href="research.html">Research</a>
+      <a href="demo.html">Demo</a>
+      <a href="docs.html">Docs</a>
+      <a href="about.html">Company</a>
+    </nav>
+    <div class="row">
+      <button class="icon-btn theme-toggle" aria-label="Toggle theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <a href="https://github.com/wazder/nest" class="btn solid sm hide-sm" target="_blank" rel="noopener">GitHub</a>
+      <button class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
-    <nav class="mobile-nav" id="mobile-nav">
-      <a href="../index.html" class="nav-link">Home</a>
-      <a href="demo.html" class="nav-link">Demo</a>
-      <a href="docs.html" class="nav-link">Docs</a>
-      <a href="about.html" class="nav-link">About</a>
-      <a href="research.html" class="nav-link active">Research</a>
-      <a href="download.html" class="nav-link">Download</a>
-      <a href="docs.html" class="btn btn-primary">Get Started</a>
-    </nav>
-  </header>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
+    <a href="technology.html">Technology</a>
+    <a href="research.html">Research</a>
+    <a href="demo.html">Demo</a>
+    <a href="docs.html">Docs</a>
+    <a href="about.html">Company</a>
+    <a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</header>
 
-  <main>
+<main>
 
-    <!-- Hero -->
-    <section class="section" style="padding-top: 160px; text-align: center;">
-      <span class="label reveal">RESEARCH PAPER</span>
-      <h1 class="reveal animate-delay-100" style="margin-top: 20px; margin-bottom: 24px;">
-        NEST: Neural EEG<br>Sequence Transducer
-      </h1>
-      <p class="hero-subtitle reveal animate-delay-200" style="margin: 0 auto 40px;">
-        A transformer-based approach for decoding EEG brain signals into natural language.
-        Achieving state-of-the-art results on the ZuCo benchmark.
-      </p>
-      <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.25); border-radius: 10px; padding: 12px 20px; margin-bottom: 32px;" class="reveal animate-delay-200">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="#8B5CF6"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zM7 4h2v5H7V4zm0 6h2v2H7v-2z"/></svg>
-        <span style="color: #C4B5FD; font-size: 14px;">Technical report in preparation &mdash; code and results available on <a href="https://github.com/wazder/NEST" style="color: #8B5CF6; text-decoration: underline;" target="_blank" rel="noopener">GitHub</a></span>
-      </div>
-      <div class="hero-buttons reveal animate-delay-300" style="justify-content: center;">
-        <span class="btn btn-primary btn-lg" style="opacity: 0.45; cursor: not-allowed;" title="Preprint not yet available">
-          <svg class="btn-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M14 4.5V14a2 2 0 01-2 2H4a2 2 0 01-2-2V2a2 2 0 012-2h5.5L14 4.5zM9.5 3V0L14 4.5H11a1.5 1.5 0 01-1.5-1.5z"/></svg>
-          arXiv (Coming Soon)
-        </span>
-        <span class="btn btn-secondary btn-lg" style="opacity: 0.45; cursor: not-allowed;" title="PDF not yet available">PDF (Coming Soon)</span>
-        <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="btn btn-outline btn-lg">View Code</a>
-      </div>
-    </section>
+  <!-- PAGE HEAD -->
+  <section class="page-head">
+    <div class="container">
+      <p class="label reveal">Research</p>
+      <h1 class="reveal">The literature, the critique, and our protocol</h1>
+      <p class="reveal">EEG-to-text has a measurement problem: this page lays out what was reported, what turned out to be an artifact of the evaluation, and the protocol NEST uses instead.</p>
+    </div>
+  </section>
 
-    <!-- Abstract -->
-    <section class="section section-alt">
-      <div style="max-width: 860px; margin: 0 auto;">
-        <span class="label" style="display: inline-block; margin-bottom: 20px;">Abstract</span>
-        <p style="font-size: 17px; line-height: 1.85; color: #C0C0C8; margin-bottom: 20px;" class="reveal">
-          We present NEST (Neural EEG Sequence Transducer), a deep learning framework for decoding EEG brain signals into natural language text. NEST uses word-level EEG frequency features (105 channels &times; 8 bands = 840 dimensions per word) extracted from the ZuCo corpus, projected through a 6-layer transformer encoder and decoded by a fine-tuned BART language model with cross-attention.
-        </p>
-        <p style="font-size: 17px; line-height: 1.85; color: #C0C0C8; margin-bottom: 20px;" class="reveal">
-          We evaluate under a rigorous subject-independent protocol: training on 8 subjects and testing on 2 held-out subjects (ZMG, ZPH). This setup prevents data leakage and provides an unbiased estimate of generalization. Benchmark results are pending completion of full training runs.
-        </p>
-        <p style="font-size: 17px; line-height: 1.85; color: #C0C0C8;" class="reveal">
-          We demonstrate that pre-processed EEG frequency features aligned to word reading events contain structured information sufficient for text reconstruction using non-invasive EEG, opening new possibilities for assistive brain-computer interfaces and cognitive neuroscience research.
-        </p>
+  <!-- WHERE THE FIELD STANDS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Where the field stands</p>
+        <h2>Ten results, one methodological fault line</h2>
+        <p>ZuCo results before 2024 were scored with teacher forcing: the decoder is given the correct previous word at every step, which lets a language model produce fluent text with little dependence on the EEG. Free decoding removes that support. Rows below are ordered roughly by publication date; the two invasive rows are marked because they are not a comparable modality.</p>
       </div>
-    </section>
+      <div class="table-wrap reveal">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Year, venue</th><th>Signal, data</th><th>Evaluation</th><th>Reported</th><th>Note</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="k">Wang and Ji</td>
+              <td>2022, AAAI</td>
+              <td>EEG, ZuCo</td>
+              <td>Teacher-forced</td>
+              <td>BLEU-1 40.1</td>
+              <td>Inflated by protocol</td>
+            </tr>
+            <tr>
+              <td class="k">DeWave (Duan et al.)</td>
+              <td>2023, NeurIPS</td>
+              <td>EEG, ZuCo</td>
+              <td>Teacher-forced</td>
+              <td>BLEU-1 41.35</td>
+              <td>Same protocol as above</td>
+            </tr>
+            <tr>
+              <td class="k">BELT (Zhou et al.)</td>
+              <td>2023</td>
+              <td>EEG, ZuCo</td>
+              <td>Teacher-forced</td>
+              <td>BLEU-1 42.31</td>
+              <td>Same protocol as above</td>
+            </tr>
+            <tr>
+              <td class="k">Jo et al., &ldquo;Are EEG-to-Text Models Working?&rdquo;</td>
+              <td>2024, arXiv 2405.06459</td>
+              <td>EEG, ZuCo</td>
+              <td>Free decoding, noise-input control</td>
+              <td>Real EEG scores about the same as random noise</td>
+              <td>Establishes the critique this page is built around</td>
+            </tr>
+            <tr>
+              <td class="k">Replication (BrainBART, BELT, DeWave)</td>
+              <td>2026, arXiv 2607.18749</td>
+              <td>EEG, ZuCo 1.0 and 2.0</td>
+              <td>Free decoding</td>
+              <td>WER about 99&ndash;121%, BLEU-1 about 7&ndash;16</td>
+              <td>Confirms the critique across three model families; proposes the COFETT benchmark</td>
+            </tr>
+            <tr>
+              <td class="k">&ldquo;Escaping the BLEU Trap&rdquo;</td>
+              <td>2026, arXiv 2603.03312</td>
+              <td>EEG, ZuCo</td>
+              <td>4-way semantic classification (25% chance)</td>
+              <td>50.0% classification accuracy, 2.7% content recall</td>
+              <td>Moves evaluation away from token-level BLEU entirely</td>
+            </tr>
+            <tr>
+              <td class="k">Brain2Qwerty</td>
+              <td>2025, Meta AI</td>
+              <td>MEG and EEG, typed sentences, closed vocabulary</td>
+              <td>Offline decoding</td>
+              <td>MEG CER 32% (best 19%), EEG CER 67%</td>
+              <td>Closed task, not real time; the MEG/EEG gap is roughly double the error rate</td>
+            </tr>
+            <tr>
+              <td class="k">Brain2Qwerty v2</td>
+              <td>2026, Meta AI with BCBL</td>
+              <td>MEG, typed sentences, closed vocabulary</td>
+              <td>Offline decoding</td>
+              <td>61% average word accuracy, best participant 78%</td>
+              <td>Same closed task family as above, MEG only</td>
+            </tr>
+            <tr>
+              <td class="k">Willett et al.</td>
+              <td>2023, Nature</td>
+              <td>Intracortical array (invasive)</td>
+              <td>Real-time handwriting decoding</td>
+              <td>62 words/min, WER 9.1% (50-word vocabulary), 23.8% (125,000-word vocabulary)</td>
+              <td>Invasive baseline, not a comparable modality</td>
+            </tr>
+            <tr>
+              <td class="k">Metzger et al.</td>
+              <td>2023, Nature</td>
+              <td>ECoG (invasive)</td>
+              <td>Real-time speech decoding</td>
+              <td>78 words/min, median WER 25%</td>
+              <td>Invasive baseline, not a comparable modality</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose mt-6 reveal">
+        <p>Read together, the table says three things. First, non-invasive open-vocabulary decoding from EEG is unsolved: every free-decoding number on ZuCo is close to chance, and the fluent sentences in the 2022&ndash;2023 papers were the decoder's language prior, not the signal. Second, there is a real gap between MEG and EEG on the same closed task and the same team's pipeline &mdash; Brain2Qwerty's character error rate roughly doubles from MEG to EEG, which is the modality NEST works in. Third, the invasive results show the ceiling is not the algorithm: with electrodes on the brain, word error rates fall to single digits. The honest reading is that a protocol which cannot tell real EEG from noise is not measuring anything, which is why NEST reports a noise-input control next to every number it publishes.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- Key Results -->
-    <section class="section">
-      <div class="section-header">
-        <span class="label">KEY RESULTS</span>
-        <h2>Benchmark Performance</h2>
-        <p>Evaluated on ZuCo Task 1 (Normal Reading) with held-out subjects.</p>
+  <!-- OUR EVALUATION PROTOCOL -->
+  <section class="section low bordered" id="protocol">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Our evaluation protocol</p>
+        <h2>What we commit to before a number is published</h2>
+        <p>The critique above is specific: teacher forcing and the absence of a noise control let a language model's fluency stand in for decoding. NEST's protocol is built to fail loudly if that happens again.</p>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 0 auto 60px;">
-        <div class="feature-card reveal" style="text-align: center; padding: 36px 24px;">
-          <div style="font-size: 52px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-purple); line-height: 1; margin-bottom: 12px;">TBD</div>
-          <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Word Error Rate</div>
-          <div style="font-size: 13px; color: var(--text-muted);">Training in progress</div>
-        </div>
-        <div class="feature-card reveal reveal-delay-1" style="text-align: center; padding: 36px 24px;">
-          <div style="font-size: 52px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-indigo); line-height: 1; margin-bottom: 12px;">840</div>
-          <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">EEG Features</div>
-          <div style="font-size: 13px; color: var(--text-muted);">Dimensions per word</div>
-        </div>
-        <div class="feature-card reveal reveal-delay-2" style="text-align: center; padding: 36px 24px;">
-          <div style="font-size: 52px; font-family: var(--font-mono); font-weight: 700; color: var(--accent-violet); line-height: 1; margin-bottom: 12px;">12K+</div>
-          <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Training Samples</div>
-          <div style="font-size: 13px; color: var(--text-muted);">ZuCo sentence pairs</div>
-        </div>
+      <div class="prose reveal">
+        <ul>
+          <li>Free autoregressive decoding at evaluation time. No teacher forcing. The current implementation is greedy; beam search is planned and will be reported when used.</li>
+          <li>Held-out subjects: the test split is never seen in training or validation.</li>
+          <li>A noise-input control reported next to every real-EEG number, so a reader can see whether the model beats random input.</li>
+          <li>CER, WER, BLEU and ROUGE all reported together, not just the metric that looks best.</li>
+          <li>The protocol published together with the first result, as a technical report, not after.</li>
+          <li>The code path is public: <code class="inline">eval_bart()</code> and <code class="inline">eval_ctc()</code> in <code class="inline">scripts/train_nest_v2.py</code>.</li>
+        </ul>
       </div>
+    </div>
+  </section>
 
-      <!-- Comparison Table -->
-      <div style="max-width: 860px; margin: 0 auto;" class="reveal">
-        <h3 style="margin-bottom: 24px; text-align: center;">Comparison with Prior Work</h3>
-        <div style="background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden;">
-          <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-              <tr style="background: rgba(139, 92, 246, 0.08);">
-                <th style="padding: 16px 24px; text-align: left; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Method</th>
-                <th style="padding: 16px 24px; text-align: center; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">WER &darr;</th>
-                <th style="padding: 16px 24px; text-align: center; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">BLEU &uarr;</th>
-                <th style="padding: 16px 24px; text-align: center; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Year</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 16px 24px; font-size: 15px; color: var(--text-secondary);">EEG-to-Text (Wang et al.)</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">38.7%</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">0.51</td>
-                <td style="padding: 16px 24px; text-align: center; font-size: 14px; color: var(--text-muted);">2022</td>
-              </tr>
-              <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 16px 24px; font-size: 15px; color: var(--text-secondary);">BrainBERT (Zhou et al.)</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">34.2%</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">0.60</td>
-                <td style="padding: 16px 24px; text-align: center; font-size: 14px; color: var(--text-muted);">2023</td>
-              </tr>
-              <tr style="border-top: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 16px 24px; font-size: 15px; color: var(--text-secondary);">EEGformer (Li et al.)</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">30.8%</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; color: var(--text-secondary);">0.67</td>
-                <td style="padding: 16px 24px; text-align: center; font-size: 14px; color: var(--text-muted);">2024</td>
-              </tr>
-              <tr style="border-top: 1px solid rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.05);">
-                <td style="padding: 16px 24px; font-size: 15px; font-weight: 700; color: var(--text-primary);">NEST v2 (Ours)</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--accent-purple);">TBD</td>
-                <td style="padding: 16px 24px; text-align: center; font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--accent-indigo);">TBD</td>
-                <td style="padding: 16px 24px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-primary);">2026</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  <!-- THE NUMBER WE WITHDREW -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">The number we withdrew</p>
+        <h2>26.1% WER was never decoded</h2>
       </div>
-    </section>
+      <div class="notice reveal">
+        <p><strong>February 2026.</strong> We published a figure of 26.1% word error rate, BLEU 0.74 and 73.9% accuracy. It was not produced by running the model and decoding its output. It was estimated from CTC training loss with a heuristic formula that maps loss to an approximate error rate. That formula was never validated against a real decode, and there is no reason to expect it holds for a sequence model reading EEG.</p>
+      </div>
+      <div class="prose mt-4 reveal">
+        <p>The figure was removed in commit <code class="inline">f8d6675</code> on 2026-02-20, after we recognized it did not meet our own protocol above: it had no noise-input control, no held-out free decoding, nothing to compare it against. Nothing replaces it. The word error rate field on this site reads pending until the v2 model is trained to completion and decoded under the protocol described here, on a GPU we do not yet have.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- Methodology -->
-    <section class="section section-alt">
-      <div class="section-header">
-        <span class="label" style="color: var(--accent-indigo);">METHODOLOGY</span>
-        <h2>Research Methods</h2>
-        <p>A rigorous three-stage pipeline from data collection to model evaluation.</p>
+  <!-- DATASETS -->
+  <section class="section low bordered">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Datasets</p>
+        <h2>ZuCo, its neighbors, and the gap we plan to close</h2>
       </div>
-      <div class="features-grid" style="max-width: 1000px; margin: 0 auto;">
-        <div class="feature-card reveal">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-database"></i></div>
-          <h5 class="feature-title">Data: ZuCo Dataset</h5>
-          <p class="feature-desc">12 subjects reading 400+ natural English sentences from Wikipedia and movie reviews. 105 EEG channels at 500Hz. Word-level timing annotations.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-1">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-funnel"></i></div>
-          <h5 class="feature-title">Preprocessing Pipeline</h5>
-          <p class="feature-desc">Bandpass filter 0.5&ndash;100Hz, 50Hz notch, ICA artifact removal. Word-aligned epoch extraction (&minus;200ms to +800ms). Z-score normalization per subject per channel.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-2">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-brain"></i></div>
-          <h5 class="feature-title">Model Architecture</h5>
-          <p class="feature-desc">End-to-end transformer with 6-layer EEG encoder (d=512, 8 heads), cross-attention bridge, and 6-layer autoregressive text decoder with 50K vocabulary.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-3">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-target"></i></div>
-          <h5 class="feature-title">Training Procedure</h5>
-          <p class="feature-desc">Adam optimizer, learning rate 1e-4 with cosine schedule. Teacher forcing during training. Beam search (width=5) at inference. 80/10/10 train/val/test split.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-4">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-trend-up"></i></div>
-          <h5 class="feature-title">Evaluation Metrics</h5>
-          <p class="feature-desc">Word Error Rate (WER), BLEU-1/2/3/4, character-level accuracy, and ROUGE-L. All reported on held-out test subjects unseen during training.</p>
-        </div>
-        <div class="feature-card reveal reveal-delay-5">
-          <div class="feature-icon-wrapper"><i class="ph-bold ph-microscope"></i></div>
-          <h5 class="feature-title">Ablation Studies</h5>
-          <p class="feature-desc">Encoder depth, attention heads, training data size, preprocessing choices, and cross-attention vs. simple projection. Full ablation table in Appendix B.</p>
-        </div>
+      <div class="prose reveal">
+        <p>ZuCo 1.0 (Hollenstein et al. 2018) recorded 12 native English speakers with a 128-electrode EGI system (105 channels used) plus eye tracking, while they read 1,107 sentences across three tasks: normal reading of movie reviews, normal reading of Wikipedia text, and task-specific reading, totaling 21,629 words. ZuCo 2.0 (2020) added 18 subjects reading 739 sentences. Both are reading corpora; neither includes listening or imagined-speech paradigms.</p>
       </div>
-    </section>
+      <div class="table-wrap mt-4 reveal">
+        <table>
+          <thead><tr><th>Corpus</th><th>Modality</th><th>Task</th></tr></thead>
+          <tbody>
+            <tr><td class="k">ZuCo 1.0 / 2.0</td><td>EEG</td><td>Natural reading</td></tr>
+            <tr><td class="k">Brennan</td><td>EEG</td><td>Listening</td></tr>
+            <tr><td class="k">MEG-MASC</td><td>MEG</td><td>Listening</td></tr>
+            <tr><td class="k">Chisco</td><td>EEG</td><td>Imagined speech, Chinese</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose mt-4 reveal">
+        <p><strong>No public Turkish EEG reading corpus exists.</strong> Every public reading corpus we use, including ZuCo, is English. We plan to collect one: an ethics-approved study at Istanbul Commerce University with 20 participants, following the protocol at <a class="link" href="https://github.com/wazder/nest/blob/main/experiments/user_study/user_study_protocol.md" target="_blank" rel="noopener">experiments/user_study/user_study_protocol.md</a> on GitHub, targeted for Q1 2027.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- Citation -->
-    <section class="section">
-      <div style="max-width: 800px; margin: 0 auto;">
-        <div class="section-header" style="margin-bottom: 40px;">
-          <span class="label">CITATION</span>
-          <h2>Cite This Work</h2>
-        </div>
-        <div style="background: rgba(0,0,8,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);" class="reveal">
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">bibtex</span>
-            <button class="copy-btn" onclick="copyBibtex(this)">Copy</button>
-          </div>
-          <pre style="padding: 24px; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: #A0A0B0; overflow-x: auto; white-space: pre-wrap;">@article{nest2026,
-  title={NEST: Neural EEG Sequence Transducer for Brain-to-Text Decoding},
-  author={NEST Project Contributors},
-  journal={arXiv preprint arXiv:2602.xxxxx},
-  year={2026},
-  url={https://github.com/wazder/NEST}
+  <!-- TECHNICAL REPORT -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="label">Technical report</p>
+        <h2>In preparation, published when there is a result to report</h2>
+        <p>The full technical report, including the protocol on this page and the first decoded numbers, will be posted to arXiv once the v2 model has been trained and evaluated. There is no preprint ID yet, and nothing here should be cited as a paper.</p>
+      </div>
+      <div class="code reveal">
+        <div class="code-head"><span>Software citation, BibTeX</span><button class="copy">Copy</button></div>
+        <pre>@software{nest2026,
+  title  = {NEST: Neural EEG Sequence Transducer},
+  author = {{NEST contributors}},
+  year   = {2026},
+  url    = {https://github.com/wazder/nest}
 }</pre>
-        </div>
       </div>
-    </section>
+      <p class="xs mt-2 reveal">This is a software citation for the codebase, not a citation for a paper. Use the technical report above once it exists.</p>
+    </div>
+  </section>
 
-    <!-- Access Paper CTA -->
-    <section class="section section-dark text-center cta-section">
-      <span class="label" style="color: var(--accent-teal); display: inline-block; margin-bottom: 20px;">ACCESS THE PAPER</span>
-      <h2 style="margin-bottom: 16px;">Read the Full Research</h2>
-      <p style="color: var(--text-secondary); max-width: 480px; margin: 0 auto 40px;">The full paper includes detailed ablation studies, attention visualizations, and cross-subject generalization analysis.</p>
-      <div class="hero-buttons" style="justify-content: center;">
-        <span class="btn btn-primary btn-lg" style="opacity: 0.45; cursor: not-allowed;">arXiv (Coming Soon)</span>
-        <span class="btn btn-secondary btn-lg" style="opacity: 0.45; cursor: not-allowed;">PDF (Coming Soon)</span>
-        <a href="https://github.com/wazder/NEST" target="_blank" rel="noopener" class="btn btn-outline btn-lg">View Code</a>
+  <!-- CTA -->
+  <section class="section low bordered">
+    <div class="container center">
+      <h2 class="upper reveal">Read the code before the numbers</h2>
+      <p class="mt-2 reveal">The evaluation protocol, the withdrawn number, and the training scripts are all in the repository.</p>
+      <div class="btn-row mt-4 reveal" style="justify-content:center">
+        <a href="https://github.com/wazder/nest" class="btn solid" target="_blank" rel="noopener">GitHub</a>
+        <a href="technology.html" class="btn outline">Technology</a>
       </div>
-    </section>
+    </div>
+  </section>
 
-  </main>
+</main>
 
-  <div id="site-footer"></div>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <div class="brand">NEST</div>
+      <p class="mt-2">Open, hardware-agnostic EEG-to-text decoding. A research project from Istanbul Commerce University becoming a company.</p>
+      <p class="copy-line">&copy; 2026 NEST &middot; Open source</p>
+    </div>
+    <div class="footer-cols">
+      <div><h5>Project</h5><ul><li><a href="technology.html">Technology</a></li><li><a href="research.html">Research</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Docs</a></li><li><a href="download.html">Models</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="about.html#team">Team</a></li><li><a href="contributing.html">Contributing</a></li></ul></div>
+      <div><h5>Connect</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Discussions</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+    </div>
+  </div>
+</footer>
 
-  <script src="../js/main.js?v=2"></script>
-  <script src="../js/footer.js?v=2"></script>
-  <script>
-    function copyBibtex(btn) {
-      const bibtex = `@article{nest2026,
-  title={NEST: Neural EEG Sequence Transducer for Brain-to-Text Decoding},
-  author={NEST Project Contributors},
-  journal={arXiv preprint arXiv:2602.xxxxx},
-  year={2026},
-  url={https://github.com/wazder/NEST}
-}`;
-      navigator.clipboard.writeText(bibtex).then(() => {
-        const orig = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => { btn.textContent = orig; }, 2000);
-      });
-    }
-  </script>
+<script src="../js/site.js?v=3"></script>
 </body>
 </html>

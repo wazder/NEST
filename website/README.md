@@ -1,63 +1,41 @@
-# NEST Website
+# NEST website
 
-NEST (Neural EEG Sequence Transducer) project website.
-
-## Local Development
-
-```bash
-cd website
-python -m http.server 8000
-```
-
-Then visit http://localhost:8000
-
-## Deployment to Cloudflare Pages
-
-### Option 1: Cloudflare Dashboard (Recommended)
-
-1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Select your account → Pages → Create a project
-3. Connect to Git repository (`wazder/NEST`)
-4. Configure:
-   - **Build command:** (leave empty)
-   - **Build output directory:** `website`
-   - **Root directory:** `/`
-5. Deploy
-
-### Option 2: Wrangler CLI
-
-```bash
-# Install wrangler
-npm install -g wrangler
-
-# Login
-wrangler login
-
-# Deploy
-wrangler pages deploy website --project-name=nest-eeg
-```
-
-## Custom Domain Setup
-
-1. In Cloudflare Pages project settings → Custom domains
-2. Add `nest-eeg.org`
-3. DNS will be automatically configured if domain is on Cloudflare
+Static site for nest-eeg.org, deployed on Cloudflare Pages (build output directory: `website`).
 
 ## Structure
 
 ```
 website/
-├── index.html          # Landing page
-├── css/
-│   └── style.css       # Main stylesheet
-├── js/
-│   └── main.js         # Interactive functionality
-├── images/             # (placeholder for images)
-└── pages/
-    ├── demo.html       # Interactive demo
-    ├── docs.html       # Documentation
-    ├── about.html      # About/Architecture
-    ├── research.html   # Research paper
-    ├── download.html   # Downloads/Models
-    └── contributing.html # Contributing guide
+├── index.html            # landing page
+├── pages/                # technology, research, demo, docs, about, download, contributing
+├── css/site.css          # design system (Inter, square corners, light/dark tokens, one accent)
+├── js/site.js            # theme toggle, nav, reveal, illustrative EEG canvas, demo typing, QA hook
+├── images/               # logo SVGs (mark, wordmark, lockup)
+├── favicon.svg, favicon-32.png, apple-touch-icon.png, icon-192.png, icon-512.png, og.png
+├── scripts/qa.py         # layout QA: renders every page at 3 viewports x 2 themes in headless Chrome
+├── _headers              # Cloudflare Pages headers
+└── wrangler.toml
 ```
+
+## Local preview
+
+```bash
+cd website
+python3 -m http.server 8000
+# open http://localhost:8000
+```
+
+## Layout QA
+
+Requires Google Chrome. Checks horizontal overflow, clipped text, broken images, single h1,
+font loading and local links on every page.
+
+```bash
+python3 scripts/qa.py
+```
+
+## Content rules
+
+Every number on the site must trace to the repository (`docs/STATUS.md`) or a cited source.
+No performance figure is published until it is measured with free decoding on held-out
+subjects with a noise-input control. Where a value is not measured, the site says "pending".
