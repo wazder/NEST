@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Technology - NEST</title>
-  <meta name="description" content="How NEST decodes reading EEG: the 840-dimensional input representation, the v2 transformer/BART architecture, the training and evaluation protocol, and what is still unverified.">
+  <title>Teknoloji - NEST</title>
+  <meta name="description" content="NEST okuma EEG'sini nasıl çözümlüyor: 840 boyutlu girdi temsili, v2 transformer/BART mimarisi, eğitim ve değerlendirme protokolü ve hâlâ doğrulanmamış olanlar.">
   <link rel="canonical" href="https://nest-eeg.org/pages/technology.html">
+  <link rel="alternate" hreflang="tr" href="https://nest-eeg.org/pages/technology.html">
+  <link rel="alternate" hreflang="en" href="https://nest-eeg.org/en/pages/technology.html">
+  <link rel="alternate" hreflang="x-default" href="https://nest-eeg.org/pages/technology.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="NEST">
-  <meta property="og:title" content="Technology - NEST">
-  <meta property="og:description" content="How NEST decodes reading EEG, and what in the pipeline is verified versus still pending.">
+  <meta property="og:title" content="Teknoloji - NEST">
+  <meta property="og:description" content="NEST okuma EEG'sini nasıl çözümlüyor ve veri hattında neyin doğrulandığı, neyin hâlâ beklediği.">
   <meta property="og:url" content="https://nest-eeg.org/pages/technology.html">
   <meta property="og:image" content="https://nest-eeg.org/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Technology - NEST">
-  <meta name="twitter:description" content="How NEST decodes reading EEG, and what in the pipeline is verified versus still pending.">
+  <meta name="twitter:title" content="Teknoloji - NEST">
+  <meta name="twitter:description" content="NEST okuma EEG'sini nasıl çözümlüyor ve veri hattında neyin doğrulandığı, neyin hâlâ beklediği.">
   <meta name="twitter:image" content="https://nest-eeg.org/og.png">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -24,42 +27,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/site.css?v=3">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Organization","name":"NEST","url":"https://nest-eeg.org","logo":"https://nest-eeg.org/icon-512.png","description":"Open, hardware-agnostic EEG-to-text decoding research project from Istanbul Commerce University.","sameAs":["https://github.com/wazder/nest"]}
+  {"@context":"https://schema.org","@type":"Organization","name":"NEST","url":"https://nest-eeg.org","logo":"https://nest-eeg.org/icon-512.png","description":"Açık kaynak, donanımdan bağımsız EEG'den metne çözümleme araştırma projesi, İstanbul Ticaret Üniversitesi'nden.","sameAs":["https://github.com/wazder/nest"]}
   </script>
 </head>
 <body>
 
 <header class="header">
   <div class="container header-inner">
-    <a href="../index.html" class="brand" aria-label="NEST home">
+    <a href="../index.html" class="brand" aria-label="NEST ana sayfa">
       <svg viewBox="0 0 100 100" aria-hidden="true" fill="currentColor"><rect x="12" y="8" width="13" height="84"/><rect x="75" y="8" width="13" height="84"/><polyline points="18.50,14.00 34.25,32.00 43.70,20.80 53.15,69.60 62.60,64.40 81.50,86.00" fill="none" stroke="currentColor" stroke-width="13" stroke-linejoin="miter" stroke-miterlimit="2.2"/></svg>
       NEST
     </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="technology.html">Technology</a>
-      <a href="research.html">Research</a>
+    <nav class="nav" aria-label="Birincil">
+      <a href="technology.html">Teknoloji</a>
+      <a href="research.html">Araştırma</a>
       <a href="demo.html">Demo</a>
-      <a href="docs.html">Docs</a>
-      <a href="about.html">Company</a>
+      <a href="docs.html">Dokümantasyon</a>
+      <a href="about.html">Şirket</a>
     </nav>
     <div class="row">
-      <button class="icon-btn theme-toggle" aria-label="Toggle theme">
+      <a class="lang" href="../en/pages/technology.html" hreflang="en">EN</a>
+      <button class="icon-btn theme-toggle" aria-label="Temayı değiştir">
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
       <a href="https://github.com/wazder/nest" class="btn solid sm hide-sm" target="_blank" rel="noopener">GitHub</a>
-      <button class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+      <button class="icon-btn menu-btn" aria-label="Menüyü aç/kapat" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
   </div>
-  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
-    <a href="technology.html">Technology</a>
-    <a href="research.html">Research</a>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobil">
+    <a href="technology.html">Teknoloji</a>
+    <a href="research.html">Araştırma</a>
     <a href="demo.html">Demo</a>
-    <a href="docs.html">Docs</a>
-    <a href="about.html">Company</a>
+    <a href="docs.html">Dokümantasyon</a>
+    <a href="about.html">Şirket</a>
     <a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a>
+    <a href="../en/pages/technology.html" hreflang="en">English</a>
   </nav>
 </header>
 
@@ -68,9 +73,9 @@
   <!-- PAGE HEAD -->
   <section class="page-head">
     <div class="container">
-      <p class="label reveal">Technology</p>
-      <h1 class="reveal">How NEST decodes reading EEG</h1>
-      <p class="reveal">From a fixation-aligned frequency vector to open-vocabulary text: the input representation, the v2 architecture, and what in the pipeline is verified versus still pending.</p>
+      <p class="label reveal">Teknoloji</p>
+      <h1 class="reveal">NEST okuma EEG'sini nasıl çözümlüyor</h1>
+      <p class="reveal">Fiksasyona hizalı bir frekans vektöründen açık sözlüklü metne: girdi temsili, v2 mimarisi ve veri hattında neyin doğrulandığı, neyin hâlâ beklediği.</p>
     </div>
   </section>
 
@@ -78,28 +83,28 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Input representation</p>
-        <h2>From fixations to an 840-dimensional vector</h2>
-        <p>NEST reads ZuCo's word-level EEG features, not raw voltage. Eye-tracking fixations tell the pipeline which word a reader was looking at, and each fixated word carries one feature vector: 105 EEG channels times 8 frequency bands, giving an 840-dimensional input per word. A sentence is a sequence of these vectors.</p>
+        <p class="label">Girdi temsili</p>
+        <h2>Fiksasyonlardan 840 boyutlu vektöre</h2>
+        <p>NEST, ham voltaj değil, ZuCo'nun kelime düzeyindeki EEG özniteliklerini okur. Göz izleme fiksasyonları veri hattına okuyucunun hangi kelimeye baktığını bildirir; fiksasyon alan her kelime bir öznitelik vektörü taşır: 105 EEG kanalı çarpı 8 frekans bandı, kelime başına 840 boyutlu bir girdi verir. Bir cümle bu vektörlerin bir dizisidir.</p>
       </div>
       <div class="table-wrap reveal">
         <table>
-          <thead><tr><th>Band</th><th>Approx. range</th><th>Sub-band</th></tr></thead>
+          <thead><tr><th>Bant</th><th>Yaklaşık aralık</th><th>Alt bant</th></tr></thead>
           <tbody>
-            <tr><td class="k">theta1</td><td>4&ndash;6 Hz</td><td>lower half</td></tr>
-            <tr><td class="k">theta2</td><td>6.5&ndash;8 Hz</td><td>upper half</td></tr>
-            <tr><td class="k">alpha1</td><td>8.5&ndash;10 Hz</td><td>lower half</td></tr>
-            <tr><td class="k">alpha2</td><td>10.5&ndash;13 Hz</td><td>upper half</td></tr>
-            <tr><td class="k">beta1</td><td>13.5&ndash;18 Hz</td><td>lower half</td></tr>
-            <tr><td class="k">beta2</td><td>18.5&ndash;30 Hz</td><td>upper half</td></tr>
-            <tr><td class="k">gamma1</td><td>30.5&ndash;40 Hz</td><td>lower half</td></tr>
-            <tr><td class="k">gamma2</td><td>40&ndash;49.5 Hz</td><td>upper half</td></tr>
+            <tr><td class="k">theta1</td><td>4&ndash;6 Hz</td><td>alt yarı</td></tr>
+            <tr><td class="k">theta2</td><td>6.5&ndash;8 Hz</td><td>üst yarı</td></tr>
+            <tr><td class="k">alpha1</td><td>8.5&ndash;10 Hz</td><td>alt yarı</td></tr>
+            <tr><td class="k">alpha2</td><td>10.5&ndash;13 Hz</td><td>üst yarı</td></tr>
+            <tr><td class="k">beta1</td><td>13.5&ndash;18 Hz</td><td>alt yarı</td></tr>
+            <tr><td class="k">beta2</td><td>18.5&ndash;30 Hz</td><td>üst yarı</td></tr>
+            <tr><td class="k">gamma1</td><td>30.5&ndash;40 Hz</td><td>alt yarı</td></tr>
+            <tr><td class="k">gamma2</td><td>40&ndash;49.5 Hz</td><td>üst yarı</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="xs mt-2 reveal">Sub-band boundaries as published for ZuCo (Hollenstein et al. 2018): each parent band is split into two sub-bands. 105 channels &times; 8 bands = 840 dimensions per fixated word.</p>
+      <p class="xs mt-2 reveal">Alt bant sınırları ZuCo için yayımlandığı gibidir (Hollenstein ve ark. 2018): her ana bant iki alt banda bölünür. 105 kanal &times; 8 bant = fiksasyon alan kelime başına 840 boyut.</p>
       <div class="prose mt-4 reveal">
-        <p><strong>Unfixated words.</strong> A word the reader never fixates has no EEG segment to derive a band power from, so ZuCo emits NaN for it. NEST zeroes those entries rather than dropping the word or imputing a value (commit 5460ace), which keeps sentence length intact. A zeroed vector carries no signal &mdash; it is a placeholder, not a measurement.</p>
+        <p><strong>Fiksasyon almayan kelimeler.</strong> Okuyucunun hiç fiksasyon yapmadığı bir kelime için bant gücü türetilecek bir EEG segmenti yoktur, bu yüzden ZuCo o kelime için NaN üretir. NEST bu girdileri, kelimeyi atmak veya bir değer atamak yerine sıfırlar (commit 5460ace); bu, cümle uzunluğunu korur. Sıfırlanmış bir vektör sinyal taşımaz &mdash; bir ölçüm değil, yer tutucudur.</p>
       </div>
     </div>
   </section>
@@ -108,31 +113,31 @@
   <section class="section low bordered">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Architecture &middot; v2</p>
-        <h2>A five-step pipeline, verified by instantiation</h2>
-        <p>src/models/nest_v2.py defines the current architecture: a projection into a shared embedding space, a positional encoding, a transformer encoder, and one of two output heads.</p>
+        <p class="label">Mimari &middot; v2</p>
+        <h2>Beş adımlı bir veri hattı, örneklenerek doğrulandı</h2>
+        <p>src/models/nest_v2.py mevcut mimariyi tanımlar: paylaşılan bir gömme uzayına projeksiyon, bir konumsal kodlama, bir transformer encoder ve iki çıktı başlığından biri.</p>
       </div>
       <div class="pipeline reveal" style="--steps:5">
-        <div class="step"><div class="num">01</div><div class="t">EEG projection</div><div class="d">LayerNorm, Linear, GELU, Linear, LayerNorm, scaled by &radic;d.</div><div class="dim">840 &rarr; 1536 &rarr; 768</div></div>
-        <div class="step"><div class="num">02</div><div class="t">Positional encoding</div><div class="d">Sinusoidal, added to the projected sequence.</div><div class="dim">fixed, non-learned</div></div>
-        <div class="step"><div class="num">03</div><div class="t">Transformer encoder</div><div class="d">Pre-norm layers, GELU feed-forward.</div><div class="dim">6 layers, d=768, heads=8</div></div>
-        <div class="step"><div class="num">04</div><div class="t">Output head</div><div class="d">A linear CTC head, or a BART decoder with cross-attention to the encoder.</div><div class="dim">CTC or BART</div></div>
-        <div class="step"><div class="num">05</div><div class="t">Decode</div><div class="d">Greedy CTC decode; free autoregressive decoding for BART.</div><div class="dim">no teacher forcing</div></div>
+        <div class="step"><div class="num">01</div><div class="t">EEG projeksiyonu</div><div class="d">LayerNorm, Linear, GELU, Linear, LayerNorm, &radic;d ile ölçeklenir.</div><div class="dim">840 &rarr; 1536 &rarr; 768</div></div>
+        <div class="step"><div class="num">02</div><div class="t">Konumsal kodlama</div><div class="d">Sinüzoidal, projeksiyonlanmış diziye eklenir.</div><div class="dim">sabit, öğrenilmeyen</div></div>
+        <div class="step"><div class="num">03</div><div class="t">Transformer encoder</div><div class="d">Pre-norm katmanlar, GELU feed-forward.</div><div class="dim">6 katman, d=768, baş=8</div></div>
+        <div class="step"><div class="num">04</div><div class="t">Çıktı başlığı</div><div class="d">Doğrusal bir CTC başlığı, ya da encoder'a çapraz dikkatli bir BART decoder.</div><div class="dim">CTC veya BART</div></div>
+        <div class="step"><div class="num">05</div><div class="t">Çözümleme</div><div class="d">Greedy CTC çözümleme; BART için serbest özbağlanımlı çözümleme.</div><div class="dim">teacher forcing yok</div></div>
       </div>
       <div class="table-wrap mt-6 reveal">
         <table>
-          <thead><tr><th>Component</th><th>Config</th></tr></thead>
+          <thead><tr><th>Bileşen</th><th>Yapılandırma</th></tr></thead>
           <tbody>
-            <tr><td class="k">EEGProjection</td><td>840 &rarr; 1536 &rarr; 768, LayerNorm and GELU, output scaled by &radic;d</td></tr>
-            <tr><td class="k">Positional encoding</td><td>Sinusoidal</td></tr>
-            <tr><td class="k">Transformer encoder</td><td>6 layers, d_model 768, 8 heads, pre-norm, GELU feed-forward</td></tr>
-            <tr><td class="k">CTC head</td><td>Linear, 29 symbols (blank, a&ndash;z, space, pad) &mdash; 45,310,637 parameters</td></tr>
-            <tr><td class="k">BART decoder</td><td>facebook/bart-base with cross-attention to the EEG encoder; BART encoder and first 4 decoder layers frozen &mdash; 184,424,592 total / 64,697,232 trainable</td></tr>
-            <tr><td class="k">Decoding</td><td>Greedy CTC decode; free autoregressive decoding for BART (greedy today, beam search planned)</td></tr>
+            <tr><td class="k">EEGProjection</td><td>840 &rarr; 1536 &rarr; 768, LayerNorm ve GELU, çıktı &radic;d ile ölçeklenir</td></tr>
+            <tr><td class="k">Konumsal kodlama</td><td>Sinüzoidal</td></tr>
+            <tr><td class="k">Transformer encoder</td><td>6 katman, d_model 768, 8 baş, pre-norm, GELU feed-forward</td></tr>
+            <tr><td class="k">CTC başlığı</td><td>Doğrusal, 29 sembol (blank, a&ndash;z, boşluk, pad) &mdash; 45.310.637 parametre</td></tr>
+            <tr><td class="k">BART decoder</td><td>facebook/bart-base, EEG encoder'a çapraz dikkatle; BART encoder ve ilk 4 decoder katmanı donduruldu &mdash; 184.424.592 toplam / 64.697.232 eğitilebilir</td></tr>
+            <tr><td class="k">Çözümleme</td><td>Greedy CTC çözümleme; BART için serbest özbağlanımlı çözümleme (bugün greedy, beam search planlanıyor)</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="xs mt-2 reveal">Parameter counts were verified by instantiating NEST_CTC_v2 and NEST_BART_v2 on 2026-09-03.</p>
+      <p class="xs mt-2 reveal">Parametre sayıları, NEST_CTC_v2 ve NEST_BART_v2 örneklenerek 3 Eylül 2026'da doğrulandı.</p>
     </div>
   </section>
 
@@ -140,12 +145,12 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Why frequency-band features</p>
-        <h2>Precomputed bands, not raw voltage, as the primary path</h2>
-        <p>NEST's primary input representation follows Wang and Ji (AAAI 2022): fixed frequency-band power per channel per word, rather than a raw EEG waveform. It is a smaller, more structured input than raw voltage, and it is the convention most EEG-to-text literature on ZuCo already reports against.</p>
+        <p class="label">Neden frekans bandı öznitelikleri</p>
+        <h2>Ana yol olarak ham voltaj değil, önceden hesaplanmış bantlar</h2>
+        <p>NEST'in birincil girdi temsili Wang ve Ji'yi (AAAI 2022) izler: ham bir EEG dalga formu yerine, kelime başına kanal başına sabit frekans bandı gücü. Bu, ham voltajdan daha küçük, daha yapılandırılmış bir girdidir; ayrıca ZuCo üzerine çalışan EEG-metin literatürünün çoğunun zaten kıyasladığı kuraldır.</p>
       </div>
       <div class="prose reveal">
-        <p>The repository also contains raw-EEG architectures &mdash; EEGNet and DeepConvNet spatial convolutional front ends, LSTM, Transformer and Conformer temporal encoders, and a 303M-parameter Conformer-BART model (src/models/nest.py, nest_bart.py). These are implemented and importable, but they are not the primary path described above and they have not been trained.</p>
+        <p>Depo ayrıca ham-EEG mimarileri de içerir &mdash; EEGNet ve DeepConvNet uzamsal evrişimli ön uçlar, LSTM, Transformer ve Conformer zamansal encoder'lar ve 303 milyon parametreli bir Conformer-BART modeli (src/models/nest.py, nest_bart.py). Bunlar kodlanmış ve içe aktarılabilir durumda, ama yukarıda açıklanan birincil yol değiller ve henüz eğitilmediler.</p>
       </div>
     </div>
   </section>
@@ -154,31 +159,31 @@
   <section class="section low bordered">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Training and evaluation protocol</p>
-        <h2>Subject-independent, free-decoded, never teacher-forced at test time</h2>
-        <p>Splits are subject-independent by default: 8 subjects train, 1 validates, 2 are held out for test and never appear in training or validation.</p>
+        <p class="label">Eğitim ve değerlendirme protokolü</p>
+        <h2>Denekten bağımsız, serbest çözümlemeli, test zamanında teacher forcing yok</h2>
+        <p>Bölmeler varsayılan olarak denekten bağımsızdır: 8 denek eğitir, 1 denek doğrular, 2 denek test için ayrılır ve eğitimde ya da doğrulamada hiç görünmez.</p>
       </div>
       <div class="grid two">
         <div class="card reveal">
-          <p class="label">Training</p>
+          <p class="label">Eğitim</p>
           <h3>Loss</h3>
-          <p>CTC loss for the CTC head. Cross-entropy with teacher forcing for the BART head &mdash; but only during training. The decoder is given the correct previous token at each step solely to compute a training gradient.</p>
+          <p>CTC başlığı için CTC loss. BART başlığı için teacher forcing ile cross-entropy &mdash; ama yalnızca eğitim sırasında. Decoder'a, yalnızca bir eğitim gradyanı hesaplamak için, her adımda doğru önceki token verilir.</p>
         </div>
         <div class="card reveal accent-top">
-          <p class="label">Evaluation</p>
-          <h3>Decoding</h3>
-          <p>eval_bart() calls model.generate() with max_length=64 and no teacher forcing. The generate() implementation is currently greedy; the num_beams argument is accepted but not yet used. eval_ctc() uses greedy CTC decoding. Word and character error rate are computed by Levenshtein edit distance.</p>
+          <p class="label">Değerlendirme</p>
+          <h3>Çözümleme</h3>
+          <p>eval_bart(), model.generate()'i max_length=64 ile ve teacher forcing olmadan çağırır. generate() uygulaması şu anda greedy; num_beams argümanı kabul edilir ama henüz kullanılmaz. eval_ctc() greedy CTC çözümleme kullanır. Kelime hata oranı (WER) ve karakter hata oranı (CER) Levenshtein düzenleme mesafesiyle hesaplanır.</p>
         </div>
       </div>
       <div class="prose mt-4 reveal">
-        <p><strong>What this protocol commits to.</strong></p>
+        <p><strong>Bu protokolün taahhüt ettikleri.</strong></p>
         <ul>
-          <li>Free autoregressive decoding at evaluation time, never teacher forcing.</li>
-          <li>Held-out test subjects the model never saw during training or validation.</li>
-          <li>A noise-input control reported next to every real-EEG result.</li>
+          <li>Değerlendirme zamanında serbest özbağlanımlı çözümleme, asla teacher forcing değil.</li>
+          <li>Modelin eğitim veya doğrulama sırasında hiç görmediği görülmemiş test denekleri.</li>
+          <li>Her gerçek-EEG sonucunun yanında raporlanan bir gürültü kontrolü.</li>
         </ul>
       </div>
-      <p class="xs mt-4 reveal">Compute: a quick test runs on CPU or Apple Silicon MPS (scripts/train_nest_v2.py --quick-test). A full 200-epoch BART run is estimated at 8 to 12 hours on an A100, which NEST does not yet have scheduled time on.</p>
+      <p class="xs mt-4 reveal">Hesaplama: hızlı bir test CPU veya Apple Silicon MPS üzerinde çalışır (scripts/train_nest_v2.py --quick-test). Tam 200 epoch'luk bir BART koşusunun A100 üzerinde 8 ila 12 saat süreceği tahmin ediliyor; NEST'in bu GPU'da henüz planlanmış bir zamanı yok.</p>
     </div>
   </section>
 
@@ -186,17 +191,17 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Preprocessing and robustness modules</p>
-        <h2>Implemented, not yet evaluated</h2>
-        <p>src/preprocessing contains signal-cleaning and generalization code beyond the ZuCo features NEST currently trains on. None of it has been benchmarked for effect on decoding accuracy.</p>
+        <p class="label">Ön işleme ve dayanıklılık modülleri</p>
+        <h2>Kodlandı, henüz değerlendirilmedi</h2>
+        <p>src/preprocessing, NEST'in şu anda üzerinde eğitildiği ZuCo özniteliklerinin ötesinde sinyal temizleme ve genelleme kodu içerir. Hiçbiri çözümleme doğruluğuna etkisi açısından benchmark edilmedi.</p>
       </div>
       <div class="grid three">
-        <div class="card reveal"><h3>Filtering</h3><p>Band-pass and notch filtering via MNE.</p></div>
-        <div class="card reveal"><h3>Artifact removal</h3><p>ICA-based artifact removal (mne.preprocessing.ICA) with EOG/ECG component detection.</p></div>
-        <div class="card reveal"><h3>Augmentation</h3><p>11 augmentation methods, including noise injection, time shift and mixup.</p></div>
+        <div class="card reveal"><h3>Filtreleme</h3><p>MNE ile band-pass ve notch filtreleme.</p></div>
+        <div class="card reveal"><h3>Artefakt giderme</h3><p>EOG/ECG bileşen tespitiyle ICA tabanlı artefakt giderme (mne.preprocessing.ICA).</p></div>
+        <div class="card reveal"><h3>Veri artırma</h3><p>Gürültü enjeksiyonu, zaman kaydırma ve mixup dahil 11 veri artırma yöntemi.</p></div>
       </div>
       <div class="prose mt-4 reveal">
-        <p>Subject-adaptation modules &mdash; a domain-adversarial network (DANN) and CORAL feature alignment &mdash; are also present in the code, aimed at generalizing across subjects beyond the fixed train/val/test split. They are implemented, not yet evaluated.</p>
+        <p>Denek-uyarlama modülleri &mdash; bir domain-adversarial network (DANN) ve CORAL öznitelik hizalaması &mdash; kodda da mevcuttur; amaçları, sabit train/val/test bölmesinin ötesinde denekler arasında genelleme yapmaktır. Kodlandılar, henüz değerlendirilmediler.</p>
       </div>
     </div>
   </section>
@@ -205,18 +210,18 @@
   <section class="section low bordered">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Deployment modules</p>
-        <h2>Written, unbenchmarked, no artifact yet</h2>
-        <p>src/evaluation contains the code a decoding stack needs to leave a notebook: compression, export and streaming. None of it has produced a shipped artifact.</p>
+        <p class="label">Dağıtım modülleri</p>
+        <h2>Yazıldı, benchmark yapılmadı, henüz çıktı yok</h2>
+        <p>src/evaluation, bir çözümleme yığınının bir not defterinden çıkması için gereken kodu içerir: sıkıştırma, dışa aktarma ve akış. Hiçbiri sevk edilmiş bir çıktı üretmedi.</p>
       </div>
       <div class="table-wrap reveal">
         <table>
-          <thead><tr><th>Module</th><th>What it does</th><th>Status</th></tr></thead>
+          <thead><tr><th>Modül</th><th>Ne yapar</th><th>Durum</th></tr></thead>
           <tbody>
-            <tr><td class="k">Pruning</td><td>Magnitude, iterative, sensitivity, structured, and lottery-ticket pruning</td><td><span class="badge status-todo"><span class="dot"></span>Unbenchmarked</span></td></tr>
-            <tr><td class="k">Quantization</td><td>Post-training, dynamic, quantization-aware training, mixed precision</td><td><span class="badge status-todo"><span class="dot"></span>Unbenchmarked</span></td></tr>
-            <tr><td class="k">Export</td><td>ONNX and TorchScript export</td><td><span class="badge status-todo"><span class="dot"></span>No artifact</span></td></tr>
-            <tr><td class="k">Streaming</td><td>Circular-buffer streaming inference</td><td><span class="badge status-todo"><span class="dot"></span>Unbenchmarked</span></td></tr>
+            <tr><td class="k">Budama</td><td>Magnitude, iterative, sensitivity, structured ve lottery-ticket budama</td><td><span class="badge status-todo"><span class="dot"></span>Benchmark yapılmadı</span></td></tr>
+            <tr><td class="k">Kuantizasyon</td><td>Eğitim sonrası, dinamik, kuantizasyon farkında eğitim, karma hassasiyet</td><td><span class="badge status-todo"><span class="dot"></span>Benchmark yapılmadı</span></td></tr>
+            <tr><td class="k">Dışa aktarma</td><td>ONNX ve TorchScript dışa aktarma</td><td><span class="badge status-todo"><span class="dot"></span>Çıktı yok</span></td></tr>
+            <tr><td class="k">Akış</td><td>Dairesel tampon ile akış çıkarımı</td><td><span class="badge status-todo"><span class="dot"></span>Benchmark yapılmadı</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -227,16 +232,16 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Limitations, stated plainly</p>
-        <h2>What the architecture does not fix</h2>
-        <p>None of these are solved by a better model. They are properties of the signal and the field's current evaluation practice.</p>
+        <p class="label">Sınırlamalar, açıkça</p>
+        <h2>Mimarinin çözemediği</h2>
+        <p>Bunların hiçbiri daha iyi bir modelle çözülmez. Bunlar sinyalin ve alanın mevcut değerlendirme pratiğinin özellikleridir.</p>
       </div>
       <div class="prose reveal">
         <ul>
-          <li><strong>Signal quality.</strong> Scalp EEG has a low signal-to-noise ratio, and volume conduction blurs cortical sources together before they reach the electrode.</li>
-          <li><strong>Free decoding is unsolved field-wide.</strong> Under free decoding rather than teacher forcing, published ZuCo decoders &mdash; not only NEST &mdash; have been shown to score close to a random-noise input. NEST reports a noise-input control alongside every real-EEG result so this can be checked, not assumed away.</li>
-          <li><strong>Word alignment needs eye tracking.</strong> The input representation depends on fixation timing to assign EEG to words; without eye tracking there is no word boundary to align to.</li>
-          <li><strong>English only, today.</strong> ZuCo is English-language reading data. No public Turkish EEG reading corpus exists yet.</li>
+          <li><strong>Sinyal kalitesi.</strong> Kafa derisi EEG'sinin sinyal-gürültü oranı düşüktür ve hacim iletimi, kortikal kaynaklar elektroda ulaşmadan önce onları birbirine karıştırır.</li>
+          <li><strong>Serbest çözümleme alan genelinde çözülmemiş.</strong> Teacher forcing yerine serbest çözümleme altında, yayımlanmış ZuCo çözücülerinin &mdash; yalnızca NEST değil &mdash; rastgele gürültü girdisine yakın puan aldığı gösterilmiştir. NEST, bu varsayılıp geçilmesin diye kontrol edilebilsin diye, her gerçek-EEG sonucunun yanında bir gürültü kontrolü raporlar.</li>
+          <li><strong>Kelime hizalama göz izleme gerektirir.</strong> Girdi temsili, EEG'yi kelimelere atamak için fiksasyon zamanlamasına bağlıdır; göz izleme olmadan hizalanacak bir kelime sınırı yoktur.</li>
+          <li><strong>Bugün için yalnızca İngilizce.</strong> ZuCo İngilizce dilinde okuma verisidir. Henüz açık bir Türkçe EEG okuma korpusu yok.</li>
         </ul>
       </div>
     </div>
@@ -245,11 +250,11 @@
   <!-- CTA -->
   <section class="section low bordered">
     <div class="container center">
-      <h2 class="upper reveal">See the numbers behind this</h2>
-      <p class="mt-2 reveal">The literature this architecture is built against, and the protocol its own results will be measured with.</p>
+      <h2 class="upper reveal">Bunun arkasındaki sayılara bakın</h2>
+      <p class="mt-2 reveal">Bu mimarinin karşı yazıldığı literatür ve kendi sonuçlarının ölçüleceği protokol.</p>
       <div class="btn-row mt-4 reveal" style="justify-content:center">
-        <a href="research.html" class="btn solid">Read the research</a>
-        <a href="docs.html" class="btn outline">Docs</a>
+        <a href="research.html" class="btn solid">Araştırmayı oku</a>
+        <a href="docs.html" class="btn outline">Dokümantasyon</a>
       </div>
     </div>
   </section>
@@ -260,13 +265,13 @@
   <div class="container footer-inner">
     <div>
       <div class="brand">NEST</div>
-      <p class="mt-2">Open, hardware-agnostic EEG-to-text decoding. A research project from Istanbul Commerce University becoming a company.</p>
-      <p class="copy-line">&copy; 2026 NEST &middot; Open source</p>
+      <p class="mt-2">Açık kaynak, donanımdan bağımsız EEG'den metne çözümleme. İstanbul Ticaret Üniversitesi'nden şirketleşen bir araştırma projesi.</p>
+      <p class="copy-line">&copy; 2026 NEST &middot; MIT Lisansı</p>
     </div>
     <div class="footer-cols">
-      <div><h5>Project</h5><ul><li><a href="technology.html">Technology</a></li><li><a href="research.html">Research</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Docs</a></li><li><a href="download.html">Models</a></li></ul></div>
-      <div><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="about.html#team">Team</a></li><li><a href="contributing.html">Contributing</a></li></ul></div>
-      <div><h5>Connect</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Discussions</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+      <div><h5>Proje</h5><ul><li><a href="technology.html">Teknoloji</a></li><li><a href="research.html">Araştırma</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Dokümantasyon</a></li><li><a href="download.html">Modeller</a></li></ul></div>
+      <div><h5>Şirket</h5><ul><li><a href="about.html">Hakkında</a></li><li><a href="about.html#team">Ekip</a></li><li><a href="contributing.html">Katkı</a></li></ul></div>
+      <div><h5>Bağlantı</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Tartışmalar</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
     </div>
   </div>
 </footer>

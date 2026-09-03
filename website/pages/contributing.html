@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contributing - NEST</title>
-  <meta name="description" content="How to help NEST: priority areas, the contribution process, code style, and conduct for an open, honestly-evaluated EEG-to-text project.">
+  <title>Katkı - NEST</title>
+  <meta name="description" content="NEST'e nasıl yardım edilir: öncelikli alanlar, katkı süreci, kod stili ve açık, dürüstçe değerlendirilen bir EEG'den metne projesi için davranış kuralları.">
   <link rel="canonical" href="https://nest-eeg.org/pages/contributing.html">
+  <link rel="alternate" hreflang="tr" href="https://nest-eeg.org/pages/contributing.html">
+  <link rel="alternate" hreflang="en" href="https://nest-eeg.org/en/pages/contributing.html">
+  <link rel="alternate" hreflang="x-default" href="https://nest-eeg.org/pages/contributing.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="NEST">
-  <meta property="og:title" content="Contributing - NEST">
-  <meta property="og:description" content="Priority areas, process, and code style for contributing to NEST.">
+  <meta property="og:title" content="Katkı - NEST">
+  <meta property="og:description" content="NEST'e katkı için öncelikli alanlar, süreç ve kod stili.">
   <meta property="og:url" content="https://nest-eeg.org/pages/contributing.html">
   <meta property="og:image" content="https://nest-eeg.org/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Contributing - NEST">
-  <meta name="twitter:description" content="Priority areas, process, and code style for contributing to NEST.">
+  <meta name="twitter:title" content="Katkı - NEST">
+  <meta name="twitter:description" content="NEST'e katkı için öncelikli alanlar, süreç ve kod stili.">
   <meta name="twitter:image" content="https://nest-eeg.org/og.png">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -31,35 +34,37 @@
 
 <header class="header">
   <div class="container header-inner">
-    <a href="../index.html" class="brand" aria-label="NEST home">
+    <a href="../index.html" class="brand" aria-label="NEST ana sayfa">
       <svg viewBox="0 0 100 100" aria-hidden="true" fill="currentColor"><rect x="12" y="8" width="13" height="84"/><rect x="75" y="8" width="13" height="84"/><polyline points="18.50,14.00 34.25,32.00 43.70,20.80 53.15,69.60 62.60,64.40 81.50,86.00" fill="none" stroke="currentColor" stroke-width="13" stroke-linejoin="miter" stroke-miterlimit="2.2"/></svg>
       NEST
     </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="technology.html">Technology</a>
-      <a href="research.html">Research</a>
+    <nav class="nav" aria-label="Birincil">
+      <a href="technology.html">Teknoloji</a>
+      <a href="research.html">Araştırma</a>
       <a href="demo.html">Demo</a>
-      <a href="docs.html">Docs</a>
-      <a href="about.html">Company</a>
+      <a href="docs.html">Dokümantasyon</a>
+      <a href="about.html">Şirket</a>
     </nav>
     <div class="row">
-      <button class="icon-btn theme-toggle" aria-label="Toggle theme">
+      <a class="lang" href="../en/pages/contributing.html" hreflang="en">EN</a>
+      <button class="icon-btn theme-toggle" aria-label="Temayı değiştir">
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
       <a href="https://github.com/wazder/nest" class="btn solid sm hide-sm" target="_blank" rel="noopener">GitHub</a>
-      <button class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+      <button class="icon-btn menu-btn" aria-label="Menüyü aç/kapat" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
   </div>
-  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
-    <a href="technology.html">Technology</a>
-    <a href="research.html">Research</a>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobil">
+    <a href="technology.html">Teknoloji</a>
+    <a href="research.html">Araştırma</a>
     <a href="demo.html">Demo</a>
-    <a href="docs.html">Docs</a>
-    <a href="about.html">Company</a>
+    <a href="docs.html">Dokümantasyon</a>
+    <a href="about.html">Şirket</a>
     <a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a>
+    <a href="../en/pages/contributing.html" hreflang="en">English</a>
   </nav>
 </header>
 
@@ -68,9 +73,9 @@
   <!-- PAGE HEAD -->
   <section class="page-head">
     <div class="container">
-      <p class="label reveal">Contributing</p>
-      <h1 class="reveal">How to help</h1>
-      <p class="reveal">NEST is 24,137 lines of Python built in seven months by one person. The gaps are known and listed below. Pick one, open an issue, and send a small PR.</p>
+      <p class="label reveal">Katkı</p>
+      <h1 class="reveal">Nasıl yardım edilir</h1>
+      <p class="reveal">NEST, tek bir kişi tarafından yedi ayda yazılmış 24.137 satır Python. Eksikler biliniyor ve aşağıda listelendi. Birini seç, bir issue aç ve küçük bir PR gönder.</p>
     </div>
   </section>
 
@@ -78,39 +83,39 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Priority areas</p>
-        <h2>Where help matters most right now</h2>
+        <p class="label">Öncelikli alanlar</p>
+        <h2>Yardımın şu an en çok işe yaradığı yerler</h2>
       </div>
       <div class="grid three">
         <div class="card reveal">
           <div class="num">01</div>
-          <h3>Repair the test suite</h3>
-          <p>80 test functions across 5 files, currently failing to import because of code/test drift. Getting them running again is the single highest-leverage contribution.</p>
+          <h3>Test paketini onar</h3>
+          <p>5 dosyaya yayılmış 80 test fonksiyonu, kod/test kayması yüzünden şu anda import edilemiyor. Bunları yeniden çalışır hale getirmek, tek başına en yüksek etkili katkı.</p>
         </div>
         <div class="card reveal">
           <div class="num">02</div>
-          <h3>Packaging metadata</h3>
-          <p><code class="inline">pyproject.toml</code> has no <code class="inline">[project]</code> table, so <code class="inline">pip install -q -e .</code> does not work and there is no installable package.</p>
+          <h3>Paketleme metadata'sı</h3>
+          <p><code class="inline">pyproject.toml</code> içinde <code class="inline">[project]</code> tablosu yok, bu yüzden <code class="inline">pip install -q -e .</code> çalışmıyor ve kurulabilir bir paket yok.</p>
         </div>
         <div class="card reveal">
           <div class="num">03</div>
-          <h3>Run the NEST v2 GPU training</h3>
-          <p>Full training on an A100 (estimated 8 to 12 hours) with a logged run and evaluation report. This is what turns "pending" into a real number.</p>
+          <h3>NEST v2 GPU eğitimini çalıştır</h3>
+          <p>A100'de (tahmini 8&ndash;12 saat) günlüklenmiş bir koşu ve değerlendirme raporuyla tam eğitim. "Bekliyor"u gerçek bir sayıya çeviren şey bu.</p>
         </div>
         <div class="card reveal">
           <div class="num">04</div>
-          <h3>Noise-input control script</h3>
-          <p>A control evaluation that runs alongside <code class="inline">eval_bart</code> and <code class="inline">eval_ctc</code>, decoding random noise the same way, so every real-EEG number ships with its control.</p>
+          <h3>Gürültü kontrolü betiği</h3>
+          <p><code class="inline">eval_bart</code> ve <code class="inline">eval_ctc</code> ile birlikte çalışan, rastgele gürültüyü aynı şekilde çözümleyen bir kontrol değerlendirmesi; böylece her gerçek EEG sayısı kendi kontrolüyle birlikte yayınlanır.</p>
         </div>
         <div class="card reveal">
           <div class="num">05</div>
-          <h3>Turkish corpus protocol review</h3>
-          <p>Read and stress-test the reading-corpus protocol at <code class="inline" style="overflow-wrap:anywhere">experiments/user_study/user_study_protocol.md</code> ahead of ethics submission and data collection.</p>
+          <h3>Türkçe korpus protokolü incelemesi</h3>
+          <p>Etik kurul başvurusu ve veri toplamadan önce <code class="inline" style="overflow-wrap:anywhere">experiments/user_study/user_study_protocol.md</code> konumundaki okuma-korpus protokolünü oku ve sınırlarını test et.</p>
         </div>
         <div class="card reveal">
           <div class="num">06</div>
-          <h3>Hardware adapters</h3>
-          <p>Feature adapters for research-grade EEG systems beyond the ZuCo reference setup, so NEST stays hardware-agnostic in practice, not only in design.</p>
+          <h3>Donanım adaptörleri</h3>
+          <p>ZuCo referans kurulumunun ötesindeki araştırma sınıfı EEG sistemleri için öznitelik adaptörleri; böylece NEST yalnızca tasarımda değil pratikte de donanımdan bağımsız kalır.</p>
         </div>
       </div>
     </div>
@@ -120,15 +125,15 @@
   <section class="section low bordered">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Process</p>
-        <h2>Small, reviewable changes</h2>
+        <p class="label">Süreç</p>
+        <h2>Küçük, incelenebilir değişiklikler</h2>
       </div>
       <div class="prose reveal">
         <ul>
-          <li>For anything non-trivial, open an issue first and describe the change before writing code.</li>
-          <li>Keep pull requests small. One concern per PR is easier to review and easier to revert.</li>
-          <li>Use conventional commits: <code class="inline">feat:</code>, <code class="inline">fix:</code>, <code class="inline">docs:</code>, <code class="inline">test:</code>.</li>
-          <li>Install and run pre-commit before pushing: <code class="inline">black</code>, <code class="inline">isort</code>, <code class="inline">flake8</code>, <code class="inline">mypy</code>.</li>
+          <li>Önemsiz olmayan her şey için önce bir issue aç ve kodu yazmadan önce değişikliği tarif et.</li>
+          <li>Pull request'leri küçük tut. PR başına tek bir konu, incelemeyi de geri almayı da kolaylaştırır.</li>
+          <li>Conventional commit kullan: <code class="inline">feat:</code>, <code class="inline">fix:</code>, <code class="inline">docs:</code>, <code class="inline">test:</code>.</li>
+          <li>Push etmeden önce pre-commit'i kur ve çalıştır: <code class="inline">black</code>, <code class="inline">isort</code>, <code class="inline">flake8</code>, <code class="inline">mypy</code>.</li>
         </ul>
       </div>
     </div>
@@ -138,16 +143,16 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Code style</p>
-        <h2>What a reviewer checks</h2>
+        <p class="label">Kod stili</p>
+        <h2>İnceleyenin baktığı şeyler</h2>
       </div>
       <div class="prose reveal">
         <ul>
-          <li>Type hints on all function signatures.</li>
-          <li>Use <code class="inline">pathlib</code> for filesystem paths, not string concatenation.</li>
-          <li>f-strings for formatting, not <code class="inline">.format()</code> or <code class="inline">%</code>.</li>
-          <li>No bare <code class="inline">try/except</code>. Catch specific exceptions, and only at real boundaries.</li>
-          <li>No fabricated metrics in docs. If a number is not in a logged run, it does not go in a docstring, a README, or a PR description. State it plainly instead: "pending" or "not measured."</li>
+          <li>Tüm fonksiyon imzalarında type hint.</li>
+          <li>Dosya yolları için string birleştirme değil, <code class="inline">pathlib</code> kullan.</li>
+          <li>Biçimlendirme için <code class="inline">.format()</code> veya <code class="inline">%</code> değil, f-string kullan.</li>
+          <li>Çıplak <code class="inline">try/except</code> yok. Sadece gerçek sınırlarda ve belirli exception'ları yakala.</li>
+          <li>Dokümanlarda uydurma metrik yok. Bir sayı günlüklenmiş bir koşuda yoksa docstring'e, README'ye veya PR açıklamasına girmez. Bunun yerine düz söyle: "bekliyor" ya da "ölçülmedi."</li>
         </ul>
       </div>
     </div>
@@ -157,21 +162,21 @@
   <section class="section low bordered">
     <div class="container narrow">
       <div class="section-head reveal">
-        <p class="label">Conduct</p>
-        <h2>Be direct, be honest, be kind</h2>
+        <p class="label">Davranış</p>
+        <h2>Doğrudan, dürüst ve nazik ol</h2>
       </div>
-      <p class="reveal">NEST's credibility problem is a measurement problem, and that culture applies to how people treat each other too: say what you mean, back claims with a logged run instead of a guess, and disagree with the work without being unkind about the person. That is the whole standard.</p>
+      <p class="reveal">NEST'in güvenilirlik problemi bir ölçüm problemi ve bu kültür insanların birbirine davranışına da uygulanıyor: ne demek istiyorsan onu söyle, iddialarını tahmin yerine günlüklenmiş bir koşuyla destekle ve işi eleştirirken kişiye haksızlık etme. Standart bundan ibaret.</p>
     </div>
   </section>
 
   <!-- CTA -->
   <section class="section low bordered">
     <div class="container center">
-      <h2 class="upper reveal">Start with an issue</h2>
-      <p class="mt-2 reveal">Pick a priority area above, or bring your own. Open an issue and we will go from there.</p>
+      <h2 class="upper reveal">Bir issue ile başla</h2>
+      <p class="mt-2 reveal">Yukarıdaki öncelikli alanlardan birini seç, ya da kendi fikrini getir. Bir issue aç, oradan devam ederiz.</p>
       <div class="btn-row mt-4 reveal" style="justify-content:center">
         <a href="https://github.com/wazder/nest/issues" class="btn solid" target="_blank" rel="noopener">GitHub Issues</a>
-        <a href="https://github.com/wazder/nest" class="btn outline" target="_blank" rel="noopener">View repository</a>
+        <a href="https://github.com/wazder/nest" class="btn outline" target="_blank" rel="noopener">Depoyu görüntüle</a>
       </div>
     </div>
   </section>
@@ -182,13 +187,13 @@
   <div class="container footer-inner">
     <div>
       <div class="brand">NEST</div>
-      <p class="mt-2">Open, hardware-agnostic EEG-to-text decoding. A research project from Istanbul Commerce University becoming a company.</p>
-      <p class="copy-line">&copy; 2026 NEST &middot; Open source</p>
+      <p class="mt-2">Açık, donanımdan bağımsız EEG'den metne çözümleme. İstanbul Ticaret Üniversitesi'nde başlayan, şirketleşen bir araştırma projesi.</p>
+      <p class="copy-line">&copy; 2026 NEST &middot; MIT Lisansı</p>
     </div>
     <div class="footer-cols">
-      <div><h5>Project</h5><ul><li><a href="technology.html">Technology</a></li><li><a href="research.html">Research</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Docs</a></li><li><a href="download.html">Models</a></li></ul></div>
-      <div><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="about.html#team">Team</a></li><li><a href="contributing.html">Contributing</a></li></ul></div>
-      <div><h5>Connect</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Discussions</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+      <div><h5>Proje</h5><ul><li><a href="technology.html">Teknoloji</a></li><li><a href="research.html">Araştırma</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Dokümantasyon</a></li><li><a href="download.html">Modeller</a></li></ul></div>
+      <div><h5>Şirket</h5><ul><li><a href="about.html">Hakkında</a></li><li><a href="about.html#team">Ekip</a></li><li><a href="contributing.html">Katkı</a></li></ul></div>
+      <div><h5>Bağlantı</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Tartışmalar</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
     </div>
   </div>
 </footer>

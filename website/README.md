@@ -6,8 +6,9 @@ Static site for nest-eeg.org, deployed on Cloudflare Pages (build output directo
 
 ```
 website/
-├── index.html            # landing page
-├── pages/                # technology, research, demo, docs, about, download, contributing
+├── index.html            # Turkish landing page (primary)
+├── pages/                # Turkish pages: technology, research, demo, docs, about, download, contributing
+├── en/                   # English mirror (en/index.html, en/pages/*)
 ├── css/site.css          # design system (Inter, square corners, light/dark tokens, one accent)
 ├── js/site.js            # theme toggle, nav, reveal, illustrative EEG canvas, demo typing, QA hook
 ├── images/               # logo SVGs (mark, wordmark, lockup)

@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Models - NEST</title>
-  <meta name="description" content="No trained NEST checkpoint exists yet. See the planned releases, how to get notified, and how to train NEST v2 yourself today.">
+  <title>Modeller - NEST</title>
+  <meta name="description" content="Henüz eğitilmiş bir NEST checkpoint'i yok. Planlanan sürümler, bildirim alma yöntemleri ve NEST v2'yi bugün kendin eğitme adımları burada.">
   <link rel="canonical" href="https://nest-eeg.org/pages/download.html">
+  <link rel="alternate" hreflang="tr" href="https://nest-eeg.org/pages/download.html">
+  <link rel="alternate" hreflang="en" href="https://nest-eeg.org/en/pages/download.html">
+  <link rel="alternate" hreflang="x-default" href="https://nest-eeg.org/pages/download.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="NEST">
-  <meta property="og:title" content="Models - NEST">
-  <meta property="og:description" content="No trained NEST checkpoint exists yet. See the planned releases and how to get notified.">
+  <meta property="og:title" content="Modeller - NEST">
+  <meta property="og:description" content="Henüz eğitilmiş bir NEST checkpoint'i yok. Planlanan sürümlere ve bildirim almaya buradan bak.">
   <meta property="og:url" content="https://nest-eeg.org/pages/download.html">
   <meta property="og:image" content="https://nest-eeg.org/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Models - NEST">
-  <meta name="twitter:description" content="No trained NEST checkpoint exists yet. See the planned releases and how to get notified.">
+  <meta name="twitter:title" content="Modeller - NEST">
+  <meta name="twitter:description" content="Henüz eğitilmiş bir NEST checkpoint'i yok. Planlanan sürümlere ve bildirim almaya buradan bak.">
   <meta name="twitter:image" content="https://nest-eeg.org/og.png">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -31,35 +34,37 @@
 
 <header class="header">
   <div class="container header-inner">
-    <a href="../index.html" class="brand" aria-label="NEST home">
+    <a href="../index.html" class="brand" aria-label="NEST ana sayfa">
       <svg viewBox="0 0 100 100" aria-hidden="true" fill="currentColor"><rect x="12" y="8" width="13" height="84"/><rect x="75" y="8" width="13" height="84"/><polyline points="18.50,14.00 34.25,32.00 43.70,20.80 53.15,69.60 62.60,64.40 81.50,86.00" fill="none" stroke="currentColor" stroke-width="13" stroke-linejoin="miter" stroke-miterlimit="2.2"/></svg>
       NEST
     </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="technology.html">Technology</a>
-      <a href="research.html">Research</a>
+    <nav class="nav" aria-label="Birincil">
+      <a href="technology.html">Teknoloji</a>
+      <a href="research.html">Araştırma</a>
       <a href="demo.html">Demo</a>
-      <a href="docs.html">Docs</a>
-      <a href="about.html">Company</a>
+      <a href="docs.html">Dokümantasyon</a>
+      <a href="about.html">Şirket</a>
     </nav>
     <div class="row">
-      <button class="icon-btn theme-toggle" aria-label="Toggle theme">
+      <a class="lang" href="../en/pages/download.html" hreflang="en">EN</a>
+      <button class="icon-btn theme-toggle" aria-label="Temayı değiştir">
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
       <a href="https://github.com/wazder/nest" class="btn solid sm hide-sm" target="_blank" rel="noopener">GitHub</a>
-      <button class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+      <button class="icon-btn menu-btn" aria-label="Menüyü aç/kapat" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
   </div>
-  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
-    <a href="technology.html">Technology</a>
-    <a href="research.html">Research</a>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobil">
+    <a href="technology.html">Teknoloji</a>
+    <a href="research.html">Araştırma</a>
     <a href="demo.html">Demo</a>
-    <a href="docs.html">Docs</a>
-    <a href="about.html">Company</a>
+    <a href="docs.html">Dokümantasyon</a>
+    <a href="about.html">Şirket</a>
     <a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a>
+    <a href="../en/pages/download.html" hreflang="en">English</a>
   </nav>
 </header>
 
@@ -68,9 +73,9 @@
   <!-- PAGE HEAD -->
   <section class="page-head">
     <div class="container">
-      <p class="label reveal">Models</p>
-      <h1 class="reveal">Checkpoints and releases</h1>
-      <p class="reveal">None released yet. Here is what will ship and how to know when.</p>
+      <p class="label reveal">Modeller</p>
+      <h1 class="reveal">Checkpoint'ler ve sürümler</h1>
+      <p class="reveal">Henüz hiçbir şey yayınlanmadı. Neyin geleceği ve nasıl haberdar olacağın burada.</p>
     </div>
   </section>
 
@@ -78,7 +83,7 @@
   <section class="section">
     <div class="container">
       <div class="notice reveal">
-        <p><strong>No checkpoint exists yet.</strong> NEST v2 has not been trained to completion, so there is nothing to download. An earlier version of this page carried a model table with word error rate numbers. That table was removed: those numbers were estimated from training loss, never measured by decoding, and were never real results. A checkpoint appears here only after it is trained and evaluated with free decoding on held-out subjects.</p>
+        <p><strong>Henüz checkpoint yok.</strong> NEST v2 sonuna kadar eğitilmedi, dolayısıyla indirilecek bir şey yok. Bu sayfanın önceki bir sürümünde kelime hata oranı (WER) sayıları içeren bir model tablosu vardı. O tablo kaldırıldı: bu sayılar eğitim loss'undan tahmin edilmişti, çözümleme ile hiçbir zaman ölçülmedi ve gerçek sonuç değildi. Buraya bir checkpoint ancak eğitilip görülmemiş deneklerde serbest çözümleme ile değerlendirildikten sonra eklenir.</p>
       </div>
     </div>
   </section>
@@ -87,20 +92,20 @@
   <section class="section low bordered">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Planned releases</p>
-        <h2>What ships, once it exists</h2>
-        <p>Both NEST v2 heads instantiate and run today. Neither has completed training. Parameters below are counted from the code, not estimated.</p>
+        <p class="label">Planlanan sürümler</p>
+        <h2>Var olduğunda ne yayınlanacak</h2>
+        <p>NEST v2'nin iki head'i de bugün örnekleniyor ve çalışıyor. İkisi de eğitimini tamamlamadı. Aşağıdaki parametre sayıları koddan sayıldı, tahmin edilmedi.</p>
       </div>
       <div class="table-wrap reveal">
         <table>
-          <thead><tr><th>Model</th><th>Parameters</th><th>Input</th><th>Status</th><th>WER</th></tr></thead>
+          <thead><tr><th>Model</th><th>Parametre</th><th>Girdi</th><th>Durum</th><th>WER</th></tr></thead>
           <tbody>
-            <tr><td class="k">NEST v2 CTC</td><td>45.3M</td><td>840-dim word features</td><td><span class="badge status-pending"><span class="dot"></span>Planned after GPU run</span></td><td>pending</td></tr>
-            <tr><td class="k">NEST v2 BART</td><td>184M total, 64.7M trainable</td><td>840-dim word features</td><td><span class="badge status-pending"><span class="dot"></span>Planned</span></td><td>pending</td></tr>
+            <tr><td class="k">NEST v2 CTC</td><td>45,3 milyon</td><td>840 boyutlu kelime öznitelikleri</td><td><span class="badge status-pending"><span class="dot"></span>GPU koşusundan sonra planlanıyor</span></td><td>bekliyor</td></tr>
+            <tr><td class="k">NEST v2 BART</td><td>184 milyon toplam, 64,7 milyon eğitilebilir</td><td>840 boyutlu kelime öznitelikleri</td><td><span class="badge status-pending"><span class="dot"></span>Planlanıyor</span></td><td>bekliyor</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="mt-4 reveal">When a checkpoint is ready, it will publish on <strong>GitHub Releases</strong> and the <strong>Hugging Face Hub</strong>, together with the evaluation report that produced its WER.</p>
+      <p class="mt-4 reveal">Bir checkpoint hazır olduğunda, WER'ini üreten değerlendirme raporuyla birlikte <strong>GitHub Releases</strong> ve <strong>Hugging Face Hub</strong>'da yayınlanacak.</p>
     </div>
   </section>
 
@@ -108,19 +113,19 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Get notified</p>
-        <h2>Two ways to hear about it first</h2>
+        <p class="label">Bildirim al</p>
+        <h2>İlk öğrenmenin iki yolu</h2>
       </div>
       <div class="grid two">
         <div class="card reveal">
-          <h3>Watch the repository</h3>
-          <p>Watch releases on GitHub. The v2 checkpoint and its evaluation report publish there the moment training finishes.</p>
-          <div class="btn-row mt-2"><a href="https://github.com/wazder/nest" class="btn outline" target="_blank" rel="noopener">Watch on GitHub</a></div>
+          <h3>Depoyu izle</h3>
+          <p>GitHub'da sürümleri izle. v2 checkpoint'i ve değerlendirme raporu, eğitim biter bitmez orada yayınlanır.</p>
+          <div class="btn-row mt-2"><a href="https://github.com/wazder/nest" class="btn outline" target="_blank" rel="noopener">GitHub'da izle</a></div>
         </div>
         <div class="card reveal">
-          <h3>Follow Discussions</h3>
-          <p>Training progress, the GPU run, and open questions about the evaluation protocol are posted to GitHub Discussions as they happen.</p>
-          <div class="btn-row mt-2"><a href="https://github.com/wazder/nest/discussions" class="btn outline" target="_blank" rel="noopener">Open Discussions</a></div>
+          <h3>Tartışmaları takip et</h3>
+          <p>Eğitim ilerlemesi, GPU koşusu ve değerlendirme protokolüyle ilgili açık sorular gerçekleştikçe GitHub Discussions'a ekleniyor.</p>
+          <div class="btn-row mt-2"><a href="https://github.com/wazder/nest/discussions" class="btn outline" target="_blank" rel="noopener">Tartışmaları aç</a></div>
         </div>
       </div>
     </div>
@@ -130,12 +135,12 @@
   <section class="section low bordered">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Train your own today</p>
-        <h2>Nothing is stopping you from running it yourself</h2>
-        <p>The code, the ZuCo integration, and the training loop are public now. A quick test run on the CTC head verifies your setup in minutes; a full run needs a GPU. See <a class="link" href="docs.html">the docs</a> for installation and the rest of the commands.</p>
+        <p class="label">Bugün kendin eğit</p>
+        <h2>Kendin çalıştırmana engel yok</h2>
+        <p>Kod, ZuCo entegrasyonu ve eğitim döngüsü şu anda herkese açık. CTC head'inde hızlı bir test koşusu kurulumunu dakikalar içinde doğrular; tam koşu için GPU gerekir. Kurulum ve diğer komutlar için <a class="link" href="docs.html">dokümantasyona</a> bak.</p>
       </div>
       <div class="code reveal">
-        <div class="code-head"><span>Quick test &middot; CTC</span><button class="copy">Copy</button></div>
+        <div class="code-head"><span>Hızlı test &middot; CTC</span><button class="copy">Kopyala</button></div>
         <pre>python scripts/train_nest_v2.py --quick-test --model ctc</pre>
       </div>
     </div>
@@ -144,11 +149,11 @@
   <!-- CTA -->
   <section class="section low bordered">
     <div class="container center">
-      <h2 class="upper reveal">Follow the first checkpoint</h2>
-      <p class="mt-2 reveal">Watch the repository for the v2 training run and the release that follows it.</p>
+      <h2 class="upper reveal">İlk checkpoint'i takip et</h2>
+      <p class="mt-2 reveal">v2 eğitim koşusu ve ardından gelecek sürüm için depoyu izle.</p>
       <div class="btn-row mt-4 reveal" style="justify-content:center">
         <a href="https://github.com/wazder/nest" class="btn solid" target="_blank" rel="noopener">GitHub</a>
-        <a href="docs.html" class="btn outline">Read the docs</a>
+        <a href="docs.html" class="btn outline">Dokümantasyonu oku</a>
       </div>
     </div>
   </section>
@@ -159,13 +164,13 @@
   <div class="container footer-inner">
     <div>
       <div class="brand">NEST</div>
-      <p class="mt-2">Open, hardware-agnostic EEG-to-text decoding. A research project from Istanbul Commerce University becoming a company.</p>
-      <p class="copy-line">&copy; 2026 NEST &middot; Open source</p>
+      <p class="mt-2">Açık, donanımdan bağımsız EEG'den metne çözümleme. İstanbul Ticaret Üniversitesi'nde başlayan, şirketleşen bir araştırma projesi.</p>
+      <p class="copy-line">&copy; 2026 NEST &middot; MIT Lisansı</p>
     </div>
     <div class="footer-cols">
-      <div><h5>Project</h5><ul><li><a href="technology.html">Technology</a></li><li><a href="research.html">Research</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Docs</a></li><li><a href="download.html">Models</a></li></ul></div>
-      <div><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="about.html#team">Team</a></li><li><a href="contributing.html">Contributing</a></li></ul></div>
-      <div><h5>Connect</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Discussions</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+      <div><h5>Proje</h5><ul><li><a href="technology.html">Teknoloji</a></li><li><a href="research.html">Araştırma</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Dokümantasyon</a></li><li><a href="download.html">Modeller</a></li></ul></div>
+      <div><h5>Şirket</h5><ul><li><a href="about.html">Hakkında</a></li><li><a href="about.html#team">Ekip</a></li><li><a href="contributing.html">Katkı</a></li></ul></div>
+      <div><h5>Bağlantı</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Tartışmalar</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
     </div>
   </div>
 </footer>

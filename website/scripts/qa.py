@@ -7,7 +7,7 @@ from html.parser import HTMLParser
 
 ROOT = Path(__file__).resolve().parents[1]
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-PAGES = [ROOT / "index.html"] + sorted((ROOT / "pages").glob("*.html"))
+PAGES = [ROOT / "index.html"] + sorted((ROOT / "pages").glob("*.html")) + [ROOT / "en" / "index.html"] + sorted((ROOT / "en" / "pages").glob("*.html"))
 VIEWPORTS = [(1440, 900), (1024, 800), (390, 844)]
 
 HOST = Path("/private/tmp/claude-501/-Users-wazder-GitHub/ee9d2005-321c-47db-b378-8490225e4f7a/scratchpad/qa")
@@ -18,7 +18,7 @@ def render(page: Path, w: int, h: int, dark: bool) -> dict:
     if w < 500:
         # headless Chrome will not go below 500px wide; emulate with a fixed-width iframe host
         HOST.mkdir(parents=True, exist_ok=True)
-        host = HOST / f"host_{w}.html"
+        host = HOST / f"host_{w}_{page.parent.name}_{page.stem}.html"
         host.write_text(f"""<!doctype html><meta charset=utf-8><body style="margin:0">
 <iframe id=f src="{url}" style="width:{w}px;height:{h}px;border:0"></iframe>
 <script>window.addEventListener('load',function(){{setTimeout(function(){{try{{var d=document.getElementById('f').contentDocument;var q=d&&d.getElementById('__qa');var p=document.createElement('pre');p.id='__qa';p.textContent=q?q.textContent:'{{"error":"no qa in iframe"}}';document.body.appendChild(p);}}catch(e){{var p=document.createElement('pre');p.id='__qa';p.textContent=JSON.stringify({{error:String(e)}});document.body.appendChild(p);}}}},2500);}});</script>""")
@@ -56,18 +56,19 @@ def check_links():
     return problems
 
 def main():
+    from concurrent.futures import ThreadPoolExecutor
+    jobs = [(page, w, h, dark) for page in PAGES for (w, h) in VIEWPORTS for dark in (False, True)]
     fails = 0
-    for page in PAGES:
-        for (w, h) in VIEWPORTS:
-            for dark in (False, True):
-                r = render(page, w, h, dark)
-                bad = r.get("error") or r.get("horizontalScroll") or r.get("overflowCount") or r.get("clipped") or r.get("brokenImages") or r.get("h1Count") != 1
-                flag = "FAIL" if bad else "ok  "
-                if bad: fails += 1
-                print(f"{flag} {r.get('page')} @{w} {'dark' if dark else 'light'}: hscroll={r.get('horizontalScroll')} overflow={r.get('overflowCount')} clipped={len(r.get('clipped') or [])} imgs={r.get('brokenImages')} h1={r.get('h1Count')} inter={r.get('fontInter')}")
-                if bad and not r.get("error"):
-                    for o in (r.get("overflow") or [])[:6]: print("      overflow:", o)
-                    for c in (r.get("clipped") or [])[:6]: print("      clipped:", c)
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        results = list(ex.map(lambda j: (j, render(*j)), jobs))
+    for (page, w, h, dark), r in results:
+        bad = r.get("error") or r.get("horizontalScroll") or r.get("overflowCount") or r.get("clipped") or r.get("brokenImages") or r.get("h1Count") != 1
+        flag = "FAIL" if bad else "ok  "
+        if bad: fails += 1
+        print(f"{flag} {r.get('page')} @{w} {'dark' if dark else 'light'}: hscroll={r.get('horizontalScroll')} overflow={r.get('overflowCount')} clipped={len(r.get('clipped') or [])} imgs={r.get('brokenImages')} h1={r.get('h1Count')} inter={r.get('fontInter')}")
+        if bad and not r.get("error"):
+            for o in (r.get("overflow") or [])[:6]: print("      overflow:", o)
+            for c in (r.get("clipped") or [])[:6]: print("      clipped:", c)
     links = check_links()
     for l in links: print("LINK", l)
     print(f"\nsummary: {fails} failing renders, {len(links)} link problems")

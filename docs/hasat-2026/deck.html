@@ -68,7 +68,7 @@
     <ul>
       <li><b>Donanım üretmiyoruz.</b> Kelime hizalı öznitelik üretebilen her araştırma EEG sistemiyle çalışan yazılım katmanıyız. Az kanallı tüketici cihazlarına aktarım Faz 3'ün araştırma sorusu, henüz gösterilmedi.</li>
       <li><b>Denekten bağımsız protokol.</b> 8 denekle eğitiyoruz, hiç görülmemiş 2 denekte test ediyoruz. Kişiye özel ezber yok.</li>
-      <li><b>Açık kaynak.</b> Kod, veri hattı ve değerlendirme betikleri github.com/wazder/nest ve nest-eeg.org'da.</li>
+      <li><b>Açık kaynak (MIT).</b> Kod, veri hattı ve değerlendirme betikleri github.com/wazder/nest ve nest-eeg.org'da.</li>
       <li><b>Bugünkü veri okuma verisi.</b> ZuCo, ekranda gösterilen metni okurken kaydedilmiş EEG'yi çözer. Hastanın kendi ürettiği cümleyi (iç konuşma) çözmek Faz 2'nin araştırma sorusu; bunu saklamıyoruz.</li>
     </ul>
   </div>
@@ -88,7 +88,7 @@
     <ul>
       <li>Biz de Şubat 2026'da loss'tan türetilmiş bir WER tahminini <b>geri çektik</b>; ölçülmemiş sayı yayınlamıyoruz.</li>
       <li>Değerlendirme kodumuz <b>serbest çözümleme</b> kullanıyor: teacher forcing yok, bugün greedy, beam search sırada. Gürültü kontrolü ve protokol, ilk sonuçla birlikte raporlanacak.</li>
-      <li><b>Beklentimiz de alanın sayısı:</b> ilk ölçüm gürültü tabanında (WER %99) çıkabilir. Çıkarsa bunu da yayınlarız ve Faz 2'de mimariyi değil veriyi değiştiririz: iç konuşma paradigması ve daha yoğun kayıt. Hedef: ilk sonuç Ekim 2026'da nest-eeg.org'da.</li>
+      <li><b>Beklentimiz de alanın sayısı:</b> ilk ölçüm gürültü tabanında (WER %99) çıkabilir. Çıkarsa bunu da yayınlarız ve Faz 2'de mimariyi değil veriyi değiştiririz: iç konuşma paradigması ve daha yoğun kayıt.</li>
     </ul>
     <p class="src">Kaynaklar: Wang &amp; Ji, AAAI 2022; Duan ve ark., NeurIPS 2023; Jo ve ark., arXiv 2405.06459 (2024); arXiv 2607.18749 (Temmuz 2026).</p>
   </div>
@@ -107,7 +107,7 @@
       <tr><td><b>Eğitim</b></td><td>v1 modeli 100 epoch, 12.071 örnek, 5,4 saat (M2 dizüstü). Loss düşüyor; WER henüz ölçülmedi</td></tr>
       <tr><td><b>Dağıtım</b></td><td>Pruning, quantization, ONNX/TorchScript export ve streaming modülleri yazıldı, henüz ölçülmedi</td></tr>
     </table>
-    <p class="note">Açık kaynak, MIT lisansı. nest-eeg.org yayında. Sayılar 3 Eylül 2026 itibarıyla depodan doğrulandı. ZuCo: Hollenstein ve ark. 2018, CC BY 4.0; ticari kullanıma açık, atıf zorunlu. Lisans: depoda, açık kaynak.</p>
+    <p class="note">Açık kaynak, MIT lisansı. nest-eeg.org yayında. Sayılar 3 Eylül 2026 itibarıyla depodan doğrulandı. ZuCo: Hollenstein ve ark. 2018, CC BY 4.0; ticari kullanıma açık, atıf zorunlu. Kod MIT lisanslı.</p>
   </div>
   <div class="foot"><span>NEST</span><span>6 / 13</span></div>
 </section>
@@ -120,7 +120,7 @@
       <div class="card"><div class="k">Tamamlanan</div>
       <p>Mimari, gerçek veri hattı, denekten bağımsız bölme ve serbest çözümlemeli değerlendirme kodu. Prototip bu: eğitilebilir sistem, henüz çözülmüş cümle yok. Marka ve site hazır, nest-eeg.org yayında.</p></div>
       <div class="card"><div class="k">Süren</div>
-      <p>v2 modelinin ilk tam eğitimi ve gürültü kontrollü değerlendirme. Bu, bulutta 8–12 saatlik, yaklaşık 20 $'lık bir A100 işi; final öncesinde tamamlamayı hedefliyoruz.</p></div>
+      <p>v2 modelinin ilk tam eğitimi ve gürültü kontrollü değerlendirme. Bu, bulutta 8–12 saatlik, yaklaşık 20 $'lık bir A100 işi; sıradaki adım bu, sonucu ne çıkarsa çıksın yayınlanacak.</p></div>
     </div>
     <div class="grid2">
       <div class="card"><div class="k">Doğrulanmış WER</div><p>Henüz yok. İlk sayı, protokolüyle birlikte yayınlanacak.</p></div>
@@ -193,19 +193,19 @@
 
 <section class="s">
   <div class="tag">Ekip</div>
-  <h2>Mühendislik ve akademi iş birliği kuruluyor.</h2>
+  <h2>Tek kurucu, ölçüm disipliniyle.</h2>
   <div class="body">
-    <div class="grid3">
+    <div class="grid2">
       <div class="card"><div class="k">Kurucu</div><p><b>Hasan Tatar</b><br>Makine öğrenmesi ve yazılım. İstanbul Ticaret Üniversitesi Bilgisayar Mühendisliği.
-      IEEE SIU 2026'da yayımlanan çok dilli VLA çalışmasının ilk yazarı (IEEE Xplore 11636432). CamelLayer'ın kurucusu.</p></div>
-      <div class="card"><div class="k">Akademik danışman</div><p><b>[AD SOYAD — doldurulacak]</b><br>İstanbul Ticaret Üniversitesi öğretim üyesi.
-      Sinyal işleme ve derin öğrenme. Etik kurul ve veri toplama protokolünden sorumlu.</p></div>
-      <div class="card"><div class="k">Akademik danışman</div><p><b>[AD SOYAD — doldurulacak]</b><br>İstanbul Ticaret Üniversitesi öğretim üyesi.
-      Nöro-görüntüleme ve deneysel tasarım. Klinik iş birliklerinden sorumlu.</p></div>
+      IEEE SIU 2026'da yayımlanan çok dilli VLA çalışmasının ilk yazarı (IEEE Xplore 11636432). CamelLayer'ın kurucusu.
+      NEST'in mimarisini, veri hattını ve değerlendirme kodunu tek başına yazdı.</p></div>
+      <div class="card"><div class="k">Akademik ortam</div><p><b>İstanbul Ticaret Üniversitesi</b><br>Proje üniversitede öğretim üyeleriyle yürütülen bir araştırma olarak başladı.
+      Etik kurul, katılımcı erişimi ve EEG kayıt altyapısı için üniversite iş birliği planlanıyor; ekip genişlemesi ilk benchmark sonrası.</p></div>
+    </div>
     </div>
     <ul>
-      <li>Proje, İstanbul Ticaret Üniversitesi'nde öğretim üyeleriyle yürütülen bir araştırma olarak başladı; şirketleşme üniversite iş birliğiyle planlanıyor.</li>
-      <li>Ekibin ölçüm disiplini yayınlarına yansıyor: SIU 2026 çalışması ve CamelLayer benchmark'ları aynı ilkeyle yazıldı. Ölçmediğimizi söylemiyoruz.</li>
+      <li>Şu an tek kişilik ekip. İlk işe alım klinik ve düzenleyici tarafta; teknik omurga hazır.</li>
+      <li>Kurucunun ölçüm disiplini yayınlarına yansıyor: SIU 2026 çalışması ve CamelLayer benchmark'ları aynı ilkeyle yazıldı. Ölçmediğimizi söylemiyoruz.</li>
     </ul>
   </div>
   <div class="foot"><span>NEST</span><span>11 / 13</span></div>
@@ -236,9 +236,8 @@
       <li><b>Klinik ekosistem erişimi.</b> İSEK ve Teknopark İstanbul sağlık ağı üzerinden nöroloji ve rehabilitasyon bölümleriyle araştırma pilotu.</li>
       <li><b>Şirketleşme, patent ve mentorluk.</b> Cube kuluçka programı, üniversite spin-off yapısı ve MDR/TİTCK yol haritası için danışmanlık.</li>
     </ul>
-    <div class="grid3" style="margin-top:.2in">
+    <div class="grid2 tight" style="margin-top:.2in">
       <div class="card"><div class="k">Bu başvuru</div><p>Yatırım turu değil; hibe, hesaplama, kuluçka ve erişim başvurusu.</p></div>
-      <div class="card"><div class="k">12 aylık kaynak ihtiyacı (tahmini)</div><p>GPU 2–5 bin $ · veri toplama 50–100 bin TL · hukuk, KVKK, şirketleşme 50–100 bin TL</p></div>
       <div class="card"><div class="k">Karşılığında</div><p>Benchmark raporu, açık Türkçe korpus, ilk laboratuvar lisansları.</p></div>
     </div>
     <div class="rule" style="margin-top:.3in"></div>

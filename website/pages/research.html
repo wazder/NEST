@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Research - NEST</title>
-  <meta name="description" content="The EEG-to-text literature, the 2024-2026 critique of teacher-forced evaluation, and the free-decoding protocol NEST commits to before it publishes a number.">
+  <title>Araştırma - NEST</title>
+  <meta name="description" content="EEG'den metne literatürü, teacher forcing ile değerlendirmeye yönelik 2024-2026 eleştirisi ve NEST'in bir sayı yayınlamadan önce uyduğu serbest çözümleme protokolü.">
   <link rel="canonical" href="https://nest-eeg.org/pages/research.html">
+  <link rel="alternate" hreflang="tr" href="https://nest-eeg.org/pages/research.html">
+  <link rel="alternate" hreflang="en" href="https://nest-eeg.org/en/pages/research.html">
+  <link rel="alternate" hreflang="x-default" href="https://nest-eeg.org/pages/research.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="NEST">
-  <meta property="og:title" content="Research - NEST">
-  <meta property="og:description" content="The literature, the critique, and our evaluation protocol.">
+  <meta property="og:title" content="Araştırma - NEST">
+  <meta property="og:description" content="Literatür, eleştiri ve değerlendirme protokolümüz.">
   <meta property="og:url" content="https://nest-eeg.org/pages/research.html">
   <meta property="og:image" content="https://nest-eeg.org/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Research - NEST">
-  <meta name="twitter:description" content="The literature, the critique, and our evaluation protocol.">
+  <meta name="twitter:title" content="Araştırma - NEST">
+  <meta name="twitter:description" content="Literatür, eleştiri ve değerlendirme protokolümüz.">
   <meta name="twitter:image" content="https://nest-eeg.org/og.png">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -28,35 +31,37 @@
 
 <header class="header">
   <div class="container header-inner">
-    <a href="../index.html" class="brand" aria-label="NEST home">
+    <a href="../index.html" class="brand" aria-label="NEST ana sayfa">
       <svg viewBox="0 0 100 100" aria-hidden="true" fill="currentColor"><rect x="12" y="8" width="13" height="84"/><rect x="75" y="8" width="13" height="84"/><polyline points="18.50,14.00 34.25,32.00 43.70,20.80 53.15,69.60 62.60,64.40 81.50,86.00" fill="none" stroke="currentColor" stroke-width="13" stroke-linejoin="miter" stroke-miterlimit="2.2"/></svg>
       NEST
     </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="technology.html">Technology</a>
-      <a href="research.html">Research</a>
+    <nav class="nav" aria-label="Ana">
+      <a href="technology.html">Teknoloji</a>
+      <a href="research.html">Araştırma</a>
       <a href="demo.html">Demo</a>
-      <a href="docs.html">Docs</a>
-      <a href="about.html">Company</a>
+      <a href="docs.html">Dokümantasyon</a>
+      <a href="about.html">Şirket</a>
     </nav>
     <div class="row">
-      <button class="icon-btn theme-toggle" aria-label="Toggle theme">
+      <a class="lang" href="../en/pages/research.html" hreflang="en">EN</a>
+      <button class="icon-btn theme-toggle" aria-label="Temayı değiştir">
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
       <a href="https://github.com/wazder/nest" class="btn solid sm hide-sm" target="_blank" rel="noopener">GitHub</a>
-      <button class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+      <button class="icon-btn menu-btn" aria-label="Menüyü aç/kapat" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
   </div>
-  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
-    <a href="technology.html">Technology</a>
-    <a href="research.html">Research</a>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobil">
+    <a href="technology.html">Teknoloji</a>
+    <a href="research.html">Araştırma</a>
     <a href="demo.html">Demo</a>
-    <a href="docs.html">Docs</a>
-    <a href="about.html">Company</a>
+    <a href="docs.html">Dokümantasyon</a>
+    <a href="about.html">Şirket</a>
     <a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a>
+    <a href="../en/pages/research.html" hreflang="en">English</a>
   </nav>
 </header>
 
@@ -65,9 +70,9 @@
   <!-- PAGE HEAD -->
   <section class="page-head">
     <div class="container">
-      <p class="label reveal">Research</p>
-      <h1 class="reveal">The literature, the critique, and our protocol</h1>
-      <p class="reveal">EEG-to-text has a measurement problem: this page lays out what was reported, what turned out to be an artifact of the evaluation, and the protocol NEST uses instead.</p>
+      <p class="label reveal">Araştırma</p>
+      <h1 class="reveal">Literatür, eleştiri ve protokolümüz</h1>
+      <p class="reveal">EEG'den metne dönüşümün bir ölçüm sorunu var: bu sayfa neyin rapor edildiğini, neyin değerlendirme yönteminin bir yapaylığı olduğunu ve NEST'in bunun yerine kullandığı protokolü anlatıyor.</p>
     </div>
   </section>
 
@@ -75,101 +80,101 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Where the field stands</p>
-        <h2>Ten results, one methodological fault line</h2>
-        <p>ZuCo results before 2024 were scored with teacher forcing: the decoder is given the correct previous word at every step, which lets a language model produce fluent text with little dependence on the EEG. Free decoding removes that support. Rows below are ordered roughly by publication date; the two invasive rows are marked because they are not a comparable modality.</p>
+        <p class="label">Alanın geldiği nokta</p>
+        <h2>On sonuç, tek bir yöntemsel kırılma çizgisi</h2>
+        <p>2024 öncesi ZuCo sonuçları teacher forcing ile puanlandı: decoder'a her adımda doğru önceki kelime verilir, bu da bir dil modelinin EEG'ye neredeyse hiç bağlı kalmadan akıcı metin üretmesine olanak tanır. Serbest çözümleme (free decoding) bu desteği ortadan kaldırır. Aşağıdaki satırlar kabaca yayın tarihine göre sıralandı; iki invaziv satır, karşılaştırılabilir bir modalite olmadıkları için işaretlendi.</p>
       </div>
       <div class="table-wrap reveal">
         <table>
           <thead>
-            <tr><th>Method</th><th>Year, venue</th><th>Signal, data</th><th>Evaluation</th><th>Reported</th><th>Note</th></tr>
+            <tr><th>Yöntem</th><th>Yıl, yayın</th><th>Sinyal, veri</th><th>Değerlendirme</th><th>Sonuç</th><th>Not</th></tr>
           </thead>
           <tbody>
             <tr>
               <td class="k">Wang and Ji</td>
               <td>2022, AAAI</td>
               <td>EEG, ZuCo</td>
-              <td>Teacher-forced</td>
-              <td>BLEU-1 40.1</td>
-              <td>Inflated by protocol</td>
+              <td>Teacher forcing</td>
+              <td>BLEU-1 40,1</td>
+              <td>Protokol nedeniyle şişirilmiş</td>
             </tr>
             <tr>
               <td class="k">DeWave (Duan et al.)</td>
               <td>2023, NeurIPS</td>
               <td>EEG, ZuCo</td>
-              <td>Teacher-forced</td>
-              <td>BLEU-1 41.35</td>
-              <td>Same protocol as above</td>
+              <td>Teacher forcing</td>
+              <td>BLEU-1 41,35</td>
+              <td>Yukarıdakiyle aynı protokol</td>
             </tr>
             <tr>
               <td class="k">BELT (Zhou et al.)</td>
               <td>2023</td>
               <td>EEG, ZuCo</td>
-              <td>Teacher-forced</td>
-              <td>BLEU-1 42.31</td>
-              <td>Same protocol as above</td>
+              <td>Teacher forcing</td>
+              <td>BLEU-1 42,31</td>
+              <td>Yukarıdakiyle aynı protokol</td>
             </tr>
             <tr>
               <td class="k">Jo et al., &ldquo;Are EEG-to-Text Models Working?&rdquo;</td>
               <td>2024, arXiv 2405.06459</td>
               <td>EEG, ZuCo</td>
-              <td>Free decoding, noise-input control</td>
-              <td>Real EEG scores about the same as random noise</td>
-              <td>Establishes the critique this page is built around</td>
+              <td>Serbest çözümleme, gürültü kontrolü</td>
+              <td>Gerçek EEG skorları rastgele gürültüyle yaklaşık aynı</td>
+              <td>Bu sayfanın dayandığı eleştiriyi ortaya koyuyor</td>
             </tr>
             <tr>
-              <td class="k">Replication (BrainBART, BELT, DeWave)</td>
+              <td class="k">Tekrarlama (BrainBART, BELT, DeWave)</td>
               <td>2026, arXiv 2607.18749</td>
-              <td>EEG, ZuCo 1.0 and 2.0</td>
-              <td>Free decoding</td>
-              <td>WER about 99&ndash;121%, BLEU-1 about 7&ndash;16</td>
-              <td>Confirms the critique across three model families; proposes the COFETT benchmark</td>
+              <td>EEG, ZuCo 1.0 ve 2.0</td>
+              <td>Serbest çözümleme</td>
+              <td>WER yaklaşık %99&ndash;121, BLEU-1 yaklaşık 7&ndash;16</td>
+              <td>Eleştiriyi üç model ailesinde doğruluyor; COFETT benchmark'ını öneriyor</td>
             </tr>
             <tr>
               <td class="k">&ldquo;Escaping the BLEU Trap&rdquo;</td>
               <td>2026, arXiv 2603.03312</td>
               <td>EEG, ZuCo</td>
-              <td>4-way semantic classification (25% chance)</td>
-              <td>50.0% classification accuracy, 2.7% content recall</td>
-              <td>Moves evaluation away from token-level BLEU entirely</td>
+              <td>4 yönlü anlamsal sınıflandırma (%25 şans)</td>
+              <td>%50,0 sınıflandırma doğruluğu, %2,7 içerik hatırlama</td>
+              <td>Değerlendirmeyi token düzeyindeki BLEU'dan tamamen uzaklaştırıyor</td>
             </tr>
             <tr>
               <td class="k">Brain2Qwerty</td>
               <td>2025, Meta AI</td>
-              <td>MEG and EEG, typed sentences, closed vocabulary</td>
-              <td>Offline decoding</td>
-              <td>MEG CER 32% (best 19%), EEG CER 67%</td>
-              <td>Closed task, not real time; the MEG/EEG gap is roughly double the error rate</td>
+              <td>MEG ve EEG, yazılan cümleler, kapalı sözlük</td>
+              <td>Çevrimdışı çözümleme</td>
+              <td>MEG CER %32 (en iyisi %19), EEG CER %67</td>
+              <td>Kapalı görev, gerçek zamanlı değil; MEG/EEG farkı hata oranında kabaca iki kat</td>
             </tr>
             <tr>
               <td class="k">Brain2Qwerty v2</td>
               <td>2026, Meta AI with BCBL</td>
-              <td>MEG, typed sentences, closed vocabulary</td>
-              <td>Offline decoding</td>
-              <td>61% average word accuracy, best participant 78%</td>
-              <td>Same closed task family as above, MEG only</td>
+              <td>MEG, yazılan cümleler, kapalı sözlük</td>
+              <td>Çevrimdışı çözümleme</td>
+              <td>%61 ortalama kelime doğruluğu, en iyi katılımcı %78</td>
+              <td>Yukarıdakiyle aynı kapalı görev ailesi, sadece MEG</td>
             </tr>
             <tr>
               <td class="k">Willett et al.</td>
               <td>2023, Nature</td>
-              <td>Intracortical array (invasive)</td>
-              <td>Real-time handwriting decoding</td>
-              <td>62 words/min, WER 9.1% (50-word vocabulary), 23.8% (125,000-word vocabulary)</td>
-              <td>Invasive baseline, not a comparable modality</td>
+              <td>İntrakortikal dizi (invaziv)</td>
+              <td>Gerçek zamanlı el yazısı çözümleme</td>
+              <td>dakikada 62 kelime, WER %9,1 (50 kelimelik sözlük), %23,8 (125.000 kelimelik sözlük)</td>
+              <td>İnvaziv referans, karşılaştırılabilir bir modalite değil</td>
             </tr>
             <tr>
               <td class="k">Metzger et al.</td>
               <td>2023, Nature</td>
-              <td>ECoG (invasive)</td>
-              <td>Real-time speech decoding</td>
-              <td>78 words/min, median WER 25%</td>
-              <td>Invasive baseline, not a comparable modality</td>
+              <td>ECoG (invaziv)</td>
+              <td>Gerçek zamanlı konuşma çözümleme</td>
+              <td>dakikada 78 kelime, medyan WER %25</td>
+              <td>İnvaziv referans, karşılaştırılabilir bir modalite değil</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="prose mt-6 reveal">
-        <p>Read together, the table says three things. First, non-invasive open-vocabulary decoding from EEG is unsolved: every free-decoding number on ZuCo is close to chance, and the fluent sentences in the 2022&ndash;2023 papers were the decoder's language prior, not the signal. Second, there is a real gap between MEG and EEG on the same closed task and the same team's pipeline &mdash; Brain2Qwerty's character error rate roughly doubles from MEG to EEG, which is the modality NEST works in. Third, the invasive results show the ceiling is not the algorithm: with electrodes on the brain, word error rates fall to single digits. The honest reading is that a protocol which cannot tell real EEG from noise is not measuring anything, which is why NEST reports a noise-input control next to every number it publishes.</p>
+        <p>Tablo birlikte okunduğunda üç şey söylüyor. Birincisi, EEG'den non-invaziv, açık sözlüklü (open vocabulary) çözümleme henüz çözülmüş değil: ZuCo üzerindeki her serbest çözümleme sayısı şansa yakın ve 2022&ndash;2023 makalelerindeki akıcı cümleler sinyalden değil, decoder'ın dil önselinden geliyordu. İkincisi, aynı kapalı görevde ve aynı ekibin veri hattında MEG ile EEG arasında gerçek bir fark var &mdash; Brain2Qwerty'nin karakter hata oranı MEG'den EEG'ye kabaca ikiye katlanıyor, ki bu NEST'in çalıştığı modalite. Üçüncüsü, invaziv sonuçlar tavanın algoritma olmadığını gösteriyor: elektrotlar beyinde olduğunda kelime hata oranları tek haneye düşüyor. Dürüst okuma şu: gerçek EEG'yi gürültüden ayırt edemeyen bir protokol hiçbir şey ölçmüyor demektir; NEST'in yayınladığı her sayının yanında bir gürültü kontrolü (noise-input control) raporlamasının nedeni de bu.</p>
       </div>
     </div>
   </section>
@@ -178,18 +183,18 @@
   <section class="section low bordered" id="protocol">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Our evaluation protocol</p>
-        <h2>What we commit to before a number is published</h2>
-        <p>The critique above is specific: teacher forcing and the absence of a noise control let a language model's fluency stand in for decoding. NEST's protocol is built to fail loudly if that happens again.</p>
+        <p class="label">Değerlendirme protokolümüz</p>
+        <h2>Bir sayı yayınlanmadan önce taahhüt ettiklerimiz</h2>
+        <p>Yukarıdaki eleştiri somut: teacher forcing ve gürültü kontrolü eksikliği, bir dil modelinin akıcılığının çözümlemenin yerine geçmesine izin veriyor. NEST'in protokolü, aynı şey tekrar olursa bunu gizlemeden ortaya çıkaracak şekilde kuruldu.</p>
       </div>
       <div class="prose reveal">
         <ul>
-          <li>Free autoregressive decoding at evaluation time. No teacher forcing. The current implementation is greedy; beam search is planned and will be reported when used.</li>
-          <li>Held-out subjects: the test split is never seen in training or validation.</li>
-          <li>A noise-input control reported next to every real-EEG number, so a reader can see whether the model beats random input.</li>
-          <li>CER, WER, BLEU and ROUGE all reported together, not just the metric that looks best.</li>
-          <li>The protocol published together with the first result, as a technical report, not after.</li>
-          <li>The code path is public: <code class="inline">eval_bart()</code> and <code class="inline">eval_ctc()</code> in <code class="inline">scripts/train_nest_v2.py</code>.</li>
+          <li>Değerlendirme sırasında serbest, otoregresif çözümleme. Teacher forcing yok. Şu anki uygulama greedy; beam search planlanıyor ve kullanıldığında raporlanacak.</li>
+          <li>Görülmemiş denekler (held-out subjects): test bölümü eğitimde ya da doğrulamada hiç kullanılmaz.</li>
+          <li>Her gerçek EEG sayısının yanında bir gürültü kontrolü raporlanır, böylece okuyucu modelin rastgele girdiyi geçip geçmediğini görebilir.</li>
+          <li>CER, kelime hata oranı (WER), BLEU ve ROUGE'un tümü birlikte raporlanır, sadece en iyi görünen metrik değil.</li>
+          <li>Protokol, sonradan değil, ilk sonuçla birlikte bir teknik rapor olarak yayınlanır.</li>
+          <li>Kod yolu herkese açık: <code class="inline">scripts/train_nest_v2.py</code> içinde <code class="inline">eval_bart()</code> ve <code class="inline">eval_ctc()</code>.</li>
         </ul>
       </div>
     </div>
@@ -199,14 +204,14 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">The number we withdrew</p>
-        <h2>26.1% WER was never decoded</h2>
+        <p class="label">Geri çektiğimiz sayı</p>
+        <h2>%26,1 WER hiç çözümlenmedi</h2>
       </div>
       <div class="notice reveal">
-        <p><strong>February 2026.</strong> We published a figure of 26.1% word error rate, BLEU 0.74 and 73.9% accuracy. It was not produced by running the model and decoding its output. It was estimated from CTC training loss with a heuristic formula that maps loss to an approximate error rate. That formula was never validated against a real decode, and there is no reason to expect it holds for a sequence model reading EEG.</p>
+        <p><strong>Şubat 2026.</strong> %26,1 kelime hata oranı, BLEU 0,74 ve %73,9 doğruluk rakamı yayınladık. Bu rakam, modeli çalıştırıp çıktısını çözümleyerek elde edilmedi. CTC eğitim loss'undan, loss'u yaklaşık bir hata oranına eşleyen sezgisel bir formülle tahmin edilmişti. Bu formül gerçek bir çözümlemeye karşı hiç doğrulanmadı ve EEG okuyan bir dizi modeli için geçerli olacağını düşünmek için bir neden yok.</p>
       </div>
       <div class="prose mt-4 reveal">
-        <p>The figure was removed in commit <code class="inline">f8d6675</code> on 2026-02-20, after we recognized it did not meet our own protocol above: it had no noise-input control, no held-out free decoding, nothing to compare it against. Nothing replaces it. The word error rate field on this site reads pending until the v2 model is trained to completion and decoded under the protocol described here, on a GPU we do not yet have.</p>
+        <p>Bu rakam, yukarıdaki kendi protokolümüzü karşılamadığını fark ettikten sonra 2026-02-20 tarihli <code class="inline">f8d6675</code> commit'inde kaldırıldı: gürültü kontrolü yoktu, görülmemiş deneklerle serbest çözümleme yoktu, karşılaştıracak hiçbir şey yoktu. Yerine hiçbir şey konmadı. Bu sitedeki kelime hata oranı alanı, v2 modeli tamamen eğitilip burada anlatılan protokol altında &mdash; henüz sahip olmadığımız bir GPU üzerinde &mdash; çözümlenene kadar &ldquo;bekliyor&rdquo; yazıyor.</p>
       </div>
     </div>
   </section>
@@ -215,25 +220,25 @@
   <section class="section low bordered">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Datasets</p>
-        <h2>ZuCo, its neighbors, and the gap we plan to close</h2>
+        <p class="label">Veri kümeleri</p>
+        <h2>ZuCo, komşuları ve kapatmayı planladığımız açık</h2>
       </div>
       <div class="prose reveal">
-        <p>ZuCo 1.0 (Hollenstein et al. 2018) recorded 12 native English speakers with a 128-electrode EGI system (105 channels used) plus eye tracking, while they read 1,107 sentences across three tasks: normal reading of movie reviews, normal reading of Wikipedia text, and task-specific reading, totaling 21,629 words. ZuCo 2.0 (2020) added 18 subjects reading 739 sentences. Both are reading corpora; neither includes listening or imagined-speech paradigms.</p>
+        <p>ZuCo 1.0 (Hollenstein ve ark. 2018), 12 anadili İngilizce olan katılımcıyı 128 elektrotlu bir EGI sistemiyle (105 kanal kullanıldı) ve göz izlemeyle kaydetti; katılımcılar üç görevde toplam 1.107 cümle okudu: film eleştirilerinin normal okunması, Wikipedia metninin normal okunması ve göreve özel okuma, toplamda 21.629 kelime. ZuCo 2.0 (2020) 739 cümle okuyan 18 denek daha ekledi. İkisi de okuma korpusu; hiçbiri dinleme ya da hayali konuşma paradigmalarını içermiyor.</p>
       </div>
       <div class="table-wrap mt-4 reveal">
         <table>
-          <thead><tr><th>Corpus</th><th>Modality</th><th>Task</th></tr></thead>
+          <thead><tr><th>Korpus</th><th>Modalite</th><th>Görev</th></tr></thead>
           <tbody>
-            <tr><td class="k">ZuCo 1.0 / 2.0</td><td>EEG</td><td>Natural reading</td></tr>
-            <tr><td class="k">Brennan</td><td>EEG</td><td>Listening</td></tr>
-            <tr><td class="k">MEG-MASC</td><td>MEG</td><td>Listening</td></tr>
-            <tr><td class="k">Chisco</td><td>EEG</td><td>Imagined speech, Chinese</td></tr>
+            <tr><td class="k">ZuCo 1.0 / 2.0</td><td>EEG</td><td>Doğal okuma</td></tr>
+            <tr><td class="k">Brennan</td><td>EEG</td><td>Dinleme</td></tr>
+            <tr><td class="k">MEG-MASC</td><td>MEG</td><td>Dinleme</td></tr>
+            <tr><td class="k">Chisco</td><td>EEG</td><td>Hayali konuşma, Çince</td></tr>
           </tbody>
         </table>
       </div>
       <div class="prose mt-4 reveal">
-        <p><strong>No public Turkish EEG reading corpus exists.</strong> Every public reading corpus we use, including ZuCo, is English. We plan to collect one: an ethics-approved study at Istanbul Commerce University with 20 participants, following the protocol at <a class="link" href="https://github.com/wazder/nest/blob/main/experiments/user_study/user_study_protocol.md" target="_blank" rel="noopener">experiments/user_study/user_study_protocol.md</a> on GitHub, targeted for Q1 2027.</p>
+        <p><strong>Herkese açık bir Türkçe EEG okuma korpusu yok.</strong> ZuCo dahil kullandığımız her okuma korpusu İngilizce. Bir tane toplamayı planlıyoruz: İstanbul Ticaret Üniversitesi'nde etik kurul onaylı, 20 katılımcılı bir çalışma; protokol GitHub'da <a class="link" href="https://github.com/wazder/nest/blob/main/experiments/user_study/user_study_protocol.md" target="_blank" rel="noopener">experiments/user_study/user_study_protocol.md</a> adresinde yer alıyor, hedef 2027 Ç1.</p>
       </div>
     </div>
   </section>
@@ -242,12 +247,12 @@
   <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <p class="label">Technical report</p>
-        <h2>In preparation, published when there is a result to report</h2>
-        <p>The full technical report, including the protocol on this page and the first decoded numbers, will be posted to arXiv once the v2 model has been trained and evaluated. There is no preprint ID yet, and nothing here should be cited as a paper.</p>
+        <p class="label">Teknik rapor</p>
+        <h2>Hazırlanıyor, raporlanacak bir sonuç olduğunda yayınlanacak</h2>
+        <p>Bu sayfadaki protokolü ve ilk çözümlenmiş sayıları içeren tam teknik rapor, v2 modeli eğitilip değerlendirildikten sonra arXiv'e yüklenecek. Henüz bir preprint kimliği yok ve buradaki hiçbir şey bir makale olarak alıntılanmamalı.</p>
       </div>
       <div class="code reveal">
-        <div class="code-head"><span>Software citation, BibTeX</span><button class="copy">Copy</button></div>
+        <div class="code-head"><span>Yazılım atfı, BibTeX</span><button class="copy">Kopyala</button></div>
         <pre>@software{nest2026,
   title  = {NEST: Neural EEG Sequence Transducer},
   author = {{NEST contributors}},
@@ -255,18 +260,18 @@
   url    = {https://github.com/wazder/nest}
 }</pre>
       </div>
-      <p class="xs mt-2 reveal">This is a software citation for the codebase, not a citation for a paper. Use the technical report above once it exists.</p>
+      <p class="xs mt-2 reveal">Bu, kod tabanı için bir yazılım atfıdır, bir makale atfı değildir. Var olduğunda yukarıdaki teknik raporu kullanın.</p>
     </div>
   </section>
 
   <!-- CTA -->
   <section class="section low bordered">
     <div class="container center">
-      <h2 class="upper reveal">Read the code before the numbers</h2>
-      <p class="mt-2 reveal">The evaluation protocol, the withdrawn number, and the training scripts are all in the repository.</p>
+      <h2 class="upper reveal">Sayılardan önce kodu okuyun</h2>
+      <p class="mt-2 reveal">Değerlendirme protokolü, geri çekilen sayı ve eğitim betikleri hepsi depoda.</p>
       <div class="btn-row mt-4 reveal" style="justify-content:center">
         <a href="https://github.com/wazder/nest" class="btn solid" target="_blank" rel="noopener">GitHub</a>
-        <a href="technology.html" class="btn outline">Technology</a>
+        <a href="technology.html" class="btn outline">Teknoloji</a>
       </div>
     </div>
   </section>
@@ -277,13 +282,13 @@
   <div class="container footer-inner">
     <div>
       <div class="brand">NEST</div>
-      <p class="mt-2">Open, hardware-agnostic EEG-to-text decoding. A research project from Istanbul Commerce University becoming a company.</p>
-      <p class="copy-line">&copy; 2026 NEST &middot; Open source</p>
+      <p class="mt-2">Açık, donanımdan bağımsız EEG'den metne çözümleme. İstanbul Ticaret Üniversitesi'nde başlayan, şirketleşen bir araştırma projesi.</p>
+      <p class="copy-line">&copy; 2026 NEST &middot; MIT Lisansı</p>
     </div>
     <div class="footer-cols">
-      <div><h5>Project</h5><ul><li><a href="technology.html">Technology</a></li><li><a href="research.html">Research</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Docs</a></li><li><a href="download.html">Models</a></li></ul></div>
-      <div><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="about.html#team">Team</a></li><li><a href="contributing.html">Contributing</a></li></ul></div>
-      <div><h5>Connect</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Discussions</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+      <div><h5>Proje</h5><ul><li><a href="technology.html">Teknoloji</a></li><li><a href="research.html">Araştırma</a></li><li><a href="demo.html">Demo</a></li><li><a href="docs.html">Dokümantasyon</a></li><li><a href="download.html">Modeller</a></li></ul></div>
+      <div><h5>Şirket</h5><ul><li><a href="about.html">Hakkında</a></li><li><a href="about.html#team">Ekip</a></li><li><a href="contributing.html">Katkı</a></li></ul></div>
+      <div><h5>Bağlantı</h5><ul><li><a href="https://github.com/wazder/nest" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/wazder/nest/discussions" target="_blank" rel="noopener">Tartışmalar</a></li><li><a href="https://www.linkedin.com/in/wazder/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
     </div>
   </div>
 </footer>

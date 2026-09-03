@@ -29,12 +29,11 @@ henüz yok. "Erken gelir" seçilmemeli.
 
 ## Takım büyüklüğü
 
-3
+1
 
 ## Kuruluş tarihi
 
-2026 (ilk commit 12 Şubat 2026). Şirket henüz kurulmadı. Formda 2025 yazacaksan
-2025'te ne olduğunu söyleyebilmelisin; depoda 2025'e ait iz yok.
+2026 (ilk commit 12 Şubat 2026). Şirket henüz kurulmadı.
 
 ## TEKMER / Teknopark
 
@@ -66,7 +65,7 @@ NEST, okuma sırasında kaydedilen non-invaziv EEG sinyalini açık sözlüklü 
 çeviren bir yazılım katmanı. 105 kanallı EEG, kelime hizalı 840 boyutlu frekans
 özniteliklerine dönüştürülüyor; 6 katmanlı bir Transformer encoder bu diziyi
 işliyor, çapraz dikkatli bir BART decoder metni üretiyor. Donanım üretmiyoruz:
-araştırma amaçlı kullanılan her EEG sistemiyle çalışan, açık kaynaklı bir
+araştırma amaçlı kullanılan her EEG sistemiyle çalışan, açık kaynaklı (MIT) bir
 altyapıyız. Bugünkü veri okuma sırasında kaydedilmiş EEG; hastanın kendi ürettiği
 cümleyi çözmek yol haritasının ikinci fazındaki araştırma sorusu.
 
@@ -98,18 +97,19 @@ seti; CC BY 4.0 lisanslı, ticari kullanıma açık.
 **Eğitim.** İlk nesil model gerçek ZuCo verisinde 100 epoch eğitildi (12.071
 örnek, 5,4 saat, M2 dizüstü); loss düzenli düştü. Kelime hata oranı (WER) henüz
 ölçülmedi. v2 modelinin ilk tam eğitimi bulutta 8-12 saatlik, yaklaşık 20 dolarlık
-bir A100 işi; final öncesinde gürültü kontrollü değerlendirmeyle birlikte
-tamamlamayı hedefliyoruz.
+bir A100 işi; sıradaki adım bu ve sonucu ne çıkarsa çıksın gürültü kontrolüyle
+birlikte yayınlanacak.
 
 **Dürüstlük.** Şubat 2026'da loss değerinden türetilmiş bir WER tahminini
 yayından geri çektik. Değerlendirme kodumuz serbest çözümleme ve denekten
 bağımsız protokol kullanıyor; gürültü kontrolü ilk raporun parçası olacak.
 
 **Marka ve site.** nest-eeg.org yayında; kod github.com/wazder/nest adresinde
-açık kaynak.
+açık kaynak (MIT).
 
-**Ekip ve akademik dayanak.** Proje İstanbul Ticaret Üniversitesi öğretim
-üyeleriyle yürütüldü. Kurucunun ölçüm disiplini akademik bir yayınla kanıtlı: IEEE SIU 2026'da
+**Ekip ve akademik dayanak.** Tek kurucu. Proje İstanbul Ticaret Üniversitesi'nde
+bir araştırma olarak başladı; etik kurul ve EEG kaydı için üniversite iş birliği
+planlanıyor. Kurucunun ölçüm disiplini akademik bir yayınla kanıtlı: IEEE SIU 2026'da
 yayımlanan çok dilli VLA çalışmasının ilk yazarı (ieeexplore.ieee.org/document/11636432).
 
 ---
@@ -138,22 +138,16 @@ korpus, ilk laboratuvar lisansları.
 
 ## Göndermeden önce
 
-1. Ekip slaytındaki iki "[AD SOYAD — doldurulacak]" alanını öğretim üyelerinin
-   adı, unvanı ve rolüyle doldur; `./build.sh` çalıştır.
+1. Ekip slaytı tek kurucu olarak yazıldı; formda takım büyüklüğü 1.
 2. ALS-MNH Derneği'nin güncel hasta tahminini (als.org.tr) kontrol et; 8-10 bin
    aralığı derneğin kendi tahmini, Sağlık Bakanlığı kaydı yok.
 3. Kütahya Dumlupınar Üniversitesi'nin TÜBİTAK projesi Türkçe bir EEG korpusu
    yayımladıysa "ilk Türkçe korpus" ifadesini yumuşat.
 4. Formdaki e-posta ve LinkedIn (linkedin.com/in/wazder) doğru.
-5. Deck ve formda "final öncesinde v2 eğitimini tamamlamayı hedefliyoruz"
-   yazıyor. Bu senin taahhüdün; `docs/hasat-2026/gpu-runbook.md` adımlarıyla
-   yaklaşık 20 dolara ve bir günde yapılabilir. Yapmayacaksan cümleyi çıkar.
-6. Depodaki LICENSE dosyası GPLv2, README ise MIT diyor. Karar ver: MIT istiyorsan
-   LICENSE metnini MIT ile değiştir; GPL kalacaksa README'yi düzelt. Site ve deck
-   bu yüzden yalnızca "açık kaynak" diyor.
+5. v2 eğitimi için `docs/hasat-2026/gpu-runbook.md` hazır (~20 $, bir gün); acelesi yok.
+6. Lisans MIT (LICENSE dosyası güncellendi).
 7. IEEE Xplore 11636432 bağlantısını aç, başlık ve yazar sırasını doğrula.
-8. Deck slayt 5'te "ilk sonuç Ekim 2026" hedefi ve slayt 13'teki tahmini 12 aylık
-   kaynak tablosu var; ikisi de senin taahhüdün, rakamları kendine göre düzelt.
+8. Deck'te tarih taahhüdü ve kaynak tahmini yok; istersen ekle.
 9. Şirket kurulunca marka tescili için TÜRKPATENT araması yaptır (9, 10, 42.
    sınıflar). "NEST" adı NEST Simulator ve Google Nest ile çakışıyor; yedek ad
    "NEST Neuro" (nestneuro.ai boşta görünüyor).
