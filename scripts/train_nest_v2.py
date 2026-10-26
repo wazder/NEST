@@ -432,6 +432,8 @@ def load_datasets(
             )
             if len(ds) > 0:
                 datasets.append(ds)
+        except KeyError:
+            raise  # e.g. gaze input on a pickle without gaze measures
         except Exception as e:
             logger.warning(f"Failed to load {task}: {e}")
 
@@ -534,6 +536,7 @@ def main():
         max_samples = None
 
     # Subject-independent split
+    subject_split = None
     if args.no_subject_split:
         from torch.utils.data import random_split
         full_ds = load_datasets(
@@ -552,6 +555,7 @@ def main():
         train_subjs, val_subjs, test_subjs = get_subject_split(
             args.data_dir, tasks=args.tasks
         )
+        subject_split = {"train": train_subjs, "val": val_subjs, "test": test_subjs}
         train_ds = load_datasets(
             args.data_dir, args.tasks, subjects=train_subjs, max_samples=max_samples,
             input_modes=args.input_mode,
@@ -649,6 +653,8 @@ def main():
         "fixation": args.fixation,
         "input_modes": args.input_mode,
         "gaze_dim": gaze_dim,
+        "no_subject_split": args.no_subject_split,
+        "subject_split": subject_split,
         "n_params": n_params,
         "timestamp": timestamp,
     }

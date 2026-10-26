@@ -227,7 +227,7 @@ class ZuCoWordSequenceDataset(Dataset):
     words, so every condition has the same sequence length and mask:
         gaze:  (n_words, 5) eye-tracking measures (nFixations, FFD, GD, TRT, GPT)
         noise: (n_words, 840) Gaussian noise with the per-feature mean and std
-               of this dataset's EEG, fixed per sample
+               of this dataset's EEG, fixed per (task, subject, sentence)
     """
 
     def __init__(
@@ -356,9 +356,11 @@ class ZuCoWordSequenceDataset(Dataset):
         sample = self.samples[idx]
         if "noise" not in self.input_modes:
             return sample
-        # Fixed per sample (like real EEG); the task enters the seed so that
-        # per-task datasets inside a ConcatDataset do not share noise.
-        rng = np.random.default_rng([self.noise_seed, zlib.crc32(sample["task"].encode()), idx])
+        # Fixed per sample, like real EEG. The seed comes from task, subject and
+        # sentence, not the index, so train and test splits (disjoint subjects)
+        # never share noise.
+        key = f"{sample['task']}|{sample['subject']}|{sample['text']}"
+        rng = np.random.default_rng([self.noise_seed, zlib.crc32(key.encode())])
         noise = rng.standard_normal(sample["eeg"].shape) * self.noise_std + self.noise_mean
         return {**sample, "noise": noise.astype(np.float32)}
 

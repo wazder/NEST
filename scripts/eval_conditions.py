@@ -16,7 +16,9 @@ sentences, sequence lengths and padding masks, so the comparison is paired.
 Reported:
   - corpus WER and CER per condition;
   - for each pair of conditions and each metric, a two-sided paired
-    permutation test on the per-sentence error counts (random sign flips);
+    permutation test with one random sign flip per unique sentence. The
+    held-out subjects read the same sentences, so subject-sentence pairs
+    are not independent; errors are summed over all copies of a sentence;
   - Holm-corrected p values over all of these tests (pairs x metrics).
 
 Decoding reuses eval_ctc/eval_bart from scripts/train_nest_v2.py and the
@@ -85,6 +87,27 @@ def sentence_errors(
     return np.array(errors, dtype=np.int64), np.array(lengths, dtype=np.int64)
 
 
+def aggregate_by_sentence(
+    errors: np.ndarray, lengths: np.ndarray, references: Sequence[str]
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Sum errors and lengths over all copies of the same reference sentence
+    (across subjects and tasks). Corpus rates do not change."""
+    _, sentence_ids = np.unique(np.asarray(references), return_inverse=True)
+    n_sentences = int(sentence_ids.max()) + 1
+    summed_errors = np.zeros(n_sentences, dtype=np.int64)
+    summed_lengths = np.zeros(n_sentences, dtype=np.int64)
+    np.add.at(summed_errors, sentence_ids, errors)
+    np.add.at(summed_lengths, sentence_ids, lengths)
+    return summed_errors, summed_lengths
+
+
+def dataset_tasks(dataset) -> set:
+    """Tasks present in a dataset built by train_nest_v2.load_datasets."""
+    dataset = getattr(dataset, "ds", dataset)  # --quick-test wrapper
+    parts = getattr(dataset, "datasets", [dataset])  # ConcatDataset of tasks
+    return {sample["task"] for part in parts for sample in part.samples}
+
+
 def paired_permutation_test(
     errors_a: np.ndarray,
     errors_b: np.ndarray,
@@ -131,7 +154,8 @@ def compare_conditions(
     """Paired permutation tests for every pair of conditions and metric.
 
     Args:
-        errors: errors[condition][metric] = (per-sentence errors, lengths)
+        errors: errors[condition][metric] = (errors, lengths) per unit of the
+            sign flip (per unique sentence, see aggregate_by_sentence)
         n_permutations: random sign-flip permutations per test
         seed: seed for the permutations
 
@@ -169,7 +193,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--data-dir", default="ZuCo_Dataset/ZuCo", help="Path to ZuCo dataset")
     p.add_argument("--model", choices=["ctc", "bart"], default=None,
                    help="Model type; inferred from the checkpoint's stored config if omitted")
-    p.add_argument("--tasks", nargs="+", default=DEFAULT_TASKS, help="ZuCo tasks to include")
+    p.add_argument("--tasks", nargs="+", default=None,
+                   help="ZuCo tasks to include (default: the checkpoint's training tasks)")
     p.add_argument("--conditions", nargs="+", choices=INPUT_MODES, default=list(INPUT_MODES),
                    help="Input conditions to decode (at least two for the tests)")
     p.add_argument("--batch-size", type=int, default=16)
@@ -185,9 +210,9 @@ def print_results(conditions: Dict[str, Dict], comparisons: List[Dict]) -> None:
     print(f"\n{'=' * 72}")
     print("Free decoding on held-out subjects, same checkpoint and decoding")
     print(f"{'=' * 72}")
-    print(f"{'Condition':<12}{'WER':>10}{'CER':>10}{'n':>8}")
+    print(f"{'Condition':<12}{'WER':>10}{'CER':>10}{'n':>8}{'sentences':>11}")
     for name, m in conditions.items():
-        print(f"{name:<12}{m['wer']:>10.4f}{m['cer']:>10.4f}{m['n']:>8}")
+        print(f"{name:<12}{m['wer']:>10.4f}{m['cer']:>10.4f}{m['n']:>8}{m['n_sentences']:>11}")
     print(f"{'-' * 72}")
     print(f"{'Pair':<16}{'Metric':<8}{'Diff (a-b)':>12}{'p':>10}{'p (Holm)':>10}")
     for r in comparisons:
@@ -230,18 +255,27 @@ def main() -> None:
     if "gaze" in conditions and not ckpt_config.get("gaze_dim"):
         fail("the checkpoint has no gaze projection; train with --input-mode eeg gaze, "
              "or drop 'gaze' from --conditions.")
+    if ckpt_config.get("no_subject_split"):
+        fail("the checkpoint was trained with --no-subject-split; it has no held-out subjects.")
+    tasks = args.tasks or ckpt_config.get("tasks") or DEFAULT_TASKS
 
-    _, _, test_subjects = get_subject_split(str(data_dir), tasks=args.tasks)
+    _, _, test_subjects = get_subject_split(str(data_dir), tasks=tasks)
     if not test_subjects:
         fail("no test subjects found in the dataset; check --data-dir and --tasks.")
+    trained_split = ckpt_config.get("subject_split")
+    if trained_split and trained_split["test"] != test_subjects:
+        fail(f"test subjects {test_subjects} differ from the checkpoint's {trained_split['test']}.")
     try:
         test_ds = tnv2.load_datasets(
-            str(data_dir), args.tasks, subjects=test_subjects,
+            str(data_dir), tasks, subjects=test_subjects,
             max_samples=50 if args.quick_test else None, input_modes=conditions,
         )
     except RuntimeError as exc:
         fail(f"failed to load held-out test data: {exc}")
         return
+    missing_tasks = set(tasks) - dataset_tasks(test_ds)
+    if missing_tasks:
+        fail(f"no held-out data for tasks {sorted(missing_tasks)}; check the pickles.")
     logger.info(f"Held-out test subjects: {test_subjects}, samples: {len(test_ds)}")
 
     model = build_model_from_checkpoint(checkpoint, model_type, device)
@@ -272,11 +306,18 @@ def main() -> None:
         fail("conditions decoded different sentences; the paired tests would be invalid.")
 
     errors = {
-        c: {metric: sentence_errors(decoded[c]["hypotheses"], references, unit) for metric, unit in METRICS.items()}
+        c: {
+            metric: aggregate_by_sentence(
+                *sentence_errors(decoded[c]["hypotheses"], references, unit), references
+            )
+            for metric, unit in METRICS.items()
+        }
         for c in conditions
     }
+    n_sentences = len(set(references))
     results_by_condition = {
-        c: {"wer": decoded[c]["wer"], "cer": decoded[c]["cer"], "n": len(references)} for c in conditions
+        c: {"wer": decoded[c]["wer"], "cer": decoded[c]["cer"], "n": len(references), "n_sentences": n_sentences}
+        for c in conditions
     }
     comparisons = compare_conditions(errors, args.n_permutations, args.seed)
     print_results(results_by_condition, comparisons)
@@ -296,7 +337,7 @@ def main() -> None:
             "checkpoint": str(checkpoint_path),
             "data_dir": str(data_dir),
             "model": model_type,
-            "tasks": args.tasks,
+            "tasks": tasks,
             "test_subjects": test_subjects,
             "conditions": conditions,
             "batch_size": args.batch_size,
@@ -306,7 +347,7 @@ def main() -> None:
             "device": str(device),
             "checkpoint_config": ckpt_config,
             "decoding": "free (no teacher forcing): greedy for BART, greedy CTC",
-            "test": "two-sided paired sign-flip permutation test on per-sentence errors",
+            "test": "two-sided paired sign-flip permutation test, one sign per unique sentence",
             "correction": "Holm over all pairs and metrics",
             "timestamp": timestamp,
         },

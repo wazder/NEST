@@ -6,7 +6,7 @@ length, enough to exercise the data, training and evaluation code paths.
 
 import pickle
 from pathlib import Path
-from typing import Dict, Sequence
+from typing import Dict, List, Sequence
 
 import numpy as np
 
@@ -27,8 +27,7 @@ def make_word(rng: np.random.Generator, content: str, with_gaze: bool = True) ->
     return word
 
 
-def make_sentence(rng: np.random.Generator, n_words: int, with_gaze: bool = True) -> Dict:
-    tokens = [str(t) for t in rng.choice(VOCABULARY, size=n_words)]
+def make_sentence(rng: np.random.Generator, tokens: List[str], with_gaze: bool = True) -> Dict:
     return {
         "content": " ".join(tokens) + ".",
         "sentence_level_EEG": {f"mean_{band}": rng.standard_normal(105) for band in FREQ_BANDS},
@@ -49,12 +48,13 @@ def write_synthetic_zuco(
 ) -> Path:
     """Write <root>/<task>/pickle/<task>-dataset.pickle and return its path.
 
-    Each subject gets n_sentences sentences of 3 to 8 words plus one missing
-    sentence (None), as in the real data.
+    As in ZuCo, every subject reads the same n_sentences sentences (3 to 8
+    words, own EEG and gaze per subject) plus one missing sentence (None).
     """
     rng = np.random.default_rng(seed)
+    sentences = [[str(t) for t in rng.choice(VOCABULARY, size=int(rng.integers(3, 9)))] for _ in range(n_sentences)]
     dataset = {
-        subject: [make_sentence(rng, int(rng.integers(3, 9)), with_gaze) for _ in range(n_sentences)] + [None]
+        subject: [make_sentence(rng, tokens, with_gaze) for tokens in sentences] + [None]
         for subject in subjects
     }
     out_dir = root / task / "pickle"

@@ -447,6 +447,8 @@ def main() -> None:
             metrics = tnv2.eval_ctc(model, loader, device, fp16=False)
         else:
             metrics = tnv2.eval_bart(model, loader, device, fp16=False, tokenizer=tokenizer)
+        metrics.pop("hypotheses", None)  # keep this script's output format
+        metrics.pop("references", None)
         metrics["n"] = len(dataset)  # type: ignore[arg-type]
         return metrics
 

@@ -71,6 +71,23 @@ class TestDataset:
         noise_words = np.concatenate([ds[i]["noise"] for i in range(len(ds))])
         assert abs(noise_words.std() - eeg_words.std()) < 0.1
 
+    def test_noise_differs_between_subjects_at_same_index(self, zuco_dir):
+        train = load(zuco_dir, subjects=["S01"], input_modes=("noise",))
+        test = load(zuco_dir, subjects=["S05"], input_modes=("noise",))
+        assert train[0]["text"] == test[0]["text"]  # same sentence, different subject
+
+        def standardized(ds):
+            return (ds[0]["noise"] - ds.noise_mean) / ds.noise_std
+
+        assert not np.allclose(standardized(train), standardized(test))
+
+    def test_load_datasets_does_not_drop_tasks_without_gaze(self, tmp_path):
+        write_synthetic_zuco(tmp_path, task="task1-SR")
+        write_synthetic_zuco(tmp_path, task="task2-NR", with_gaze=False)
+        tnv2.load_datasets(str(tmp_path), ["task1-SR", "task2-NR"])  # EEG only: fine
+        with pytest.raises(KeyError):
+            tnv2.load_datasets(str(tmp_path), ["task1-SR", "task2-NR"], input_modes=("eeg", "gaze"))
+
     def test_unknown_mode_raises(self, zuco_dir):
         with pytest.raises(ValueError):
             load(zuco_dir, input_modes=("eeg", "audio"))

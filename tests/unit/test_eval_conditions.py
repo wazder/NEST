@@ -15,6 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from eval_conditions import (  # noqa: E402
+    aggregate_by_sentence,
     compare_conditions,
     holm_correction,
     paired_permutation_test,
@@ -40,6 +41,29 @@ class TestSentenceErrors:
     def test_unknown_unit(self):
         with pytest.raises(ValueError):
             sentence_errors(["a"], ["a"], "token")
+
+
+class TestAggregateBySentence:
+    @pytest.mark.unit
+    def test_sums_copies_and_keeps_corpus_rate(self):
+        refs = ["a b", "c d e", "a b", "c d e", "f"]
+        errors, lengths = np.array([1, 0, 2, 3, 1]), np.array([2, 3, 2, 3, 1])
+        summed_errors, summed_lengths = aggregate_by_sentence(errors, lengths, refs)
+        assert summed_errors.tolist() == [3, 3, 1]  # sorted: "a b", "c d e", "f"
+        assert summed_lengths.tolist() == [4, 6, 1]
+        assert summed_errors.sum() / summed_lengths.sum() == errors.sum() / lengths.sum()
+
+    @pytest.mark.unit
+    def test_duplicated_subjects_do_not_shrink_p(self):
+        rng = np.random.default_rng(5)
+        a, b = rng.integers(0, 6, 30), rng.integers(0, 6, 30)
+        refs = [f"sentence {i:02d}" for i in range(30)]  # sorted order = original order
+        p_unique = paired_permutation_test(a, b, 4000, np.random.default_rng(0))
+        # two subjects that read the same sentences with identical errors
+        a2, n2 = aggregate_by_sentence(np.tile(a, 2), np.ones(60, dtype=int), refs * 2)
+        b2, _ = aggregate_by_sentence(np.tile(b, 2), np.ones(60, dtype=int), refs * 2)
+        p_aggregated = paired_permutation_test(a2, b2, 4000, np.random.default_rng(0))
+        assert p_aggregated == pytest.approx(p_unique)
 
 
 class TestPermutationTest:
@@ -128,6 +152,7 @@ def test_end_to_end_tiny_ctc(tmp_path):
     assert train.returncode == 0, train.stderr[-3000:]
     config = json.loads((run_dir / "config.json").read_text())
     assert config["input_modes"] == ["eeg", "gaze"] and config["gaze_dim"] == 5
+    assert config["subject_split"]["test"] == ["S04", "S05"]
     assert set(json.loads((run_dir / "results.json").read_text())["test_by_input_mode"]) == {"eeg", "gaze"}
 
     output = tmp_path / "conditions.json"
@@ -144,6 +169,8 @@ def test_end_to_end_tiny_ctc(tmp_path):
     n = results["conditions"]["eeg"]["n"]
     assert n == 16  # 2 test subjects x 8 sentences
     assert len(results["references"]) == n
+    # both test subjects read the same sentences: one sign flip per sentence
+    assert results["conditions"]["eeg"]["n_sentences"] == len(set(results["references"])) <= 8
     assert all(len(h) == n for h in results["hypotheses"].values())
     assert len(results["comparisons"]) == 6
     for row in results["comparisons"]:
