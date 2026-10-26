@@ -175,3 +175,41 @@ def test_end_to_end_tiny_ctc(tmp_path):
     assert len(results["comparisons"]) == 6
     for row in results["comparisons"]:
         assert 0 < row["p_value"] <= 1 and row["p_value"] <= row["p_holm"] <= 1
+
+
+@pytest.mark.integration
+@pytest.mark.slow
+def test_end_to_end_heldout_sentences(tmp_path):
+    """Train with --heldout-sentences; evaluate on unseen and on seen sentences."""
+    from src.data.zuco_pickle_dataset import sentence_split
+
+    data_dir = tmp_path / "ZuCo"
+    write_synthetic_zuco(data_dir, n_sentences=40)
+    env = {**os.environ, "PYTORCH_ENABLE_MPS_FALLBACK": "1"}
+    run_dir = tmp_path / "run"
+    train = subprocess.run(
+        [sys.executable, "scripts/train_nest_v2.py", "--model", "ctc", "--data-dir", str(data_dir),
+         "--tasks", "task1-SR", "--epochs", "1", "--batch-size", "8", "--grad-accum", "1",
+         "--d-model", "32", "--num-layers", "1", "--nhead", "2", "--input-mode", "eeg", "gaze",
+         "--heldout-sentences", "--output-dir", str(run_dir)],
+        cwd=REPO_ROOT, env=env, capture_output=True, text=True, timeout=600,
+    )
+    assert train.returncode == 0, train.stderr[-3000:]
+    assert json.loads((run_dir / "config.json").read_text())["heldout_sentences"] is True
+
+    counts = {}
+    for sentences in ("heldout", "seen"):
+        output = tmp_path / f"conditions_{sentences}.json"
+        evaluate = subprocess.run(
+            [sys.executable, "scripts/eval_conditions.py", "--checkpoint", str(run_dir / "best_model.pt"),
+             "--data-dir", str(data_dir), "--sentences", sentences, "--n-permutations", "200",
+             "--output", str(output)],
+            cwd=REPO_ROOT, env=env, capture_output=True, text=True, timeout=600,
+        )
+        assert evaluate.returncode == 0, evaluate.stderr[-3000:]
+        results = json.loads(output.read_text())
+        assert results["config"]["sentences"] == sentences
+        expected_split = "test" if sentences == "heldout" else "train"
+        assert all(sentence_split(r) == expected_split for r in results["references"])
+        counts[sentences] = results["conditions"]["eeg"]["n_sentences"]
+    assert counts == {"heldout": 5, "seen": 33}  # 40 synthetic sentences: 33 / 2 / 5

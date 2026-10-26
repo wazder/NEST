@@ -419,6 +419,7 @@ def load_datasets(
     exclude_subjects: Optional[List[str]] = None,
     max_samples: Optional[int] = None,
     input_modes: Sequence[str] = ("eeg",),
+    sentence_splits: Optional[Sequence[str]] = None,
 ) -> ZuCoWordSequenceDataset:
     datasets = []
     for task in tasks:
@@ -429,6 +430,7 @@ def load_datasets(
                 subjects=subjects,
                 exclude_subjects=exclude_subjects,
                 input_modes=input_modes,
+                sentence_splits=sentence_splits,
             )
             if len(ds) > 0:
                 datasets.append(ds)
@@ -499,6 +501,11 @@ def parse_args() -> argparse.Namespace:
                    help="2 epochs, 50 samples, skip test eval")
     p.add_argument("--no-subject-split", action="store_true",
                    help="Use random 80/10/10 split instead of subject-independent")
+    p.add_argument("--heldout-sentences", action="store_true",
+                   help="Also hold out sentences (80/10/10 by text hash): train on "
+                        "train-split sentences only, validate and test on unseen "
+                        "sentences. ZuCo subjects read the same sentences, so a "
+                        "subject split alone shows every test sentence in training")
     return p.parse_args()
 
 
@@ -514,6 +521,8 @@ def get_device() -> torch.device:
 
 def main():
     args = parse_args()
+    if args.heldout_sentences and args.no_subject_split:
+        raise SystemExit("--heldout-sentences needs the subject-independent split")
     device = get_device()
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -556,15 +565,18 @@ def main():
             args.data_dir, tasks=args.tasks
         )
         subject_split = {"train": train_subjs, "val": val_subjs, "test": test_subjs}
+        heldout = args.heldout_sentences
         train_ds = load_datasets(
             args.data_dir, args.tasks, subjects=train_subjs, max_samples=max_samples,
-            input_modes=args.input_mode,
+            input_modes=args.input_mode, sentence_splits=("train",) if heldout else None,
         )
         val_ds = load_datasets(
-            args.data_dir, args.tasks, subjects=val_subjs, input_modes=args.input_mode
+            args.data_dir, args.tasks, subjects=val_subjs, input_modes=args.input_mode,
+            sentence_splits=("val",) if heldout else None,
         )
         test_ds = load_datasets(
-            args.data_dir, args.tasks, subjects=test_subjs, input_modes=args.input_mode
+            args.data_dir, args.tasks, subjects=test_subjs, input_modes=args.input_mode,
+            sentence_splits=("test",) if heldout else None,
         )
 
     logger.info(
@@ -655,6 +667,7 @@ def main():
         "gaze_dim": gaze_dim,
         "no_subject_split": args.no_subject_split,
         "subject_split": subject_split,
+        "heldout_sentences": args.heldout_sentences,
         "n_params": n_params,
         "timestamp": timestamp,
     }

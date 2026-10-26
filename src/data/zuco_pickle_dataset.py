@@ -37,6 +37,8 @@ GAZE_DIM = len(GAZE_FEATURES)  # 5
 # Input conditions: real EEG, gaze-only control, matched Gaussian noise control
 INPUT_MODES = ("eeg", "gaze", "noise")
 
+SENTENCE_SPLITS = ("train", "val", "test")
+
 
 def _get_sentence_eeg(sentence_level_eeg: Dict) -> np.ndarray:
     """
@@ -114,6 +116,20 @@ def _get_word_gaze(word: Dict) -> np.ndarray:
         )
     gaze = np.array([word[key] for key in GAZE_FEATURES], dtype=np.float32)
     return np.nan_to_num(gaze, nan=0.0, posinf=0.0, neginf=0.0)
+
+
+def sentence_split(text: str) -> str:
+    """
+    Held-out sentence split (80/10/10) from a stable hash of the sentence text.
+
+    ZuCo subjects all read the same sentences, so a subject split alone puts
+    every test sentence into the training data too (read by other subjects).
+    The text is normalized (case, whitespace) so that a sentence shared by two
+    tasks lands in the same split.
+    """
+    key = " ".join(text.lower().split())
+    bucket = zlib.crc32(key.encode()) % 100
+    return "train" if bucket < 80 else "val" if bucket < 90 else "test"
 
 
 def pad_word_features(arrays: List[np.ndarray]) -> torch.Tensor:
@@ -242,6 +258,7 @@ class ZuCoWordSequenceDataset(Dataset):
         min_word_count: int = 3,
         input_modes: Sequence[str] = ("eeg",),
         noise_seed: int = 42,
+        sentence_splits: Optional[Sequence[str]] = None,
     ):
         """
         Args:
@@ -256,6 +273,8 @@ class ZuCoWordSequenceDataset(Dataset):
             input_modes: Conditions to provide, from INPUT_MODES. 'eeg' is
                 always present; 'gaze' and 'noise' add sample keys.
             noise_seed: Seed for the 'noise' condition
+            sentence_splits: If set, keep only sentences whose
+                sentence_split() is in this list (e.g. ('test',))
         """
         if tasks is None:
             tasks = ["task1-SR", "task2-NR", "task3-TSR"]
@@ -295,6 +314,8 @@ class ZuCoWordSequenceDataset(Dataset):
                         continue
                     text = sent.get("content", "")
                     if not text or not isinstance(text, str):
+                        continue
+                    if sentence_splits is not None and sentence_split(text) not in sentence_splits:
                         continue
 
                     words = sent.get("word", [])

@@ -16,6 +16,7 @@ from src.data.zuco_pickle_dataset import (  # noqa: E402
     _get_word_gaze,
     collate_word_sequence_ctc,
     get_subject_split,
+    sentence_split,
 )
 from src.models.nest_v2 import NEST_BART_v2, NEST_CTC_v2  # noqa: E402
 from tests.synthetic_zuco import write_synthetic_zuco  # noqa: E402
@@ -111,6 +112,26 @@ class TestDataset:
         for i, n in enumerate(lengths.tolist()):
             assert torch.all(batch["gaze"][i, n:] == 0) and torch.all(batch["noise"][i, n:] == 0)
             assert torch.all(batch["gaze"][i, :n, 1] > 0)  # FFD of real words
+
+
+def test_sentence_split_is_stable_and_normalized():
+    assert sentence_split("The cat sat.") == sentence_split("  the   CAT sat. ")
+    counts = {s: 0 for s in ("train", "val", "test")}
+    for i in range(5000):
+        counts[sentence_split(f"sentence number {i}")] += 1
+    assert abs(counts["train"] / 5000 - 0.8) < 0.03
+    assert abs(counts["test"] / 5000 - 0.1) < 0.02
+
+
+def test_sentence_splits_partition_the_dataset(tmp_path):
+    write_synthetic_zuco(tmp_path, n_sentences=40)
+    full = load(tmp_path)
+    parts = {s: load(tmp_path, sentence_splits=(s,)) for s in ("train", "val", "test")}
+    assert sum(len(d) for d in parts.values()) == len(full)
+    texts = {s: {x["text"] for x in d.samples} for s, d in parts.items()}
+    assert texts["test"] and texts["val"]
+    assert not texts["train"] & texts["test"] and not texts["train"] & texts["val"]
+    assert all(sentence_split(t) == "test" for t in texts["test"])
 
 
 def test_subject_split_is_8_2_2_on_zuco_subjects(tmp_path):

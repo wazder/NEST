@@ -13,6 +13,10 @@ The gaze condition needs a checkpoint trained with gaze input, e.g.
 ``train_nest_v2.py --input-mode eeg gaze``. All conditions use the same
 sentences, sequence lengths and padding masks, so the comparison is paired.
 
+For a checkpoint trained with --heldout-sentences, --sentences picks the test
+set: 'heldout' (default; test subjects x sentences never seen in training) or
+'seen' (test subjects x training sentences, a memorization diagnostic).
+
 Reported:
   - corpus WER and CER per condition;
   - for each pair of conditions and each metric, a two-sided paired
@@ -197,6 +201,10 @@ def parse_args() -> argparse.Namespace:
                    help="ZuCo tasks to include (default: the checkpoint's training tasks)")
     p.add_argument("--conditions", nargs="+", choices=INPUT_MODES, default=list(INPUT_MODES),
                    help="Input conditions to decode (at least two for the tests)")
+    p.add_argument("--sentences", choices=["heldout", "seen", "all"], default=None,
+                   help="Test sentences: heldout (unseen in training), seen (training "
+                        "sentences), all. Default: heldout if the checkpoint was trained "
+                        "with --heldout-sentences, else all")
     p.add_argument("--batch-size", type=int, default=16)
     p.add_argument("--n-permutations", type=int, default=10000)
     p.add_argument("--seed", type=int, default=42, help="Seed for the permutation tests")
@@ -258,6 +266,11 @@ def main() -> None:
     if ckpt_config.get("no_subject_split"):
         fail("the checkpoint was trained with --no-subject-split; it has no held-out subjects.")
     tasks = args.tasks or ckpt_config.get("tasks") or DEFAULT_TASKS
+    trained_heldout = bool(ckpt_config.get("heldout_sentences"))
+    sentences = args.sentences or ("heldout" if trained_heldout else "all")
+    if sentences != "all" and not trained_heldout:
+        fail("--sentences heldout/seen needs a checkpoint trained with --heldout-sentences.")
+    sentence_splits = {"heldout": ("test",), "seen": ("train",), "all": None}[sentences]
 
     _, _, test_subjects = get_subject_split(str(data_dir), tasks=tasks)
     if not test_subjects:
@@ -269,6 +282,7 @@ def main() -> None:
         test_ds = tnv2.load_datasets(
             str(data_dir), tasks, subjects=test_subjects,
             max_samples=50 if args.quick_test else None, input_modes=conditions,
+            sentence_splits=sentence_splits,
         )
     except RuntimeError as exc:
         fail(f"failed to load held-out test data: {exc}")
@@ -276,7 +290,7 @@ def main() -> None:
     missing_tasks = set(tasks) - dataset_tasks(test_ds)
     if missing_tasks:
         fail(f"no held-out data for tasks {sorted(missing_tasks)}; check the pickles.")
-    logger.info(f"Held-out test subjects: {test_subjects}, samples: {len(test_ds)}")
+    logger.info(f"Held-out test subjects: {test_subjects}, sentences: {sentences}, samples: {len(test_ds)}")
 
     model = build_model_from_checkpoint(checkpoint, model_type, device)
     tokenizer = None
@@ -339,6 +353,7 @@ def main() -> None:
             "model": model_type,
             "tasks": tasks,
             "test_subjects": test_subjects,
+            "sentences": sentences,
             "conditions": conditions,
             "batch_size": args.batch_size,
             "n_permutations": args.n_permutations,
