@@ -6,13 +6,13 @@ import numpy as np
 from pathlib import Path
 import sys
 
-# Find first .mat file
+# Use the .mat file given as argument, else find the first one
 data_dir = Path("data/raw/zuco")
 if not data_dir.exists():
     data_dir = Path("ZuCo_Dataset/ZuCo")
 
-mat_files = []
-for task in ["task1_SR", "task2_NR", "task3_TSR"]:
+mat_files = [Path(arg) for arg in sys.argv[1:2]]
+for task in ["task1_SR", "task2_NR", "task3_TSR", "task1-SR", "task2-NR", "task3-TSR"]:
     task_dir = data_dir / task / "Matlab_files"
     if task_dir.exists():
         mat_files.extend(list(task_dir.glob("*.mat")))
@@ -96,6 +96,12 @@ try:
                         print(f"  {key}: {type(val).__name__}")
                         if isinstance(val, str) and len(val) < 200:
                             print(f"      = '{val}'")
+
+                words = sample.get("word")
+                if isinstance(words, (list, np.ndarray)) and len(words) > 0:
+                    print("\nWord-level fields (first word):")
+                    for key, val in words[0].items():
+                        print(f"  {key}: {np.shape(val)} {val if np.size(val) == 1 else ''}")
 except Exception as e:
     print(f"Error: {e}")
     import traceback
