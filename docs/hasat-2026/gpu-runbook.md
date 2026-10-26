@@ -138,8 +138,9 @@ python scripts/eval_conditions.py --checkpoint results/nest_v2_bart_eeg_gaze/bes
 Script şunları verir:
 
 - her koşul için WER ve CER;
-- her koşul çifti ve metrik için paired permutation testi (cümle başına hata,
-  işaret çevirme, iki yönlü);
+- her koşul çifti ve metrik için paired permutation testi (işaret çevirme,
+  iki yönlü). Birim benzersiz cümledir: test denekleri aynı cümleleri okur,
+  bu yüzden bir cümlenin tüm kopyalarındaki hatalar toplanır;
 - 6 testin tamamı (3 çift x 2 metrik) üzerinden Holm düzeltmeli p değerleri.
 
 JSON tüm hipotezleri ve referansları da saklar.
