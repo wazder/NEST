@@ -6,8 +6,9 @@ Sonuç ne çıkarsa çıksın deck'e o sayı yazılır; çıkmazsa "pending" kal
 
 ## 0. Karar
 
-- Sağlayıcı: RunPod Secure Cloud, A100 80 GB, 1,39-1,59 $/saat (Eylül 2026
-  fiyatı; runpod.io/pricing üzerinden teyit et).
+- Sağlayıcı: RunPod, A100 80 GB (PCIe veya SXM), 1,79 $/saat (runpod.io/pricing,
+  8 Ekim 2026 güncellemesi; Eylül'de 1,39-1,59 $ idi). Daha ucuz seçenek:
+  L40S 48 GB, 1,09 $/saat; model 48 GB'a rahat sığar, hızı ölçülmedi.
 - Alternatif: Lambda 1x A100 40 GB, 1,99 $/saat (v2 40 GB'a sığıyorsa).
 - Vast.ai daha ucuz ama kesintili; checkpoint kaydını açık tut.
 - ZuCo verisi kamuya açık ve de-identified (CC BY 4.0); KVKK açısından
@@ -21,10 +22,14 @@ CTC'yi çıkarır (bölüm 3) ve BART'ı EEG ile gaze girdisiyle birlikte eğiti
 
 | Koşu | Amaç | Süre | Maliyet |
 |---|---|---|---|
-| BART, `--input-mode eeg gaze` | Üç koşul tek checkpoint'te (asıl ölçüm) | 8-14 saat | 11-22 $ |
+| BART, `--input-mode eeg gaze` | Üç koşul tek checkpoint'te (asıl ölçüm) | 8-14 saat | 14-25 $ |
 | Değerlendirme (`eval_conditions.py` + shuffled kontrol) | Tablo ve p değerleri | 1 saatten az | 2 $'dan az |
-| Opsiyonel: BART, yalnız EEG | Ortak eğitimin EEG satırını bozmadığını kontrol | 6-10 saat | 8-16 $ |
-| Toplam | | 9-25 saat | 13-40 $ |
+| Opsiyonel: BART, yalnız EEG | Ortak eğitimin EEG satırını bozmadığını kontrol | 6-10 saat | 11-18 $ |
+| Toplam | | 9-25 saat | 16-45 $ |
+
+Maliyet sütunu A100 için 1,79 $/saat ile hesaplandı. `--heldout-sentences` ile
+eğitim seti 8.483 yerine 6.770 örnek, doğrulama seti 2.202 yerine 216 örnektir
+(bölüm 3). Bu yüzden süre büyük olasılıkla tablodan kısa olur.
 
 - Ortak koşu tek modlu koşudan uzun sürer: her doğrulama iki kez çözümler
   (EEG ve gaze) ve her mod eğitim adımlarının yarısını alır.
@@ -62,16 +67,29 @@ python -c "from src.data.zuco_pickle_dataset import ZuCoWordSequenceDataset as D
 d = D('ZuCo_Dataset/ZuCo', input_modes=('eeg', 'gaze', 'noise')); print(len(d), d[0]['gaze'][:3])"
 ```
 
-Dönüştürücü Mac'te tek dosyayla denendi (`resultsZDN_SR.mat`, 477 MB): 400
-cümle, 101'i eksik; 2.514 fixation'lı kelime; .mat ile 0 uyuşmazlık.
+Mac'te ölçüldü (26 Ekim 2026): 36 dosya indi ve dönüştü. Pickle'lar toplam
+3,1 GB (task başına 1,0-1,1 GB). 156.720 fixation'lı kelimenin hepsinde gaze
+ölçüleri var ve hepsinde FFD <= GD <= TRT, GD <= GPT. Eksik cümleler:
+task1-SR'da ZDN 101; task2-NR'da ZJS 50 ve ZPH 50; task3-TSR'da ZGW 46,
+ZKB 48 ve ZPH 89.
 
-Pickle'ları bir kez üretip sıkıştırılmış olarak sakla; pod her açıldığında
-.mat indirmek gerekmesin.
+Pickle'ları bir kez üretip sakla; pod her açıldığında .mat indirmek gerekmesin.
 
 ## 2. Pod kurulumu
 
+Pod'u açarken: PyTorch şablonu, container disk en az 40 GB, TCP 22 açık ve
+`PUBLIC_KEY` ortam değişkeninde Mac'teki `~/.ssh/id_ed25519.pub` içeriği.
+Böylece Mac'ten SSH ile bağlanılır ve pickle'lar rsync ile gönderilir:
+
 ```bash
-git clone https://github.com/wazder/nest.git && cd nest
+rsync -av --progress -e "ssh -p <port>" ZuCo_Dataset/ZuCo/ root@<ip>:/workspace/nest/ZuCo_Dataset/ZuCo/ \
+    --include "*/" --include "*.pickle" --exclude "*"
+```
+
+Pod içinde:
+
+```bash
+cd /workspace && git clone https://github.com/wazder/nest.git && cd nest
 git checkout feat/gaze-only-control   # main'e merge edilene kadar
 python -m venv .venv && source .venv/bin/activate
 pip install -q -r requirements.txt
@@ -96,9 +114,24 @@ Asıl ölçüm: BART, EEG ve gaze girdisiyle tek checkpoint. Batch'ler sırayla
 EEG ve gaze kullanır. Checkpoint iki modun ortalama doğrulama WER'ine göre
 seçilir, böylece model seçimi hiçbir koşulu kayırmaz.
 
+**Cümleler de ayrılır (`--heldout-sentences`).** ZuCo'da her denek aynı
+cümleleri okur. Ölçüldü: yalnız denek bölmesinde 1.031 benzersiz test
+cümlesinin 1.031'i eğitim deneklerinde de var. Model bu durumda WER'i cümleyi
+tanıyarak düşürebilir; gaze-only bunu kelime süreleriyle (kelime uzunluğu)
+özellikle kolay yapar. `--heldout-sentences` cümleleri metin hash'iyle 80/10/10
+böler. Eğitim yalnız eğitim cümlelerini görür; doğrulama ve test görülmemiş
+cümlelerdir. Gerçek veride ölçülen boyutlar:
+
+| Küme | Örnek | Benzersiz cümle |
+|---|---|---|
+| Eğitim (8 denek x eğitim cümleleri) | 6.770 | 825 |
+| Doğrulama (ZKH, ZKW x doğrulama cümleleri) | 216 | 105 |
+| Test, görülmemiş (ZMG, ZPH x test cümleleri) | 205 | 108 |
+| Test, görülmüş (ZMG, ZPH x eğitim cümleleri, teşhis) | 1.636 | 818 |
+
 ```bash
-python scripts/train_nest_v2.py --model bart --input-mode eeg gaze --epochs 200 \
-    --batch-size 16 --fp16 --d-model 768 --num-layers 6 \
+python scripts/train_nest_v2.py --model bart --input-mode eeg gaze --heldout-sentences \
+    --epochs 200 --batch-size 16 --fp16 --d-model 768 --num-layers 6 \
     --tasks task1-SR task2-NR task3-TSR --output-dir results/nest_v2_bart_eeg_gaze
 ```
 
@@ -106,8 +139,8 @@ Opsiyonel: yalnız EEG ile eğitilmiş BART. Ortak checkpoint'in EEG satırıyla
 karşılaştırılır.
 
 ```bash
-python scripts/train_nest_v2.py --model bart --epochs 200 --batch-size 16 --fp16 \
-    --d-model 768 --num-layers 6 --tasks task1-SR task2-NR task3-TSR \
+python scripts/train_nest_v2.py --model bart --heldout-sentences --epochs 200 --batch-size 16 \
+    --fp16 --d-model 768 --num-layers 6 --tasks task1-SR task2-NR task3-TSR \
     --output-dir results/nest_v2_bart
 ```
 
@@ -121,8 +154,8 @@ test deneklerini buna göre kontrol eder.
 
 ## 4. Değerlendirme (asıl iş)
 
-Test denekleri eğitimde hiç görülmedi. Aynı checkpoint ve aynı serbest
-çözümleme (teacher forcing yok; mevcut kodda greedy), üç girdiyle:
+Test denekleri ve test cümleleri eğitimde hiç görülmedi. Aynı checkpoint ve
+aynı serbest çözümleme (teacher forcing yok; mevcut kodda greedy), üç girdiyle:
 
 - `eeg`: gerçek kelime düzeyi EEG
 - `gaze`: kelime düzeyi gaze ölçüleri (nFixations, FFD, GD, TRT, GPT), ayrı projection
@@ -134,7 +167,14 @@ Test denekleri eğitimde hiç görülmedi. Aynı checkpoint ve aynı serbest
 ```bash
 python scripts/eval_conditions.py --checkpoint results/nest_v2_bart_eeg_gaze/best_model.pt \
     --data-dir ZuCo_Dataset/ZuCo --n-permutations 10000 --output results/conditions_bart.json
+python scripts/eval_conditions.py --checkpoint results/nest_v2_bart_eeg_gaze/best_model.pt \
+    --data-dir ZuCo_Dataset/ZuCo --sentences seen --n-permutations 10000 \
+    --output results/conditions_bart_seen.json
 ```
+
+İlk komut asıl sonuçtur: görülmemiş cümleler (`--sentences heldout`, varsayılan).
+İkincisi teşhistir: aynı test deneklerinin eğitim cümleleri. İkisi arasındaki
+fark, modelin cümleleri ne kadar ezberlediğini gösterir.
 
 Script şunları verir:
 
@@ -147,6 +187,8 @@ Script şunları verir:
 JSON tüm hipotezleri ve referansları da saklar.
 
 Ek kontrol: EEG dizilerini cümleler arasında karıştıran shuffled kontrol.
+Not: `eval_noise_control.py` cümle filtresi uygulamaz, test deneklerinin tüm
+cümlelerinde ölçer.
 
 ```bash
 python scripts/eval_noise_control.py --checkpoint results/nest_v2_bart_eeg_gaze/best_model.pt \
