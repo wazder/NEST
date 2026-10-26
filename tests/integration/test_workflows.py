@@ -20,32 +20,14 @@ class TestEndToEndPipeline:
         
         # Apply multiple augmentations
         augmented = eeg.copy()
-        augmented = augmenter.add_gaussian_noise(augmented, noise_level=0.1)
+        augmented = augmenter.add_gaussian_noise(
+            augmented, noise_level=0.1 / np.std(augmented)
+        )
         augmented = augmenter.amplitude_scaling(augmented, scale_range=(0.9, 1.1))
         augmented = augmenter.time_shift(augmented, shift_range=(-20, 20))
         
         assert augmented.shape == eeg.shape
         assert not np.array_equal(augmented, eeg)
-        
-    @pytest.mark.integration
-    @pytest.mark.data
-    def test_zuco_dataset_loading(self):
-        """Test ZuCo dataset loading (requires dataset)."""
-        pytest.skip("Requires ZuCo dataset download")
-        
-        from src.data.zuco_dataset import ZuCoDataset
-        
-        dataset = ZuCoDataset(
-            data_dir="data/raw/zuco",
-            task="task1",
-        )
-        
-        # Load first sample
-        sample = dataset[0]
-        
-        assert "eeg" in sample
-        assert "text" in sample
-        assert sample["eeg"].shape[0] == 105  # ZuCo has 105 channels
 
 
 class TestModelInteroperability:
@@ -127,30 +109,6 @@ class TestRobustnessFeatures:
 class TestDeploymentWorkflow:
     """Tests for deployment workflows."""
     
-    @pytest.mark.integration
-    def test_model_export_onnx(self, tmp_path):
-        """Test model export to ONNX."""
-        pytest.skip("ONNX export requires careful setup")
-        
-        from src.evaluation.deployment import export_to_onnx
-        from src.models.nest import NESTWithCTC
-        
-        model = NESTWithCTC(
-            n_channels=105,
-            vocab_size=1000,
-            spatial_channels=[64],
-            temporal_hidden=128,
-        )
-        
-        model.eval()
-        
-        output_path = tmp_path / "model.onnx"
-        dummy_input = torch.randn(1, 105, 500)
-        
-        export_to_onnx(model, dummy_input, output_path)
-        
-        assert output_path.exists()
-        
     @pytest.mark.integration
     def test_torchscript_export(self, tmp_path):
         """Test TorchScript export."""

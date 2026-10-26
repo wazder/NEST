@@ -71,28 +71,6 @@ class TestDataSplit:
     """Tests for data splitting strategies."""
     
     @pytest.mark.unit
-    def test_basic_split(self, sample_eeg_data, sample_text_data):
-        """Test basic train/val/test split."""
-        eeg, _ = sample_eeg_data
-        texts = sample_text_data["texts"]
-        
-        # Create dataset list
-        dataset = [(eeg[:, i:i+500], texts[i % len(texts)]) 
-                   for i in range(0, eeg.shape[1] - 500, 100)]
-        
-        train, val, test = train_val_test_split(
-            dataset, 
-            val_ratio=0.15, 
-            test_ratio=0.15,
-            random_state=42
-        )
-        
-        total = len(train) + len(val) + len(test)
-        assert total == len(dataset)
-        assert len(val) / total == pytest.approx(0.15, abs=0.05)
-        assert len(test) / total == pytest.approx(0.15, abs=0.05)
-        
-    @pytest.mark.unit
     def test_subject_aware_split(self):
         """Test subject-aware splitting."""
         # Create mock dataset with subject IDs

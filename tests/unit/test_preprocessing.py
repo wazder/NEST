@@ -10,6 +10,7 @@ from src.preprocessing.artifact_removal import (
 )
 from src.preprocessing.electrode_selection import ElectrodeSelector
 from src.preprocessing.augmentation import EEGAugmentation
+from src.preprocessing.data_split import EEGDataSplitter
 
 
 class TestFiltering:
@@ -171,7 +172,7 @@ class TestAugmentation:
         """Test Gaussian noise augmentation."""
         eeg, _ = sample_eeg_data
         
-        augmented = EEGAugmentation().add_gaussian_noise(eeg, noise_level=0.1)
+        augmented = EEGAugmentation().add_gaussian_noise(eeg, noise_level=0.1 / np.std(eeg))
         
         assert augmented.shape == eeg.shape
         assert not np.array_equal(augmented, eeg)
@@ -222,3 +223,30 @@ class TestAugmentation:
         assert augmented.shape == eeg.shape
         # Some channels should be zeroed out
         assert (augmented.sum(axis=1) == 0).any()
+
+
+class TestDataSplit:
+    """Tests for data splitting strategies."""
+    
+    @pytest.mark.unit
+    def test_basic_split(self, sample_eeg_data, sample_text_data):
+        """Test basic train/val/test split."""
+        eeg, _ = sample_eeg_data
+        texts = sample_text_data["texts"]
+        
+        # Create dataset list
+        dataset = [(eeg[:, i:i+500], texts[i % len(texts)]) 
+                   for i in range(0, eeg.shape[1] - 500, 100)]
+        
+        splits = EEGDataSplitter(random_state=42).random_split(
+            dataset,
+            [text for _, text in dataset],
+            val_ratio=0.15,
+            test_ratio=0.15,
+        )
+        train, val, test = (splits[k][0] for k in ("train", "val", "test"))
+        
+        total = len(train) + len(val) + len(test)
+        assert total == len(dataset)
+        assert len(val) / total == pytest.approx(0.15, abs=0.05)
+        assert len(test) / total == pytest.approx(0.15, abs=0.05)

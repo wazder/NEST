@@ -85,8 +85,11 @@ class TestInferenceOptimization:
         
         model.eval()
 
-        # macOS arm64 ships qnnpack but selects no quantized engine by default
+        # macOS arm64 ships qnnpack but selects no quantized engine by default.
+        # torch cannot switch back to "none", so the engine stays set.
         if torch.backends.quantized.engine == "none":
+            if "qnnpack" not in torch.backends.quantized.supported_engines:
+                pytest.skip("No quantized engine available")
             torch.backends.quantized.engine = "qnnpack"
 
         quantized = DynamicQuantizer(model, dtype=torch.qint8).quantize()
