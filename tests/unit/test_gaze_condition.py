@@ -15,6 +15,7 @@ from src.data.zuco_pickle_dataset import (  # noqa: E402
     ZuCoWordSequenceDataset,
     _get_word_gaze,
     collate_word_sequence_ctc,
+    get_subject_split,
 )
 from src.models.nest_v2 import NEST_BART_v2, NEST_CTC_v2  # noqa: E402
 from tests.synthetic_zuco import write_synthetic_zuco  # noqa: E402
@@ -110,6 +111,15 @@ class TestDataset:
         for i, n in enumerate(lengths.tolist()):
             assert torch.all(batch["gaze"][i, n:] == 0) and torch.all(batch["noise"][i, n:] == 0)
             assert torch.all(batch["gaze"][i, :n, 1] > 0)  # FFD of real words
+
+
+def test_subject_split_is_8_2_2_on_zuco_subjects(tmp_path):
+    subjects = ["ZAB", "ZDM", "ZDN", "ZGW", "ZJM", "ZJN", "ZJS", "ZKB", "ZKH", "ZKW", "ZMG", "ZPH"]
+    write_synthetic_zuco(tmp_path, subjects=subjects, n_sentences=1)
+    train, val, test = get_subject_split(str(tmp_path), tasks=["task1-SR"])
+    assert test == ["ZMG", "ZPH"]
+    assert val == ["ZKH", "ZKW"]
+    assert train == subjects[:8]
 
 
 class TestModel:

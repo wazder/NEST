@@ -114,9 +114,10 @@ python scripts/train_nest_v2.py --model bart --epochs 200 --batch-size 16 --fp16
 `nohup ... &` ile çalıştır. `results/*/results.json`, `history.json` ve
 `best_model.pt` dosyalarını pod kapanmadan indir.
 
-Denek bölmesi: `get_subject_split` sıralı son iki deneği test (ZMG, ZPH),
-sondan üçüncüyü doğrulama (ZKW) yapar; kalan 9 denek eğitimdir. Bazı
-belgeler 8/2/2 der. Koşudan önce hangisinin istendiğine karar ver.
+Denek bölmesi (8/2/2): `get_subject_split` sıralı son iki deneği test
+(ZMG, ZPH), kalanların son ikisini doğrulama (ZKH, ZKW) yapar; kalan 8
+denek eğitimdir. Bölme `config.json` içine yazılır ve `eval_conditions.py`
+test deneklerini buna göre kontrol eder.
 
 ## 4. Değerlendirme (asıl iş)
 

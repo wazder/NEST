@@ -373,9 +373,9 @@ def get_subject_split(
     """
     Get train/val/test subject splits for subject-independent evaluation.
 
-    Default split (11 subjects from task1-SR):
-        Test:  ZMG, ZPH  (held-out, never seen during training)
-        Val:   ZKH       (used for early stopping only)
+    Default split (ZuCo 1.0, 12 subjects, sorted by name):
+        Test:  ZMG, ZPH  (last two; held-out, never seen during training)
+        Val:   ZKH, ZKW  (last two of the rest; early stopping only)
         Train: remaining 8 subjects
 
     Returns:
@@ -402,8 +402,9 @@ def get_subject_split(
         # Default: last 2 subjects as test
         test_subjects = all_subjects[-2:]
 
-    val_subjects = [all_subjects[-3]] if len(all_subjects) > 3 else []
-    train_subjects = [s for s in all_subjects if s not in test_subjects and s not in val_subjects]
+    remaining = [s for s in all_subjects if s not in test_subjects]
+    val_subjects = remaining[-2:] if len(remaining) > 2 else []
+    train_subjects = [s for s in remaining if s not in val_subjects]
 
     logger.info(f"Subject split — train: {train_subjects}, val: {val_subjects}, test: {test_subjects}")
     return train_subjects, val_subjects, test_subjects
