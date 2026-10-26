@@ -23,6 +23,11 @@ Usage:
   # Quick test
   python scripts/train_nest_v2.py --quick-test
 
+  # One checkpoint for the EEG / gaze-only / noise comparison
+  # (batches alternate between EEG and gaze input; evaluate with
+  # scripts/eval_conditions.py)
+  python scripts/train_nest_v2.py --model bart --input-mode eeg gaze
+
 Cloud training (A100):
   python scripts/train_nest_v2.py --model ctc --epochs 200 --fp16 --batch-size 32
 """
@@ -36,7 +41,7 @@ import argparse
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Dict, List, Sequence, Tuple
 
 import numpy as np
 import torch
@@ -46,9 +51,12 @@ from torch.utils.data import DataLoader, ConcatDataset
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.data.zuco_pickle_dataset import (
+    GAZE_DIM,
+    INPUT_MODES,
     ZuCoWordSequenceDataset,
     get_subject_split,
     collate_word_sequence_ctc,
+    pad_word_features,
 )
 from src.models.nest_v2 import NEST_CTC_v2, build_model
 
@@ -149,6 +157,7 @@ def train_epoch_ctc(
     grad_accum: int,
     fp16: bool,
     epoch: int,
+    input_modes: Sequence[str] = ("eeg",),
 ) -> float:
     model.train()
     ctc_loss_fn = nn.CTCLoss(blank=BLANK, reduction="mean", zero_infinity=True)
@@ -159,13 +168,14 @@ def train_epoch_ctc(
         if batch is None:
             continue
 
-        eeg = batch["eeg"].to(device)                      # (B, T, 840)
+        mode = input_modes[step % len(input_modes)]       # batches alternate between modes
+        inputs = batch[mode].to(device)                    # (B, T, 840) or (B, T, 5) for gaze
         eeg_lengths = batch["eeg_lengths"].to(device)      # (B,)
         targets = batch["targets"].to(device)              # (B, U)
         target_lengths = batch["target_lengths"].to(device) # (B,)
 
         with torch.amp.autocast("cuda", enabled=fp16 and device.type == "cuda"):
-            log_probs = model(eeg, eeg_lengths)  # (B, T, vocab)
+            log_probs = model(inputs, eeg_lengths, input_mode=mode)  # (B, T, vocab)
             log_probs_t = log_probs.permute(1, 0, 2)  # (T, B, vocab)
             T = log_probs_t.shape[0]
             input_lengths = torch.clamp(eeg_lengths, max=T)
@@ -201,6 +211,7 @@ def eval_ctc(
     loader: DataLoader,
     device: torch.device,
     fp16: bool,
+    input_mode: str = "eeg",
 ) -> Dict[str, float]:
     model.eval()
     ctc_loss_fn = nn.CTCLoss(blank=BLANK, reduction="mean", zero_infinity=True)
@@ -211,14 +222,14 @@ def eval_ctc(
         if batch is None:
             continue
 
-        eeg = batch["eeg"].to(device)
+        inputs = batch[input_mode].to(device)
         eeg_lengths = batch["eeg_lengths"].to(device)
         targets = batch["targets"].to(device)
         target_lengths = batch["target_lengths"].to(device)
         texts = batch["texts"]
 
         with torch.amp.autocast("cuda", enabled=fp16 and device.type == "cuda"):
-            log_probs = model(eeg, eeg_lengths)
+            log_probs = model(inputs, eeg_lengths, input_mode=input_mode)
 
         log_probs_t = log_probs.permute(1, 0, 2)
         T = log_probs_t.shape[0]
@@ -236,7 +247,7 @@ def eval_ctc(
     wer = compute_wer(all_hyps, all_refs)
     cer = compute_cer(all_hyps, all_refs)
 
-    return {"loss": val_loss, "wer": wer, "cer": cer}
+    return {"loss": val_loss, "wer": wer, "cer": cer, "hypotheses": all_hyps, "references": all_refs}
 
 
 # --- BART training ---
@@ -252,6 +263,7 @@ def train_epoch_bart(
     fp16: bool,
     tokenizer,
     epoch: int,
+    input_modes: Sequence[str] = ("eeg",),
 ) -> float:
     model.train()
     total_loss = n_batches = 0
@@ -261,7 +273,8 @@ def train_epoch_bart(
         if batch is None:
             continue
 
-        eeg = batch["eeg"].to(device)
+        mode = input_modes[step % len(input_modes)]  # batches alternate between modes
+        inputs = batch[mode].to(device)
         eeg_lengths = batch["eeg_lengths"].to(device)
         texts = batch["texts"]
 
@@ -277,11 +290,12 @@ def train_epoch_bart(
 
         with torch.amp.autocast("cuda", enabled=fp16 and device.type == "cuda"):
             loss, _ = model(
-                eeg=eeg,
+                eeg=inputs,
                 eeg_lengths=eeg_lengths,
                 input_ids=encoded["input_ids"],
                 attention_mask=encoded["attention_mask"],
                 labels=labels,
+                input_mode=mode,
             )
             loss = loss / grad_accum
 
@@ -315,6 +329,7 @@ def eval_bart(
     device: torch.device,
     fp16: bool,
     tokenizer,
+    input_mode: str = "eeg",
 ) -> Dict[str, float]:
     model.eval()
     total_loss = n_batches = 0
@@ -324,7 +339,7 @@ def eval_bart(
         if batch is None:
             continue
 
-        eeg = batch["eeg"].to(device)
+        inputs = batch[input_mode].to(device)
         eeg_lengths = batch["eeg_lengths"].to(device)
         texts = batch["texts"]
 
@@ -340,17 +355,18 @@ def eval_bart(
 
         with torch.amp.autocast("cuda", enabled=fp16 and device.type == "cuda"):
             loss, _ = model(
-                eeg=eeg,
+                eeg=inputs,
                 eeg_lengths=eeg_lengths,
                 input_ids=encoded["input_ids"],
                 attention_mask=encoded["attention_mask"],
                 labels=labels,
+                input_mode=input_mode,
             )
 
         total_loss += loss.item()
         n_batches += 1
 
-        generated = model.generate(eeg, eeg_lengths, max_length=64, num_beams=4)
+        generated = model.generate(inputs, eeg_lengths, max_length=64, num_beams=4, input_mode=input_mode)
         hyps = tokenizer.batch_decode(generated, skip_special_tokens=True)
         all_hyps.extend(hyps)
         all_refs.extend(texts)
@@ -359,7 +375,7 @@ def eval_bart(
     wer = compute_wer(all_hyps, all_refs)
     cer = compute_cer(all_hyps, all_refs)
 
-    return {"loss": val_loss, "wer": wer, "cer": cer}
+    return {"loss": val_loss, "wer": wer, "cer": cer, "hypotheses": all_hyps, "references": all_refs}
 
 
 # --- Collate for BART (no char encoding) ---
@@ -383,11 +399,15 @@ def collate_bart_v2(batch: List[Dict]) -> Optional[Dict]:
     for i, e in enumerate(eeg_list):
         padded_eeg[i, : e.shape[0]] = e
 
-    return {
+    out = {
         "eeg": torch.from_numpy(padded_eeg),
         "eeg_lengths": torch.tensor(eeg_lengths, dtype=torch.long),
         "texts": texts,
     }
+    for key in ("gaze", "noise"):
+        if key in batch[0]:
+            out[key] = pad_word_features([sample[key] for sample in batch])
+    return out
 
 
 # --- Dataset loading ---
@@ -398,6 +418,7 @@ def load_datasets(
     subjects: Optional[List[str]] = None,
     exclude_subjects: Optional[List[str]] = None,
     max_samples: Optional[int] = None,
+    input_modes: Sequence[str] = ("eeg",),
 ) -> ZuCoWordSequenceDataset:
     datasets = []
     for task in tasks:
@@ -407,6 +428,7 @@ def load_datasets(
                 tasks=[task],
                 subjects=subjects,
                 exclude_subjects=exclude_subjects,
+                input_modes=input_modes,
             )
             if len(ds) > 0:
                 datasets.append(ds)
@@ -465,6 +487,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--fixation", default="GD",
                    choices=["FFD", "TRT", "GD"],
                    help="EEG fixation measure to use")
+    p.add_argument("--input-mode", nargs="+", default=["eeg"], choices=INPUT_MODES,
+                   help="Input condition(s) to train on. With several, batches "
+                        "alternate between them (e.g. 'eeg gaze' gives one "
+                        "checkpoint that decodes EEG and gaze input). "
+                        "gaze: word-level eye-tracking measures, own projection; "
+                        "noise: Gaussian noise matched to the EEG statistics")
     p.add_argument("--quick-test", action="store_true",
                    help="2 epochs, 50 samples, skip test eval")
     p.add_argument("--no-subject-split", action="store_true",
@@ -509,7 +537,8 @@ def main():
     if args.no_subject_split:
         from torch.utils.data import random_split
         full_ds = load_datasets(
-            args.data_dir, args.tasks, max_samples=max_samples
+            args.data_dir, args.tasks, max_samples=max_samples,
+            input_modes=args.input_mode,
         )
         n = len(full_ds)
         n_test = max(1, int(0.1 * n))
@@ -524,13 +553,14 @@ def main():
             args.data_dir, tasks=args.tasks
         )
         train_ds = load_datasets(
-            args.data_dir, args.tasks, subjects=train_subjs, max_samples=max_samples
+            args.data_dir, args.tasks, subjects=train_subjs, max_samples=max_samples,
+            input_modes=args.input_mode,
         )
         val_ds = load_datasets(
-            args.data_dir, args.tasks, subjects=val_subjs
+            args.data_dir, args.tasks, subjects=val_subjs, input_modes=args.input_mode
         )
         test_ds = load_datasets(
-            args.data_dir, args.tasks, subjects=test_subjs
+            args.data_dir, args.tasks, subjects=test_subjs, input_modes=args.input_mode
         )
 
     logger.info(
@@ -555,7 +585,8 @@ def main():
         collate_fn=collate_fn, num_workers=args.num_workers,
     )
 
-    # Build model
+    # Build model (with a gaze projection if gaze input is used)
+    gaze_dim = GAZE_DIM if "gaze" in args.input_mode else None
     if args.model == "ctc":
         model = NEST_CTC_v2(
             d_model=args.d_model,
@@ -563,6 +594,7 @@ def main():
             num_encoder_layers=args.num_layers,
             dim_feedforward=args.d_model * 4,
             vocab_size=VOCAB_SIZE,
+            gaze_dim=gaze_dim,
         ).to(device)
         tokenizer = None
     else:
@@ -572,6 +604,7 @@ def main():
             d_model=args.d_model,
             nhead=args.nhead,
             num_encoder_layers=args.num_layers,
+            gaze_dim=gaze_dim,
         ).to(device)
         tokenizer = BartTokenizer.from_pretrained("facebook/bart-base")
 
@@ -614,6 +647,8 @@ def main():
         "grad_accum": args.grad_accum,
         "tasks": args.tasks,
         "fixation": args.fixation,
+        "input_modes": args.input_mode,
+        "gaze_dim": gaze_dim,
         "n_params": n_params,
         "timestamp": timestamp,
     }
@@ -630,22 +665,30 @@ def main():
         if args.model == "ctc":
             train_loss = train_epoch_ctc(
                 model, train_loader, optimizer, scheduler, scaler,
-                device, args.grad_accum, args.fp16, epoch,
+                device, args.grad_accum, args.fp16, epoch, args.input_mode,
             )
-            val_metrics = eval_ctc(model, val_loader, device, args.fp16)
+            val_by_mode = {
+                mode: eval_ctc(model, val_loader, device, args.fp16, mode)
+                for mode in args.input_mode
+            }
         else:
             train_loss = train_epoch_bart(
                 model, train_loader, optimizer, scheduler, scaler,
-                device, args.grad_accum, args.fp16, tokenizer, epoch,
+                device, args.grad_accum, args.fp16, tokenizer, epoch, args.input_mode,
             )
-            val_metrics = eval_bart(model, val_loader, device, args.fp16, tokenizer)
+            val_by_mode = {
+                mode: eval_bart(model, val_loader, device, args.fp16, tokenizer, mode)
+                for mode in args.input_mode
+            }
 
         elapsed = time.time() - t0
         current_lr = scheduler.get_last_lr()[0]
 
-        val_wer = val_metrics["wer"]
-        val_cer = val_metrics["cer"]
-        val_loss = val_metrics["loss"]
+        # With several input modes, select checkpoints on their mean so that
+        # no condition is favoured by model selection
+        val_wer = float(np.mean([m["wer"] for m in val_by_mode.values()]))
+        val_cer = float(np.mean([m["cer"] for m in val_by_mode.values()]))
+        val_loss = float(np.mean([m["loss"] for m in val_by_mode.values()]))
 
         print(
             f"{epoch+1:>6}  {train_loss:>10.4f}  {val_loss:>9.4f}  "
@@ -660,6 +703,10 @@ def main():
             "val_cer": round(val_cer, 5),
             "lr": current_lr,
         }
+        if len(args.input_mode) > 1:
+            for mode, metrics in val_by_mode.items():
+                row[f"val_wer_{mode}"] = round(metrics["wer"], 5)
+                row[f"val_cer_{mode}"] = round(metrics["cer"], 5)
         history.append(row)
 
         is_best = val_wer < best_wer
@@ -706,15 +753,19 @@ def main():
         best_ckpt = torch.load(output_dir / "best_model.pt", map_location=device, weights_only=False)
         model.load_state_dict(best_ckpt["model"])
 
-        if args.model == "ctc":
-            test_metrics = eval_ctc(model, test_loader, device, args.fp16)
-        else:
-            test_metrics = eval_bart(model, test_loader, device, args.fp16, tokenizer)
+        test_by_mode = {}
+        for mode in args.input_mode:
+            if args.model == "ctc":
+                test_by_mode[mode] = eval_ctc(model, test_loader, device, args.fp16, mode)
+            else:
+                test_by_mode[mode] = eval_bart(model, test_loader, device, args.fp16, tokenizer, mode)
+        test_metrics = test_by_mode[args.input_mode[0]]
 
         print(f"\n{'='*70}")
         print("FINAL TEST RESULTS (held-out subjects, honest evaluation):")
-        print(f"  WER: {test_metrics['wer']:.4f}  ({test_metrics['wer']*100:.1f}%)")
-        print(f"  CER: {test_metrics['cer']:.4f}  ({test_metrics['cer']*100:.1f}%)")
+        for mode, metrics in test_by_mode.items():
+            print(f"  [{mode}] WER: {metrics['wer']:.4f}  ({metrics['wer']*100:.1f}%)")
+            print(f"  [{mode}] CER: {metrics['cer']:.4f}  ({metrics['cer']*100:.1f}%)")
         print(f"{'='*70}")
 
         results = {
@@ -724,6 +775,9 @@ def main():
             "best_val_wer": best_wer,
             "test_wer": test_metrics["wer"],
             "test_cer": test_metrics["cer"],
+            "test_by_input_mode": {
+                mode: {"wer": m["wer"], "cer": m["cer"]} for mode, m in test_by_mode.items()
+            },
             "n_train": len(train_ds),
             "n_val": len(val_ds),
             "n_test": len(test_ds),

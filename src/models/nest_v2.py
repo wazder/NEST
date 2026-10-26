@@ -7,6 +7,11 @@ following Wang et al. 2022 (ACL) approach with improvements.
 Input format: (batch, max_words, 840)
   - 105 EEG channels × 8 frequency bands (theta1/2, alpha1/2, beta1/2, gamma1/2)
 
+Gaze-only control: a model built with gaze_dim also takes (batch, max_words, 5)
+word-level eye-tracking measures (nFixations, FFD, GD, TRT, GPT) through its
+own projection layer; pass input_mode="gaze". The sequence length and padding
+mask are the same as for EEG.
+
 Architecture variants:
   1. NEST_CTC_v2:  Linear → Transformer → CTC head
   2. NEST_BART_v2: Linear → Transformer → BART cross-attention decoder
@@ -23,7 +28,9 @@ import torch.nn.functional as F
 logger = logging.getLogger(__name__)
 
 EEG_DIM = 840  # 105 channels × 8 frequency bands
+GAZE_DIM = 5  # nFixations, FFD, GD, TRT, GPT
 VOCAB_SIZE_CTC = 29  # blank(0) + a-z(1-26) + space(27) + pad(28)
+INPUT_MODES = ("eeg", "gaze", "noise")
 
 
 class EEGProjection(nn.Module):
@@ -57,6 +64,63 @@ class EEGProjection(nn.Module):
         x = self.norm_out(x)
         x = x * math.sqrt(self.d_model)
         return self.dropout(x)
+
+
+class GazeProjection(nn.Module):
+    """
+    Projects word-level gaze measures (counts and durations) to model dimension.
+
+    The measures are non-negative with a long right tail, so they are
+    log-compressed. There is no input LayerNorm: across five heterogeneous
+    measures it would remove the absolute durations, which carry most of the
+    information.
+    """
+
+    def __init__(self, gaze_dim: int = GAZE_DIM, d_model: int = 512, dropout: float = 0.1):
+        super().__init__()
+        self.proj = nn.Sequential(
+            nn.Linear(gaze_dim, d_model * 2),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(d_model * 2, d_model),
+        )
+        self.norm_out = nn.LayerNorm(d_model)
+        self.dropout = nn.Dropout(dropout)
+        self.d_model = d_model
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            x: (batch, seq_len, gaze_dim)
+        Returns:
+            (batch, seq_len, d_model)
+        """
+        x = torch.log1p(x.clamp(min=0))
+        x = self.proj(x)
+        x = self.norm_out(x)
+        x = x * math.sqrt(self.d_model)
+        return self.dropout(x)
+
+
+def project_input(
+    eeg_proj: nn.Module,
+    gaze_proj: Optional[nn.Module],
+    x: torch.Tensor,
+    input_mode: str,
+) -> torch.Tensor:
+    """
+    Route the input through the projection of its modality.
+
+    'eeg' and 'noise' (noise stands in for EEG) use the EEG projection;
+    'gaze' uses the gaze projection.
+    """
+    if input_mode not in INPUT_MODES:
+        raise ValueError(f"Unknown input_mode: {input_mode}")
+    if input_mode == "gaze":
+        if gaze_proj is None:
+            raise ValueError("input_mode='gaze' needs a model built with gaze_dim")
+        return gaze_proj(x)
+    return eeg_proj(x)
 
 
 class SinusoidalPositionalEncoding(nn.Module):
@@ -104,6 +168,7 @@ class NEST_CTC_v2(nn.Module):
         dropout: float = 0.1,
         vocab_size: int = VOCAB_SIZE_CTC,
         max_seq_len: int = 512,
+        gaze_dim: Optional[int] = None,
     ):
         super().__init__()
 
@@ -112,6 +177,9 @@ class NEST_CTC_v2(nn.Module):
 
         # EEG projection
         self.eeg_proj = EEGProjection(eeg_dim, d_model, dropout)
+
+        # Gaze projection (gaze-only control), only when gaze_dim is set
+        self.gaze_proj = GazeProjection(gaze_dim, d_model, dropout) if gaze_dim else None
 
         # Positional encoding
         self.pos_enc = SinusoidalPositionalEncoding(d_model, max_seq_len, dropout)
@@ -164,17 +232,20 @@ class NEST_CTC_v2(nn.Module):
         self,
         eeg: torch.Tensor,
         eeg_lengths: Optional[torch.Tensor] = None,
+        input_mode: str = "eeg",
     ) -> torch.Tensor:
         """
         Args:
-            eeg: (batch, seq_len, 840) EEG feature sequences
+            eeg: (batch, seq_len, 840) EEG feature sequences, or
+                (batch, seq_len, gaze_dim) gaze features if input_mode='gaze'
             eeg_lengths: (batch,) actual sequence lengths (optional)
+            input_mode: 'eeg', 'gaze' or 'noise' (see project_input)
 
         Returns:
             log_probs: (batch, seq_len, vocab_size) log probabilities
         """
-        # Project EEG features
-        x = self.eeg_proj(eeg)  # (batch, seq_len, d_model)
+        # Project input features
+        x = project_input(self.eeg_proj, self.gaze_proj, eeg, input_mode)  # (batch, seq_len, d_model)
 
         # Add positional encoding
         x = self.pos_enc(x)
@@ -221,6 +292,7 @@ class NEST_BART_v2(nn.Module):
         freeze_bart_encoder: bool = True,
         freeze_bart_decoder_layers: int = 4,
         max_seq_len: int = 512,
+        gaze_dim: Optional[int] = None,
     ):
         super().__init__()
 
@@ -235,6 +307,7 @@ class NEST_BART_v2(nn.Module):
 
         # EEG encoder
         self.eeg_proj = EEGProjection(eeg_dim, d_model, dropout)
+        self.gaze_proj = GazeProjection(gaze_dim, d_model, dropout) if gaze_dim else None
         self.pos_enc = SinusoidalPositionalEncoding(d_model, max_seq_len, dropout)
 
         encoder_layer = nn.TransformerEncoderLayer(
@@ -285,16 +358,19 @@ class NEST_BART_v2(nn.Module):
         )
 
     def encode_eeg(
-        self, eeg: torch.Tensor, eeg_lengths: Optional[torch.Tensor] = None
+        self,
+        eeg: torch.Tensor,
+        eeg_lengths: Optional[torch.Tensor] = None,
+        input_mode: str = "eeg",
     ) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         """
-        Encode EEG to cross-attention context.
+        Encode EEG (or gaze, if input_mode='gaze') to cross-attention context.
 
         Returns:
             encoder_out: (batch, seq_len, bart_d_model)
             attention_mask: (batch, seq_len) 1=real, 0=padded
         """
-        x = self.eeg_proj(eeg)
+        x = project_input(self.eeg_proj, self.gaze_proj, eeg, input_mode)
         x = self.pos_enc(x)
 
         key_padding_mask = None
@@ -316,19 +392,22 @@ class NEST_BART_v2(nn.Module):
         input_ids: Optional[torch.Tensor] = None,
         attention_mask: Optional[torch.Tensor] = None,
         labels: Optional[torch.Tensor] = None,
+        input_mode: str = "eeg",
     ) -> Tuple[Optional[torch.Tensor], torch.Tensor]:
         """
         Args:
-            eeg: (batch, eeg_seq_len, 840)
+            eeg: (batch, eeg_seq_len, 840), or (batch, eeg_seq_len, gaze_dim)
+                if input_mode='gaze'
             eeg_lengths: (batch,) actual EEG word counts
             input_ids: (batch, text_seq_len) decoder input tokens
             attention_mask: (batch, text_seq_len) decoder attention mask
             labels: (batch, text_seq_len) target tokens (for loss)
+            input_mode: 'eeg', 'gaze' or 'noise' (see project_input)
 
         Returns:
             (loss, logits)  — loss is None if labels not provided
         """
-        encoder_out, encoder_attention_mask = self.encode_eeg(eeg, eeg_lengths)
+        encoder_out, encoder_attention_mask = self.encode_eeg(eeg, eeg_lengths, input_mode)
 
         if input_ids is None:
             # Inference mode: use BOS token
@@ -372,6 +451,7 @@ class NEST_BART_v2(nn.Module):
         num_beams: int = 4,
         length_penalty: float = 1.0,
         early_stopping: bool = True,
+        input_mode: str = "eeg",
     ) -> torch.Tensor:
         """
         Generate text tokens via beam search.
@@ -381,7 +461,7 @@ class NEST_BART_v2(nn.Module):
         """
         from transformers import GenerationConfig
 
-        encoder_out, encoder_attention_mask = self.encode_eeg(eeg, eeg_lengths)
+        encoder_out, encoder_attention_mask = self.encode_eeg(eeg, eeg_lengths, input_mode)
 
         # Use BART's built-in generation with our encoder output
         gen_config = GenerationConfig(

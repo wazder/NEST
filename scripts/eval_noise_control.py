@@ -260,6 +260,7 @@ def build_model_from_checkpoint(
     d_model = config.get("d_model", 512)
     num_layers = config.get("num_layers", 6)
     nhead = config.get("nhead", 8)
+    gaze_dim = config.get("gaze_dim")  # set if the model was trained with gaze input
 
     if model_type == "ctc":
         model: nn.Module = NEST_CTC_v2(
@@ -268,12 +269,14 @@ def build_model_from_checkpoint(
             num_encoder_layers=num_layers,
             dim_feedforward=d_model * 4,
             vocab_size=tnv2.VOCAB_SIZE,
+            gaze_dim=gaze_dim,
         )
     elif model_type == "bart":
         model = NEST_BART_v2(
             d_model=d_model,
             nhead=nhead,
             num_encoder_layers=num_layers,
+            gaze_dim=gaze_dim,
         )
     else:
         raise ValueError(f"Unknown model type: {model_type}")

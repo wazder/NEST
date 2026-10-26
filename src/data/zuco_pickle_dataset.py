@@ -15,8 +15,9 @@ Reference:
 import os
 import pickle
 import logging
+import zlib
 from pathlib import Path
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Sequence, Tuple
 
 import numpy as np
 import torch
@@ -28,6 +29,13 @@ FREQ_BANDS = ["t1", "t2", "a1", "a2", "b1", "b2", "g1", "g2"]
 N_CHANNELS = 105
 N_BANDS = len(FREQ_BANDS)
 EEG_DIM = N_CHANNELS * N_BANDS  # 840
+
+# Word-level eye-tracking measures kept by scripts/zuco_mat_to_pickle.py
+GAZE_FEATURES = ("nFixations", "FFD", "GD", "TRT", "GPT")
+GAZE_DIM = len(GAZE_FEATURES)  # 5
+
+# Input conditions: real EEG, gaze-only control, matched Gaussian noise control
+INPUT_MODES = ("eeg", "gaze", "noise")
 
 
 def _get_sentence_eeg(sentence_level_eeg: Dict) -> np.ndarray:
@@ -82,6 +90,39 @@ def _get_word_eeg(word_level_eeg: Dict, measure: str = "FFD") -> np.ndarray:
         else:
             bands.append(np.zeros(N_CHANNELS, dtype=np.float32))
     return np.concatenate(bands)  # (840,)
+
+
+def _get_word_gaze(word: Dict) -> np.ndarray:
+    """
+    Get the eye-tracking measures of a single word.
+
+    Args:
+        word: word dict from a pickle built by scripts/zuco_mat_to_pickle.py
+
+    Returns:
+        ndarray of shape (5,): nFixations, FFD, GD, TRT, GPT
+
+    Raises:
+        KeyError: if the pickle has no gaze measures (the original Wang & Ji
+            converter keeps only nFixations)
+    """
+    missing = [key for key in GAZE_FEATURES if key not in word]
+    if missing:
+        raise KeyError(
+            f"Word has no gaze measures {missing}; rebuild the pickle with "
+            f"scripts/zuco_mat_to_pickle.py"
+        )
+    gaze = np.array([word[key] for key in GAZE_FEATURES], dtype=np.float32)
+    return np.nan_to_num(gaze, nan=0.0, posinf=0.0, neginf=0.0)
+
+
+def pad_word_features(arrays: List[np.ndarray]) -> torch.Tensor:
+    """Zero-pad (n_words_i, dim) arrays to a (batch, max_words, dim) tensor."""
+    max_words = max(a.shape[0] for a in arrays)
+    padded = np.zeros((len(arrays), max_words, arrays[0].shape[1]), dtype=np.float32)
+    for i, a in enumerate(arrays):
+        padded[i, : a.shape[0]] = np.nan_to_num(a, nan=0.0, posinf=0.0, neginf=0.0)
+    return torch.from_numpy(padded)
 
 
 class ZuCoSentenceDataset(Dataset):
@@ -181,6 +222,12 @@ class ZuCoWordSequenceDataset(Dataset):
 
     Input is a sequence of word-level EEG features (one per fixated word).
     This directly follows Wang et al. 2022 (ACL) and subsequent SOTA papers.
+
+    input_modes adds the control conditions to each sample, for the same
+    words, so every condition has the same sequence length and mask:
+        gaze:  (n_words, 5) eye-tracking measures (nFixations, FFD, GD, TRT, GPT)
+        noise: (n_words, 840) Gaussian noise with the per-feature mean and std
+               of this dataset's EEG, fixed per sample
     """
 
     def __init__(
@@ -193,6 +240,8 @@ class ZuCoWordSequenceDataset(Dataset):
         max_words: int = 56,
         fixation_measure: str = "GD",
         min_word_count: int = 3,
+        input_modes: Sequence[str] = ("eeg",),
+        noise_seed: int = 42,
     ):
         """
         Args:
@@ -204,12 +253,21 @@ class ZuCoWordSequenceDataset(Dataset):
             max_words: Maximum words per sentence (longer sentences truncated)
             fixation_measure: Which EEG measure to use ('FFD', 'TRT', 'GD')
             min_word_count: Minimum words required per sentence
+            input_modes: Conditions to provide, from INPUT_MODES. 'eeg' is
+                always present; 'gaze' and 'noise' add sample keys.
+            noise_seed: Seed for the 'noise' condition
         """
         if tasks is None:
             tasks = ["task1-SR", "task2-NR", "task3-TSR"]
+        unknown = set(input_modes) - set(INPUT_MODES)
+        if unknown:
+            raise ValueError(f"Unknown input modes: {sorted(unknown)}")
 
         self.max_words = max_words
         self.fixation_measure = fixation_measure
+        self.input_modes = tuple(input_modes)
+        self.noise_seed = noise_seed
+        load_gaze = "gaze" in self.input_modes
         self.samples: List[Dict] = []
         data_path = Path(data_dir)
 
@@ -244,6 +302,7 @@ class ZuCoWordSequenceDataset(Dataset):
                         continue
 
                     word_eegs = []
+                    word_gazes = []
                     word_texts = []
                     for word in words[:max_words]:
                         weeg = _get_word_eeg(
@@ -251,6 +310,8 @@ class ZuCoWordSequenceDataset(Dataset):
                             measure=fixation_measure,
                         )
                         word_eegs.append(weeg)
+                        if load_gaze:
+                            word_gazes.append(_get_word_gaze(word))
                         word_texts.append(word.get("content", ""))
 
                     if not word_eegs:
@@ -262,28 +323,44 @@ class ZuCoWordSequenceDataset(Dataset):
                     if np.all(eeg_seq == 0):
                         continue
 
-                    self.samples.append({
+                    sample = {
                         "eeg": eeg_seq,
                         "eeg_len": len(word_eegs),
                         "text": text.strip(),
                         "words": word_texts,
                         "subject": subj_id,
                         "task": task,
-                    })
+                    }
+                    if load_gaze:
+                        sample["gaze"] = np.stack(word_gazes, axis=0)  # (n_words, 5)
+                    self.samples.append(sample)
 
         if max_samples is not None:
             self.samples = self.samples[:max_samples]
 
+        if "noise" in self.input_modes and self.samples:
+            all_words = np.concatenate([s["eeg"] for s in self.samples], axis=0).astype(np.float64)
+            self.noise_mean = all_words.mean(axis=0).astype(np.float32)
+            self.noise_std = all_words.std(axis=0).astype(np.float32)
+
         logger.info(
             f"ZuCoWordSequenceDataset: {len(self.samples)} samples, "
-            f"measure={fixation_measure}, max_words={max_words}"
+            f"measure={fixation_measure}, max_words={max_words}, "
+            f"input_modes={list(self.input_modes)}"
         )
 
     def __len__(self) -> int:
         return len(self.samples)
 
     def __getitem__(self, idx: int) -> Dict:
-        return self.samples[idx]
+        sample = self.samples[idx]
+        if "noise" not in self.input_modes:
+            return sample
+        # Fixed per sample (like real EEG); the task enters the seed so that
+        # per-task datasets inside a ConcatDataset do not share noise.
+        rng = np.random.default_rng([self.noise_seed, zlib.crc32(sample["task"].encode()), idx])
+        noise = rng.standard_normal(sample["eeg"].shape) * self.noise_std + self.noise_mean
+        return {**sample, "noise": noise.astype(np.float32)}
 
 
 def get_subject_split(
@@ -344,6 +421,7 @@ def collate_word_sequence_ctc(
         targets: (batch, max_target_len) character indices
         target_lengths: (batch,) actual target lengths
         texts: list of reference strings
+        gaze, noise: padded like eeg, if the samples have them
     """
     batch = [b for b in batch if b is not None]
     if not batch:
@@ -385,13 +463,17 @@ def collate_word_sequence_ctc(
     for i, t in enumerate(targets):
         padded_targets[i, : len(t)] = t
 
-    return {
+    out = {
         "eeg": torch.from_numpy(padded_eeg),
         "eeg_lengths": torch.tensor(eeg_lengths, dtype=torch.long),
         "targets": torch.from_numpy(padded_targets),
         "target_lengths": torch.tensor(target_lengths, dtype=torch.long),
         "texts": texts,
     }
+    for key in ("gaze", "noise"):
+        if key in batch[0]:
+            out[key] = pad_word_features([sample[key] for sample in batch])
+    return out
 
 
 def collate_sentence_ctc(
