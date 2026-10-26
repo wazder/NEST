@@ -13,7 +13,7 @@ own projection layer; pass input_mode="gaze". The sequence length and padding
 mask are the same as for EEG.
 
 Architecture variants:
-  1. NEST_CTC_v2:  Linear → Transformer → CTC head
+  1. NEST_CTC_v2:  Linear → word steps spread over output frames → Transformer → CTC head
   2. NEST_BART_v2: Linear → Transformer → BART cross-attention decoder
 """
 
@@ -31,6 +31,10 @@ EEG_DIM = 840  # 105 channels × 8 frequency bands
 GAZE_DIM = 5  # nFixations, FFD, GD, TRT, GPT
 VOCAB_SIZE_CTC = 29  # blank(0) + a-z(1-26) + space(27) + pad(28)
 INPUT_MODES = ("eeg", "gaze", "noise")
+# CTC output frames per sentence. CTC needs one frame per target character
+# plus one blank between repeated characters; on the ZuCo 1.0 pickles
+# (SR, NR, TSR) that is at most 388, against at most 56 fixated-word steps.
+CTC_OUTPUT_FRAMES = 400
 
 
 class EEGProjection(nn.Module):
@@ -151,9 +155,15 @@ class NEST_CTC_v2(nn.Module):
     Architecture:
         EEG features (batch, seq, 840)
         → EEGProjection → (batch, seq, d_model)
+        → each sentence's word steps spread in order over output_frames frames
         → Positional encoding
         → Transformer encoder (num_layers)
         → Linear → log_softmax → CTC loss
+
+    The targets are characters, about 9 per fixated-word step at the median
+    on ZuCo, so one frame per word step leaves CTC no valid alignment.
+    output_frames=None keeps one frame per word step (models trained before
+    output_frames existed).
 
     This is the primary model for EEG-to-text with ZuCo frequency features.
     """
@@ -169,11 +179,16 @@ class NEST_CTC_v2(nn.Module):
         vocab_size: int = VOCAB_SIZE_CTC,
         max_seq_len: int = 512,
         gaze_dim: Optional[int] = None,
+        output_frames: Optional[int] = CTC_OUTPUT_FRAMES,
     ):
         super().__init__()
 
+        if output_frames is not None and output_frames > max_seq_len:
+            raise ValueError(f"output_frames={output_frames} exceeds max_seq_len={max_seq_len}")
+
         self.d_model = d_model
         self.vocab_size = vocab_size
+        self.output_frames = output_frames
 
         # EEG projection
         self.eeg_proj = EEGProjection(eeg_dim, d_model, dropout)
@@ -212,7 +227,7 @@ class NEST_CTC_v2(nn.Module):
         n_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
         logger.info(
             f"NEST_CTC_v2: d_model={d_model}, layers={num_encoder_layers}, "
-            f"heads={nhead}, params={n_params:,}"
+            f"heads={nhead}, output_frames={output_frames}, params={n_params:,}"
         )
 
     def _init_weights(self):
@@ -228,6 +243,33 @@ class NEST_CTC_v2(nn.Module):
         mask = torch.arange(max_len, device=lengths.device).unsqueeze(0).expand(batch_size, -1)
         return mask >= lengths.unsqueeze(1)  # (batch, max_len)
 
+    def expand_to_frames(
+        self, x: torch.Tensor, lengths: Optional[torch.Tensor] = None
+    ) -> torch.Tensor:
+        """
+        Spread each sentence's word steps in order over output_frames frames:
+        word w of an n-word sentence fills frames [w * F / n, (w + 1) * F / n).
+        Padded word steps fill no frame.
+
+        Args:
+            x: (batch, seq_len, d_model)
+            lengths: (batch,) actual word counts (all seq_len if None)
+        Returns:
+            (batch, output_frames, d_model)
+        """
+        batch_size, seq_len, d_model = x.shape
+        if lengths is None:
+            lengths = torch.full((batch_size,), seq_len, device=x.device)
+        frames = torch.arange(self.output_frames, device=x.device)
+        word_index = frames.unsqueeze(0) * lengths.unsqueeze(1) // self.output_frames
+        return x.gather(1, word_index.unsqueeze(-1).expand(-1, -1, d_model))
+
+    def output_lengths(self, eeg_lengths: torch.Tensor) -> torch.Tensor:
+        """Number of real output frames per sentence, for the CTC loss and decoding."""
+        if self.output_frames is None:
+            return eeg_lengths
+        return torch.full_like(eeg_lengths, self.output_frames)
+
     def forward(
         self,
         eeg: torch.Tensor,
@@ -242,18 +284,22 @@ class NEST_CTC_v2(nn.Module):
             input_mode: 'eeg', 'gaze' or 'noise' (see project_input)
 
         Returns:
-            log_probs: (batch, seq_len, vocab_size) log probabilities
+            log_probs: (batch, output_frames, vocab_size) log probabilities,
+                (batch, seq_len, vocab_size) if output_frames is None
         """
         # Project input features
         x = project_input(self.eeg_proj, self.gaze_proj, eeg, input_mode)  # (batch, seq_len, d_model)
 
+        # Spread word steps over output frames. Every frame then comes from a
+        # real word, so only one frame per word step needs a padding mask.
+        key_padding_mask = None
+        if self.output_frames is not None:
+            x = self.expand_to_frames(x, eeg_lengths)  # (batch, output_frames, d_model)
+        elif eeg_lengths is not None:
+            key_padding_mask = self.make_padding_mask(eeg_lengths, eeg.size(1))
+
         # Add positional encoding
         x = self.pos_enc(x)
-
-        # Create padding mask
-        key_padding_mask = None
-        if eeg_lengths is not None:
-            key_padding_mask = self.make_padding_mask(eeg_lengths, eeg.size(1))
 
         # Transformer encoding
         x = self.transformer(x, src_key_padding_mask=key_padding_mask)
@@ -526,7 +572,7 @@ if __name__ == "__main__":
     lengths = torch.tensor([20, 15])
     out = model(x, lengths)
     print(f"Input: {x.shape}")
-    print(f"Output: {out.shape}")  # (2, 20, 29)
+    print(f"Output: {out.shape}")  # (2, 400, 29)
 
     print()
     print("=== NEST_BART_v2 ===")

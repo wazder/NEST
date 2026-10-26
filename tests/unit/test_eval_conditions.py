@@ -21,6 +21,7 @@ from eval_conditions import (  # noqa: E402
     paired_permutation_test,
     sentence_errors,
 )
+from src.models.nest_v2 import CTC_OUTPUT_FRAMES  # noqa: E402
 from tests.synthetic_zuco import write_synthetic_zuco  # noqa: E402
 
 import train_nest_v2 as tnv2  # noqa: E402
@@ -152,6 +153,7 @@ def test_end_to_end_tiny_ctc(tmp_path):
     assert train.returncode == 0, train.stderr[-3000:]
     config = json.loads((run_dir / "config.json").read_text())
     assert config["input_modes"] == ["eeg", "gaze"] and config["gaze_dim"] == 5
+    assert config["output_frames"] == CTC_OUTPUT_FRAMES
     assert config["subject_split"]["test"] == ["S04", "S05"]
     assert set(json.loads((run_dir / "results.json").read_text())["test_by_input_mode"]) == {"eeg", "gaze"}
 

@@ -153,7 +153,7 @@ class TestModel:
     def test_gaze_forward_shape(self):
         model = NEST_CTC_v2(gaze_dim=GAZE_DIM, **TINY)
         out = model(torch.rand(2, 30, GAZE_DIM) * 300, torch.tensor([30, 25]), input_mode="gaze")
-        assert out.shape == (2, 30, 29)
+        assert out.shape == (2, model.output_frames, 29)
 
     def test_gaze_respects_padding_mask(self):
         model = NEST_CTC_v2(gaze_dim=GAZE_DIM, **TINY).eval()
@@ -164,7 +164,7 @@ class TestModel:
         with torch.no_grad():
             a = model(gaze, lengths, input_mode="gaze")
             b = model(changed, lengths, input_mode="gaze")
-        assert torch.allclose(a[1, :6], b[1, :6], atol=1e-5)
+        assert torch.allclose(a[1], b[1], atol=1e-5)  # all output frames of the padded sentence
 
     def test_modes_route_to_their_projection(self):
         model = NEST_CTC_v2(gaze_dim=GAZE_DIM, **TINY)
@@ -223,6 +223,9 @@ class RecordingModel(torch.nn.Module):
     def forward(self, x, lengths, input_mode="eeg"):
         self.calls.append((input_mode, x.shape[-1]))
         return torch.zeros(x.shape[0], x.shape[1], 29).add(self.weight).log_softmax(-1)
+
+    def output_lengths(self, lengths):
+        return lengths
 
 
 def test_training_alternates_input_modes(zuco_dir):

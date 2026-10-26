@@ -19,9 +19,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from src.data.zuco_pickle_dataset import collate_word_sequence_ctc  # noqa: E402
-from src.models.nest_v2 import NEST_CTC_v2  # noqa: E402
+from src.models.nest_v2 import CTC_OUTPUT_FRAMES, NEST_CTC_v2  # noqa: E402
 
 import train_nest_v2 as tnv2  # noqa: E402
+from eval_noise_control import build_model_from_checkpoint  # noqa: E402
 
 pytestmark = pytest.mark.unit
 
@@ -46,7 +47,8 @@ def realistic_batch() -> dict:
 
 
 class GradNormSGD(torch.optim.SGD):
-    """SGD with lr=0 that records the gradient norm at every step."""
+    """SGD with lr=0 that records the gradient norm at every step (after
+    train_epoch_ctc clips it to 1.0)."""
 
     def __init__(self, params):
         super().__init__(params, lr=0.0)
@@ -95,3 +97,64 @@ def test_eval_loss_is_finite_and_nonzero():
     metrics = tnv2.eval_ctc(NEST_CTC_v2(**TINY), [realistic_batch()], CPU, fp16=False)
     assert math.isfinite(metrics["loss"]) and metrics["loss"] > 0, metrics["loss"]
     assert len(metrics["hypotheses"]) == 2
+
+
+def test_default_frames_cover_longest_zuco_target():
+    # longest target on the converted ZuCo 1.0 pickles (SR, NR, TSR):
+    # 388 = characters + repeated-character pairs
+    model = NEST_CTC_v2(**TINY)
+    assert model.output_frames == CTC_OUTPUT_FRAMES >= 388
+    lengths = torch.tensor([12, 3])
+    assert model(torch.randn(2, 12, 840), lengths).shape == (2, CTC_OUTPUT_FRAMES, 29)
+    assert model.output_lengths(lengths).tolist() == [CTC_OUTPUT_FRAMES] * 2
+
+
+def test_frames_keep_word_order_and_skip_padding():
+    model = NEST_CTC_v2(output_frames=20, **TINY)
+    words = torch.arange(6.0).view(1, 6, 1).expand(2, 6, 3)  # every feature = word index
+    frames = model.expand_to_frames(words, torch.tensor([6, 4]))
+    assert frames.shape == (2, 20, 3)
+    for row, n_words in zip(frames[..., 0].long().tolist(), [6, 4]):
+        assert row == sorted(row) and set(row) == set(range(n_words))
+        counts = np.bincount(row)
+        assert counts.max() - counts.min() <= 1  # frames shared out evenly
+
+
+def test_one_frame_per_word_without_output_frames():
+    model = NEST_CTC_v2(output_frames=None, **TINY)
+    lengths = torch.tensor([12, 7])
+    assert model(torch.randn(2, 12, 840), lengths).shape == (2, 12, 29)
+    assert torch.equal(model.output_lengths(lengths), lengths)
+
+
+def test_output_frames_add_no_parameters():
+    with_frames, without = NEST_CTC_v2(**TINY), NEST_CTC_v2(output_frames=None, **TINY)
+    assert {k: v.shape for k, v in with_frames.state_dict().items()} == {
+        k: v.shape for k, v in without.state_dict().items()
+    }
+
+
+def test_output_frames_beyond_positional_encoding_raise():
+    with pytest.raises(ValueError, match="max_seq_len"):
+        NEST_CTC_v2(output_frames=600, max_seq_len=512, **TINY)
+
+
+def test_greedy_decode_ignores_padded_frames():
+    ids = [3, 1, 1, 0, 20, 26, 26]  # c a a <blank> t | z z (padding)
+    log_probs = torch.nn.functional.one_hot(torch.tensor([ids]), 29).float().log()
+    assert tnv2.ctc_greedy_decode(log_probs) == ["catz"]
+    assert tnv2.ctc_greedy_decode(log_probs, torch.tensor([5])) == ["cat"]
+
+
+@pytest.mark.parametrize("output_frames", [CTC_OUTPUT_FRAMES, None])
+def test_checkpoint_rebuild_keeps_output_frames(output_frames):
+    config = {"model": "ctc", "d_model": 32, "num_layers": 1, "nhead": 2, "gaze_dim": None}
+    if output_frames is not None:  # checkpoints from before output_frames lack the key
+        config["output_frames"] = output_frames
+    model = NEST_CTC_v2(d_model=32, nhead=2, num_encoder_layers=1, dim_feedforward=128,
+                        output_frames=output_frames).eval()
+    rebuilt = build_model_from_checkpoint({"model": model.state_dict(), "config": config}, "ctc", CPU).eval()
+    assert rebuilt.output_frames == output_frames
+    x, lengths = torch.randn(2, 9, 840), torch.tensor([9, 5])
+    with torch.no_grad():
+        assert torch.allclose(model(x, lengths), rebuilt(x, lengths))

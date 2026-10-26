@@ -115,11 +115,16 @@ def compute_cer(hypotheses: List[str], references: List[str]) -> float:
     return total_errors / max(total_chars, 1)
 
 
-def ctc_greedy_decode(log_probs: torch.Tensor) -> List[str]:
-    """Greedy CTC decoding. log_probs: (batch, time, vocab)"""
-    preds = log_probs.argmax(dim=-1)
+def ctc_greedy_decode(
+    log_probs: torch.Tensor, lengths: Optional[torch.Tensor] = None
+) -> List[str]:
+    """Greedy CTC decoding. log_probs: (batch, time, vocab); lengths: (batch,)
+    real frames per sequence, so padded frames are not decoded."""
+    preds = log_probs.argmax(dim=-1).tolist()
+    if lengths is not None:
+        preds = [seq[:n] for seq, n in zip(preds, lengths.tolist())]
     results = []
-    for seq in preds.tolist():
+    for seq in preds:
         chars, prev = [], -1
         for idx in seq:
             if idx != prev and idx not in (BLANK, PAD_IDX):
@@ -175,10 +180,10 @@ def train_epoch_ctc(
         target_lengths = batch["target_lengths"].to(device) # (B,)
 
         with torch.amp.autocast("cuda", enabled=fp16 and device.type == "cuda"):
-            log_probs = model(inputs, eeg_lengths, input_mode=mode)  # (B, T, vocab)
+            log_probs = model(inputs, eeg_lengths, input_mode=mode)  # (B, T, vocab), T output frames
             log_probs_t = log_probs.permute(1, 0, 2)  # (T, B, vocab)
             T = log_probs_t.shape[0]
-            input_lengths = torch.clamp(eeg_lengths, max=T)
+            input_lengths = torch.clamp(model.output_lengths(eeg_lengths), max=T)
             loss = ctc_loss_fn(log_probs_t, targets, input_lengths, target_lengths)
             loss = loss / grad_accum
 
@@ -233,13 +238,13 @@ def eval_ctc(
 
         log_probs_t = log_probs.permute(1, 0, 2)
         T = log_probs_t.shape[0]
-        input_lengths = torch.clamp(eeg_lengths, max=T)
+        input_lengths = torch.clamp(model.output_lengths(eeg_lengths), max=T)
         loss = ctc_loss_fn(log_probs_t, targets, input_lengths, target_lengths)
 
         total_loss += loss.item()
         n_batches += 1
 
-        hyps = ctc_greedy_decode(log_probs.cpu())
+        hyps = ctc_greedy_decode(log_probs.cpu(), input_lengths.cpu())
         all_hyps.extend(hyps)
         all_refs.extend(texts)
 
@@ -645,6 +650,13 @@ def main():
 
     if args.resume:
         ckpt = torch.load(args.resume, map_location=device, weights_only=False)
+        # same weights, different architecture: checkpoints from before
+        # output_frames have one frame per word step
+        ckpt_frames = ckpt.get("config", {}).get("output_frames")
+        if args.model == "ctc" and ckpt_frames != model.output_frames:
+            raise SystemExit(
+                f"--resume: checkpoint has output_frames={ckpt_frames}, model has {model.output_frames}"
+            )
         model.load_state_dict(ckpt["model"])
         optimizer.load_state_dict(ckpt["optimizer"])
         start_epoch = ckpt.get("epoch", 0) + 1
@@ -665,6 +677,7 @@ def main():
         "fixation": args.fixation,
         "input_modes": args.input_mode,
         "gaze_dim": gaze_dim,
+        "output_frames": model.output_frames if args.model == "ctc" else None,
         "no_subject_split": args.no_subject_split,
         "subject_split": subject_split,
         "heldout_sentences": args.heldout_sentences,

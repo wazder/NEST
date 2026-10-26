@@ -270,6 +270,8 @@ def build_model_from_checkpoint(
             dim_feedforward=d_model * 4,
             vocab_size=tnv2.VOCAB_SIZE,
             gaze_dim=gaze_dim,
+            # absent in checkpoints from before output_frames: one frame per word step
+            output_frames=config.get("output_frames"),
         )
     elif model_type == "bart":
         model = NEST_BART_v2(
