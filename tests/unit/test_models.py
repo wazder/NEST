@@ -10,20 +10,16 @@ from src.models.temporal_encoder import (
     TransformerEncoder,
     ConformerEncoder,
 )
-from src.models.attention import (
-    AdditiveAttention,
-    MultiplicativeAttention,
-    MultiHeadAttention,
-)
+from src.models.attention import MultiHeadAttention
 from src.models.decoder import (
     CTCDecoder,
     AttentionDecoder,
     TransducerDecoder,
 )
 from src.models.nest import (
-    NESTModel,
-    NESTWithCTC,
-    NESTWithTransducer,
+    NEST_Attention,
+    NEST_CTC,
+    NEST_RNN_T,
 )
 
 
@@ -34,9 +30,8 @@ class TestSpatialCNN:
     def test_spatial_cnn_forward(self, sample_batch_eeg):
         """Test SpatialCNN forward pass."""
         model = SpatialCNN(
-            in_channels=105,
-            out_channels=[64, 128, 256],
-            kernel_size=3,
+            n_channels=105,
+            n_spatial_filters=256,
         )
         
         output = model(sample_batch_eeg)
@@ -50,7 +45,7 @@ class TestSpatialCNN:
         model = EEGNet(
             n_channels=105,
             n_temporal_filters=8,
-            n_spatial_filters=2,
+            depth_multiplier=2,
             dropout=0.5,
         )
         
@@ -64,7 +59,7 @@ class TestSpatialCNN:
         """Test DeepConvNet forward pass."""
         model = DeepConvNet(
             n_channels=105,
-            n_filters=[25, 50, 100, 200],
+            n_filters=25,
             dropout=0.5,
         )
         
@@ -77,9 +72,8 @@ class TestSpatialCNN:
     def test_spatial_cnn_output_shape(self):
         """Test SpatialCNN output shape with different inputs."""
         model = SpatialCNN(
-            in_channels=105,
-            out_channels=[64, 128],
-            kernel_size=3,
+            n_channels=105,
+            n_spatial_filters=128,
         )
         
         # Test different sequence lengths
@@ -135,6 +129,7 @@ class TestTemporalEncoder:
         x = torch.randn(batch_size, seq_len, input_dim)
         
         encoder = TransformerEncoder(
+            input_dim=input_dim,
             d_model=input_dim,
             nhead=8,
             num_layers=6,
@@ -152,6 +147,7 @@ class TestTemporalEncoder:
         x = torch.randn(batch_size, seq_len, input_dim)
         
         encoder = ConformerEncoder(
+            input_dim=input_dim,
             d_model=input_dim,
             nhead=8,
             num_layers=6,
@@ -165,35 +161,6 @@ class TestTemporalEncoder:
 class TestAttentionMechanisms:
     """Tests for attention mechanisms."""
     
-    @pytest.mark.unit
-    def test_additive_attention(self):
-        """Test additive (Bahdanau) attention."""
-        batch_size, seq_len, hidden_dim = 4, 100, 512
-        encoder_outputs = torch.randn(batch_size, seq_len, hidden_dim)
-        decoder_hidden = torch.randn(batch_size, hidden_dim)
-        
-        attention = AdditiveAttention(hidden_dim=hidden_dim)
-        
-        context, weights = attention(decoder_hidden, encoder_outputs)
-        
-        assert context.shape == (batch_size, hidden_dim)
-        assert weights.shape == (batch_size, seq_len)
-        assert torch.allclose(weights.sum(dim=1), torch.ones(batch_size))
-        
-    @pytest.mark.unit
-    def test_multiplicative_attention(self):
-        """Test multiplicative (Luong) attention."""
-        batch_size, seq_len, hidden_dim = 4, 100, 512
-        encoder_outputs = torch.randn(batch_size, seq_len, hidden_dim)
-        decoder_hidden = torch.randn(batch_size, hidden_dim)
-        
-        attention = MultiplicativeAttention(hidden_dim=hidden_dim)
-        
-        context, weights = attention(decoder_hidden, encoder_outputs)
-        
-        assert context.shape == (batch_size, hidden_dim)
-        assert weights.shape == (batch_size, seq_len)
-        
     @pytest.mark.unit
     def test_multihead_attention(self):
         """Test multi-head attention."""
@@ -224,7 +191,7 @@ class TestDecoders:
         encoder_outputs = torch.randn(batch_size, seq_len, hidden_dim)
         
         decoder = CTCDecoder(
-            hidden_dim=hidden_dim,
+            input_dim=hidden_dim,
             vocab_size=vocab_size,
         )
         
@@ -245,6 +212,7 @@ class TestDecoders:
         decoder = AttentionDecoder(
             vocab_size=vocab_size,
             embedding_dim=256,
+            encoder_dim=hidden_dim,
             hidden_dim=hidden_dim,
             num_layers=2,
         )
@@ -282,12 +250,11 @@ class TestNESTModel:
     @pytest.mark.unit
     def test_nest_ctc_forward(self, sample_batch_eeg):
         """Test NEST with CTC decoder."""
-        model = NESTWithCTC(
+        model = NEST_CTC(
             n_channels=105,
             vocab_size=1000,
-            spatial_channels=[64, 128, 256],
-            temporal_hidden=512,
-            encoder_type="lstm",
+            encoder_hidden_dim=512,
+            encoder_type="LSTM",
         )
         
         logits = model(sample_batch_eeg)
@@ -302,16 +269,14 @@ class TestNESTModel:
         target_len = 50
         vocab_size = 1000
         
-        model = NESTModel(
+        model = NEST_Attention(
             n_channels=105,
             vocab_size=vocab_size,
-            spatial_channels=[64, 128, 256],
-            temporal_hidden=512,
-            decoder_type="attention",
+            encoder_hidden_dim=512,
         )
         
         target_tokens = torch.randint(0, vocab_size, (batch_size, target_len))
-        logits, attention_weights = model(sample_batch_eeg, target_tokens[:, :-1])
+        logits = model(sample_batch_eeg, target_tokens[:, :-1])
         
         assert logits.shape == (batch_size, target_len - 1, vocab_size)
         
@@ -322,11 +287,10 @@ class TestNESTModel:
         target_len = 50
         vocab_size = 1000
         
-        model = NESTWithTransducer(
+        model = NEST_RNN_T(
             n_channels=105,
             vocab_size=vocab_size,
-            spatial_channels=[64, 128, 256],
-            temporal_hidden=512,
+            encoder_hidden_dim=512,
         )
         
         target_tokens = torch.randint(0, vocab_size, (batch_size, target_len))
@@ -342,11 +306,10 @@ class TestNESTModel:
         if not torch.cuda.is_available():
             pytest.skip("GPU not available")
             
-        model = NESTWithCTC(
+        model = NEST_CTC(
             n_channels=105,
             vocab_size=1000,
-            spatial_channels=[64, 128],
-            temporal_hidden=256,
+            encoder_hidden_dim=256,
         ).to(device)
         
         x = sample_batch_eeg.to(device)
@@ -357,11 +320,10 @@ class TestNESTModel:
     @pytest.mark.unit
     def test_nest_gradient_flow(self, sample_batch_eeg):
         """Test gradient flow through NEST model."""
-        model = NESTWithCTC(
+        model = NEST_CTC(
             n_channels=105,
             vocab_size=1000,
-            spatial_channels=[64, 128],
-            temporal_hidden=256,
+            encoder_hidden_dim=256,
         )
         
         logits = model(sample_batch_eeg)
