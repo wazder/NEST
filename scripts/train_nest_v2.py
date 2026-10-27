@@ -472,6 +472,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--epochs", type=int, default=200)
     p.add_argument("--batch-size", type=int, default=16)
     p.add_argument("--lr", type=float, default=3e-4)
+    p.add_argument("--decoder-lr", type=float, default=None,
+                   help="Learning rate for the pretrained BART weights (default: --lr)")
     p.add_argument("--d-model", type=int, default=512,
                    help="Transformer hidden size (512 or 768)")
     p.add_argument("--num-layers", type=int, default=6,
@@ -628,8 +630,15 @@ def main():
     logger.info(f"Trainable parameters: {n_params:,}")
 
     # Optimizer
+    params = model.parameters()
+    if args.decoder_lr is not None:
+        params = [
+            {"params": [p for n, p in model.named_parameters() if not n.startswith("bart.")]},
+            {"params": [p for n, p in model.named_parameters() if n.startswith("bart.")],
+             "lr": args.decoder_lr},
+        ]
     optimizer = torch.optim.AdamW(
-        model.parameters(), lr=args.lr, weight_decay=1e-2,
+        params, lr=args.lr, weight_decay=1e-2,
         betas=(0.9, 0.98),
     )
 
@@ -660,6 +669,7 @@ def main():
         "epochs": args.epochs,
         "batch_size": args.batch_size,
         "lr": args.lr,
+        "decoder_lr": args.decoder_lr,
         "grad_accum": args.grad_accum,
         "tasks": args.tasks,
         "fixation": args.fixation,

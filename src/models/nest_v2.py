@@ -331,6 +331,15 @@ class NEST_BART_v2(nn.Module):
         # Bridge: project EEG encoder output to BART d_model
         self.encoder_bridge = nn.Linear(d_model, bart_d_model) if d_model != bart_d_model else nn.Identity()
 
+        # Start the EEG encoder output at the scale of BART's own encoder output
+        # (elementwise std about 0.19 for bart-base, 1.0 for a fresh LayerNorm).
+        # At the larger scale, cross-attention swamps the pretrained decoder and
+        # the model cannot even memorize a few sentences.
+        if d_model == bart_d_model:
+            self.eeg_transformer.norm.load_state_dict(
+                self.bart.encoder.layers[-1].final_layer_norm.state_dict()
+            )
+
         # Freeze BART encoder entirely (we use our EEG encoder)
         if freeze_bart_encoder:
             for param in self.bart.encoder.parameters():
