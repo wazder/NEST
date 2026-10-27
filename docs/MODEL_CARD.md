@@ -33,7 +33,7 @@ The framework supports multiple architectural variants:
 
 ### Model Variants
 
-No variant has a trained checkpoint or a measured WER, CER, or latency. The two variants under active development are:
+No checkpoint has been released. NEST-BART-v2 has one measured benchmark run (October 2026, see [Metrics](#metrics)): it does not decode text from EEG. No latency has been measured. The two variants under active development are:
 
 | Variant | Parameters | Status |
 |---------|-----------|--------|
@@ -105,13 +105,21 @@ Models evaluated across:
 
 ### Model Performance Metrics
 
-**No trained checkpoint has been released, and no WER, CER, BLEU, or perplexity number has been measured for NEST v2.** A figure that previously appeared here ("16.5% WER", "8.3% CER", "BLEU 0.72") was not a measurement — it originated from a hand-written heuristic (`estimate_wer_from_ctc_loss()` in `detailed_analysis.py`) that converts training loss into a WER percentage, applied to an unrelated ad hoc smoke-test model, with no decoding or reference comparison involved. It has been withdrawn; see [STATUS.md](STATUS.md).
+**No trained checkpoint has been released. NEST-BART-v2 has one measured benchmark run (October 2026): with free decoding on held-out subjects and held-out sentences, its WER is 0.9992 with real EEG, 0.9699 with gaze-only input and 0.9846 with noise input. It does not decode text from EEG.** No BLEU or perplexity number has been measured. A figure that previously appeared here ("16.5% WER", "8.3% CER", "BLEU 0.72") was not a measurement — it originated from a hand-written heuristic (`estimate_wer_from_ctc_loss()` in `detailed_analysis.py`) that converts training loss into a WER percentage, applied to an unrelated ad hoc smoke-test model, with no decoding or reference comparison involved. It has been withdrawn; see [STATUS.md](STATUS.md).
 
-The evaluation code itself is real and implemented in `scripts/train_nest_v2.py`: `eval_bart()` decodes autoregressively with `model.generate()` (no teacher forcing; the `num_beams=4` argument is accepted but the current implementation is greedy) and `eval_ctc()` uses greedy CTC decoding; WER/CER are computed via word/character Levenshtein distance. These will be used to report results once training completes.
+The evaluation code itself is real and implemented in `scripts/train_nest_v2.py`: `eval_bart()` decodes autoregressively with `model.generate()` (no teacher forcing; the `num_beams=4` argument is accepted but the current implementation is greedy) and `eval_ctc()` uses greedy CTC decoding; WER/CER are computed via word/character Levenshtein distance. The results below were produced with this code.
 
 ### Detailed Results
 
-Pending, no trained checkpoint released. No train/validation/test metric table exists yet.
+First NEST v2 benchmark run, 27 October 2026 (setup, statistics and caveats in [STATUS.md](STATUS.md#first-measured-result-october-2026)). Held-out subjects ZMG and ZPH, held-out sentences, 205 samples, 108 sentences, free greedy decoding, same checkpoint for every input:
+
+| Input | WER | CER |
+|---|---|---|
+| Real EEG | 0.9992 | 0.8144 |
+| Gaze only | 0.9699 | 0.7780 |
+| Noise | 0.9846 | 0.7903 |
+
+Real EEG does not beat noise (WER difference +0.0147, p (Holm) 0.088) and is worse than gaze-only input (+0.0293, p (Holm) 0.0006). The decoder mostly repeats a few training sentences whatever the input.
 
 ### Decision Thresholds
 
@@ -173,7 +181,7 @@ Same distribution as training data (ZuCo dataset) but held-out subjects.
 
 ### Evaluation Results by Scenario
 
-Pending, no trained checkpoint released. Once training completes, results for these scenarios will be reported using free decoding (no teacher forcing) with a noise-input control, per the commitment in `docs/STATUS.md`.
+Cross-subject, held-out sentences: see Detailed Results. Cross-subject, sentences seen in training (1,636 samples): WER 0.9744 with real EEG, 0.9526 with gaze only, 0.9675 with noise. A shuffled-EEG control on all 2,047 held-out-subject samples gave 0.9793 for real EEG and 0.9844 for shuffled EEG. The simulated-artifact scenario has not been run.
 
 ## Ethical Considerations
 
@@ -253,7 +261,7 @@ Pending, no trained checkpoint released. Once training completes, results for th
 
 ### Environmental Impact
 
-Pending, no trained checkpoint released. NEST v2 has not been trained to completion on GPU, so GPU-hours, estimated CO₂, and inference power/latency figures do not yet exist. The only completed training run (an ad hoc smoke-test model, not NEST v2) ran on an Apple M2 laptop CPU for approximately 5.4 hours; that run is not representative of NEST v2's eventual training cost.
+The October 2026 benchmark run trained NEST-BART-v2 for 51 epochs on an NVIDIA Jetson AGX Orin (fp16); training and evaluation together took about 88 minutes. Estimated CO₂ and inference power/latency figures do not exist yet. An earlier ad hoc smoke-test model (not NEST v2) trained on an Apple M2 laptop CPU for approximately 5.4 hours.
 
 ## References
 
